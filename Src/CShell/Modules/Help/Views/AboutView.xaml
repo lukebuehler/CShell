@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="CShell.Modules.Help.Views.AboutView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d"
+             Width="600"
+             Height="400"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid >
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="White" Offset="0" />
+                <GradientStop Color="#FFCBCBCB" Offset="1" />
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Label Content="CShell" Height="57" HorizontalAlignment="Left" Margin="144,41,0,0" Name="label1" VerticalAlignment="Top" FontSize="40" Width="147" />
+        <Label Content="v0.1" Height="28" HorizontalAlignment="Left" Margin="265,68,0,0" Name="Version" VerticalAlignment="Top" FontSize="15" />
+        <Image Height="150" HorizontalAlignment="Left" Name="image1" Stretch="Fill" VerticalAlignment="Top" Width="150
+               " Source="/CShell;component/Resources/Icon.png" />
+        <TextBox Height="234" HorizontalAlignment="Left" Margin="30,144,0,0" Name="AboutText" VerticalAlignment="Top" Width="539" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" IsEnabled="True" BorderBrush="{x:Null}" Background="{x:Null}" />
+            
+        
+    </Grid>
+</UserControl>

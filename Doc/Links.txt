@@ -1,0 +1,44 @@
+mono
+		http://tirania.org/blog/archive/2008/Aug-26.html Line editor
+		https://github.com/mono/mono/tree/master/mcs/tools/csharp csharp repl source
+
+avalon edit code completion
+	 - http://community.sharpdevelop.net/forums/t/15802.aspx
+	 - http://nuget.org/packages/SharpDevelopCodeCompletion
+
+	 - https://github.com/icsharpcode/NRefactory
+	 - http://www.codeproject.com/Articles/408663/Using-NRefactory-for-analyzing-Csharp-code
+	 Read:
+	 - http://stackoverflow.com/questions/12506646/c-sharp-code-completion-with-nrefactory-5
+
+avalon edit
+     - http://community.sharpdevelop.net/forums/t/14310.aspx (remove ctrl-x)
+
+controls
+	 http://www.codeproject.com/Articles/173509/A-Universal-WPF-Find-Replace-Dialog
+
+
+app domains
+     http://stackoverflow.com/questions/1277346/net-problem-with-raising-and-handling-events-using-appdomains
+	 http://msdn.microsoft.com/en-us/library/dd153782.aspx
+
+tree view
+     http://www.codeproject.com/Articles/31592/Editable-TextBlock-in-WPF-for-In-place-Editing
+
+
+settings are saved here:
+	%USERPROFILE%\AppData\Local\
+
+
+time series
+	http://opentsdb.net/
+	http://code.google.com/p/timeseriesdb/
+	http://www.codeproject.com/Articles/382245/Time-Series-Analysis-in-Csharp-NET-Part-II
+    
+f#
+    http://fsxplat.codeplex.com/SourceControl/changeset/view/4d371abd932f#samples/compiler/fsintellisense/Program.fs
+    http://stackoverflow.com/questions/11589990/f-intellisense-in-a-custom-editor
+
+
+
+

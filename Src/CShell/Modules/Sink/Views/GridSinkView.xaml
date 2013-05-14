@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="CShell.Modules.Sink.Views.GridSinkView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
+             Background="White"
+             Padding="4"
+             mc:Ignorable="d" 
+             d:DesignHeight="498" d:DesignWidth="763">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--SelectedItems="{Binding SelectedProperties}"-->
+        <xctk:CheckComboBox 
+            ItemsSource="{Binding Properties}"
+            SelectedItemsOverride="{Binding SelectedProperties}"
+            ItemSelectionChanged="CheckComboBox_ItemSelectionChanged"
+            DisplayMemberPath="Name"
+            Margin="0 0 0 5"
+            Grid.Row="0" HorizontalAlignment="Left" MinWidth="200" MaxWidth="300"  />
+        
+        <DataGrid x:Name="Data" 
+                  AutoGenerateColumns="False" 
+                  DataContextChanged="Data_DataContextChanged" 
+                  Grid.Row="1"
+                  GridLinesVisibility="Horizontal" 
+                  HorizontalGridLinesBrush="{StaticResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}"
+                  CanUserDeleteRows="False" CanUserAddRows="False" />
+
+        <TextBlock Grid.Row="2" >
+            <TextBlock.Text>
+                <MultiBinding StringFormat="{}{0} Items(s)">
+                    <Binding Path="DataCount" />
+                </MultiBinding>
+            </TextBlock.Text>
+        </TextBlock>
+    </Grid>
+</UserControl>

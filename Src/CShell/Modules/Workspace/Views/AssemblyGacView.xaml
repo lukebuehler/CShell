@@ -1,0 +1,58 @@
+﻿<UserControl x:Class="CShell.Modules.Workspace.Views.AssemblyGacView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:util="clr-namespace:CShell.Util;assembly=CShellCore"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="500">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <xctk:WatermarkTextBox Name="SearchText"  Watermark="Search for Component" HorizontalAlignment="Stretch" Grid.Column="0" />
+            <CheckBox Name="LatestVersionsOnly" Content="Show Latest Version Only" VerticalAlignment="Center" Grid.Column="1" Margin="2" />
+        </Grid>
+
+        <ListView x:Name="Assemblies" Grid.Row="1"
+                  GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Component Name" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Version" DisplayMemberBinding="{Binding Version}" />
+                    <GridViewColumn Header="File Path" DisplayMemberBinding="{Binding FilePath}" />
+                </GridView>
+            </ListView.View>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Setter Property="IsSelected" Value="{Binding Mode=TwoWay, Path=IsSelected}"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+
+        <TextBlock Grid.Row="2" Margin="2">
+            <TextBlock.Text>
+                <MultiBinding StringFormat="{}{0} assemblies selected of maximum {1}">
+                    <Binding Path="SelectedAssemblyCount" />
+                    <Binding Path="MaxSelectedAssemblyCount" />
+                </MultiBinding>
+            </TextBlock.Text>
+        </TextBlock>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" FlowDirection="RightToLeft">
+            <Button Name="Cancel" Content="Cancel" Width="80" Height="26" Margin="5" />
+            <Button Name="Ok" Content="OK" Width="80" Height="26" Margin="5" />
+
+        </StackPanel>
+    </Grid>
+</UserControl>

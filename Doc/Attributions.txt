@@ -1,0 +1,29 @@
+Many thanks to everybody who contributed to the opensource projects that made CShell possible!
+
+WPF Framework
+=============================
+Carliburn.Micro: http://caliburnmicro.codeplex.com/
+Gemini: https://github.com/tgjones/gemini
+AvalonDock: http://avalondock.codeplex.com/
+
+Code Evaluator (REPL)
+=============================
+The evaluator is from the mono project and part of the Mono.CSharp.dll
+Mono: http://www.mono-project.com
+For some reflection we use Mono.Cecil
+
+Text Editor & Code Completion
+=============================
+Avalon Edit: https://github.com/icsharpcode/SharpDevelop/wiki/AvalonEdit
+NRefactory: https://github.com/icsharpcode/NRefactory
+
+Others
+=============================
+GAC Interop: From SharpDevelop: https://github.com/icsharpcode/SharpDevelop
+Some Icons: From SharpDevelop: https://github.com/icsharpcode/SharpDevelop
+
+Application Icon
+=============================
+Part of 'FS Icons Ubuntu' icon set.
+http://franksouza183.deviantart.com/
+http://www.iconfinder.com/icondetails/79650/128/arrow_right_icon

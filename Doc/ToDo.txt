@@ -1,0 +1,14 @@
+Roadmap
+
+Future
+ - Installer (Wix)
+
+ - documents use the full path URI, can we use the relative uri for all documents? The problem is that for example when saving the layout the URI there is the entire path, which makes the layout not portable.
+
+ - dumper bugs
+
+ - NuGet integration
+
+ - Unit tests
+
+

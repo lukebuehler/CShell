@@ -1,7 +1,7 @@
 CShell Readme
 =============
 
-'''Website:''' http://cshell.net
+*Website:* http://cshell.net
 
 CShell is an interactive C# scripting environment. It allows you to use C# without any fluff right in a console like environment caled a read-eval-print-loop (REPL). Your code is directly evaluated and executed in a shell window, no separate executable has to be compiled and then run in a different process. More elaborate code can be written in a C# script and then evaluated as one file, only one line, or a selection. Then, your results can be easily dumped to HTML (like LINQPad) or viewed as a data grid or plotted to a chart.
 

@@ -36,7 +36,17 @@
 
 <p>Also just want to test one or two lines of C# code without creating a new console project in Visual Studio? Just fire up CShell, type the code you wanna test and you immediately can see if it works the way you want.</p>
 
-<h3>Why CShell?</h3>
+<p><img src="https://raw.github.com/ArnovaAssetManagement/CShell/master/Doc/Screenshot1.png" alt="Screenshot"></p>
+
+<h3>Getting Started</h3>
+
+<ol>
+<li>
+<strong>Install CShell</strong>: This is an early beta release of CShell, currently there's no installer available, either download the binaries zip file or build from the sources yourself.</li>
+<li>To work with CShell you need to create a work space, which are relatively permanent, i.e., you won't have to create a new work space for everything you do, think of it as your general environment where your scripts reside. To create the work space: File &gt; New Workspace...</li>
+<li>Now you're ready to start using the REPL, just start typing C# code and hit enter.</li>
+<li>This might now be a good time to go through the tutorial script which you can find in the CShell binary directory: CShell/Templates/Tutorial.csx</li>
+</ol><h3>Why CShell?</h3>
 
 <p>We've developed CShell because we needed it for ourselves. Visual Studio was often too heavy weight and LINQPad has no REPL loop. What if you load 2-3 GB of data and then wanna start exploring it, without having to load all the data every time the program is executed? With a REPL loop this is possible. Also we felt the time is ready for a more mature C# scripting environment with projects like NRefactory, Mono.CSharp and Roslyn quickly filling the gaps that remained to realize such a project.</p>
 

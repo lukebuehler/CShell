@@ -38,7 +38,7 @@ namespace CShell
         public const string WorkspaceFilter = "*.xml *.dll *.cshell";
 
         public const string CShellTemplatesPath = "Templates";
-        public const string CShellDefaultFile = "Default.cshell";
+        public const string CShellDefaultFilePath = "Default\\Default.cshell";
         public const string CShellEmptyFile = "Empty.cshell";
         public const string CShellFileTypes = "Workspace|*.cshell|All Files|*.*";
         public const string CShellFileExtension = ".cshell";

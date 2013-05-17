@@ -43,6 +43,7 @@ namespace CShell
             assemblies = new AssemblyReferences(engine);
             //files = new FileReferences("Files");
             RootFolder = Path.GetDirectoryName(cshellFile);
+            RootFolder = Path.GetFullPath(RootFolder);
 
             //make sure we add the CShell assembly
             var cshellCoreAssembly = Assembly.GetExecutingAssembly();

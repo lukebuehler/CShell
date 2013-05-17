@@ -1,0 +1,12 @@
+rmdir /S /Q "../Bin/Release/de"
+rmdir /S /Q "../Bin/Release/es"
+rmdir /S /Q "../Bin/Release/fr"
+rmdir /S /Q "../Bin/Release/hu"
+rmdir /S /Q "../Bin/Release/it"
+rmdir /S /Q "../Bin/Release/pt-BR"
+rmdir /S /Q "../Bin/Release/ro"
+rmdir /S /Q "../Bin/Release/ru"
+rmdir /S /Q "../Bin/Release/sv"
+rmdir /S /Q "../Bin/Release/zh-Hans"
+
+"C:\Program Files\7-Zip\7z.exe" a -tzip "..\Bin\CShell.zip" "..\Bin\Release\*"

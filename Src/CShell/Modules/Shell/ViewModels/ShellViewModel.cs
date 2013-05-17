@@ -157,11 +157,18 @@ namespace CShell.Modules.Shell.ViewModels
                 var cshellFile = args[0];
                 new OpenWorkspaceResult(cshellFile).BeginExecute(null);
             }
-            else if(Settings.Default.OpenLastWorkspace && File.Exists(Settings.Default.LastWorkspace))
+            else if (Settings.Default.OpenLastWorkspace && File.Exists(Settings.Default.LastWorkspace))
             {
                 var cshellFile = Settings.Default.LastWorkspace;
                 new OpenWorkspaceResult(cshellFile).BeginExecute(null);
             }
+            else if(Settings.Default.IsFirstStartup)
+            {
+                //open the default workspace if this is the first startup
+                Settings.Default.IsFirstStartup = false;
+                new OpenWorkspaceResult(Constants.CShellDefaultFilePath).BeginExecute(null);
+            }
+
         }
 
         public void Close()

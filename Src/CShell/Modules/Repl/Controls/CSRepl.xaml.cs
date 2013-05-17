@@ -110,6 +110,8 @@ namespace CShell.Modules.Repl.Controls
                     textEditor.Completion = scriptingEngine.CodeCompletion;
                 }
                 textEditor.IsEnabled = scriptingEngine != null;
+
+                Clear();
             }
         }
 
@@ -199,9 +201,19 @@ namespace CShell.Modules.Repl.Controls
             foreach (var visualLineTransformer in initialTransformers)
                 textEditor.TextArea.TextView.LineTransformers.Add(visualLineTransformer);
 
+
             WriteLine("CShell REPL (" + Assembly.GetExecutingAssembly().GetName().Version + ")", TextType.Repl);
-            WriteLine("Enter C# code to be evaluated or enter \"help\" for more information.", TextType.Repl);
-            WritePrompt();
+
+            if (scriptingEngine != null)
+            {
+                WriteLine("Enter C# code to be evaluated or enter \"help\" for more information.", TextType.Repl);
+                WritePrompt();
+            }
+            else
+            {
+                WriteLine("No workspace open, open a workspace to use the REPL.", TextType.Warning);
+            }
+
         }
         #endregion
 

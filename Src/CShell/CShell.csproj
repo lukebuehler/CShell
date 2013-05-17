@@ -223,7 +223,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="..\..\Scripts\Default.cshell">
-      <Link>Templates\Default.cshell</Link>
+      <Link>Default\Default.cshell</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\Scripts\Empty.cshell">
@@ -234,8 +234,12 @@
       <Link>Templates\Empty.csx</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\Scripts\Scratchpad.csx">
+      <Link>Default\Scratchpad.csx</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="..\..\Scripts\Tutorial.csx">
-      <Link>Templates\Tutorial.csx</Link>
+      <Link>Default\Tutorial.csx</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="app.config">

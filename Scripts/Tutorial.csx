@@ -114,8 +114,8 @@ Shell.Dump(new []{1,2,3,4});
 // Since it's quite annoying having to type the whole URI everytime you wanna dump some data, there are usually shortcut methods for a sink.
 // For example to plot there are many helper methods:
    new []{5,4,3,2,4,5}.Plot(); // -> same as .Dump(new Uri("sink://cshell/grid"))
-   Shell.PlotFunction(Math.Sin, "SinFunction"); // -> not possible by just dumping
-   Shell.GetPlotSink(null).Clear(); // gets the default sink, called "Plot" and clears it
+   Plotting.PlotFunction(Math.Sin, "SinFunction"); // -> not possible by just dumping
+   Plotting.GetPlotSink(null).Clear(); // gets the default sink, called "Plot" and clears it
 
 // Some other shortcuts are:
    new []{1,2,3,4}.DumpXhtml(); // -> same as .Dump(new Uri("sink://cshell/xhtml"))
@@ -141,4 +141,5 @@ Shell.Repl.Clear();
 // ===================
 // Under the Hood
 // ===================
-// To evaluate the code we use the Mono.CSharp compiler as a service called "Evaluator". It basically 
+// To evaluate the code we use the Mono.CSharp compiler as a service called "Evaluator". It basically compiles your code in memory and executes it 
+// right away.

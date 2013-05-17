@@ -1,10 +1,16 @@
-﻿public class CShellFile : ICShellFile
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using CShell;
+
+public class CShellFile : ICShellFile
 {
     public void OnOpened(Workspace workspace)
     {
         workspace.Load(workspace.CShellFileName + CShell.Constants.WorkspaceFileExtension, true);
-        workspace.Files.Add("Scratchpad.csx");
         Shell.TryOpen("Scratchpad.csx");
+        Shell.TryOpen("Tutorial.csx");
     }
 
     public void OnClosing(Workspace workspace)

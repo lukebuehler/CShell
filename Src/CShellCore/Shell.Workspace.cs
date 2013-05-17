@@ -49,13 +49,13 @@ namespace CShell
         /// </summary>
         public static void OpenWorkspace()
         {
-            if (File.Exists(Constants.CShellDefaultFile))
+            if (File.Exists(Constants.CShellDefaultFilePath))
             {
-                OpenWorkspace(Constants.CShellDefaultFile);
+                OpenWorkspace(Constants.CShellDefaultFilePath);
             }
             else
             {
-                throw new FileNotFoundException("Could not find default cshell file: " + Constants.CShellDefaultFile);
+                throw new FileNotFoundException("Could not find default cshell file: " + Constants.CShellDefaultFilePath);
             }
         }
 

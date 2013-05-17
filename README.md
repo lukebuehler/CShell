@@ -1,13 +1,13 @@
 CShell Readme
 =============
 
+**Website and binaries:** http://cshell.net
+
 CShell is an interactive C# scripting environment. It allows you to use C# without any fluff right in a console like environment caled a read-eval-print-loop (REPL). Your code is directly evaluated and executed in a shell window, no separate executable has to be compiled and then run in a different process. More elaborate code can be written in a C# script and then evaluated as one file, only one line, or a selection. Then, your results can be easily dumped to HTML (like LINQPad) or viewed as a data grid or plotted to a chart.
 
 CShell is perfect to explore data and quickly drill deeper into information since you can write one line of code, evaluate it, check out the results, and then write some more code, evaluate it again, and so forth.
 
 If you just want to test one or two lines of C# code without creating a new console project in Visual Studio just fire up CShell, type the code you wanna test and you immediately can see if it works the way you want.
-
-For more information visit the CShell our site: http://arnovaassetmanagement.github.io/CShell/
 
 ![Screenshot](https://raw.github.com/ArnovaAssetManagement/CShell/master/Doc/Screenshot1.png)
 

@@ -5390,11 +5390,6 @@
             Runtime: O(log n)
             </summary>
         </member>
-        <member name="M:ICSharpCode.AvalonEdit.Rendering.HeightTree.CheckAllContainedIn(System.Collections.Generic.IEnumerable{ICSharpCode.AvalonEdit.Rendering.CollapsedLineSection},System.Collections.Generic.ICollection{ICSharpCode.AvalonEdit.Rendering.CollapsedLineSection})">
-            <summary>
-            Checks that all elements in list1 are contained in list2.
-            </summary>
-        </member>
         <member name="P:ICSharpCode.AvalonEdit.Rendering.HeightTreeLineNode.TotalHeight">
             <summary>
             Returns 0 if the line is directly collapsed, otherwise, returns <see cref="F:ICSharpCode.AvalonEdit.Rendering.HeightTreeLineNode.height"/>.

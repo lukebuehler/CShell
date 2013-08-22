@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AvalonDock;
+using Xceed.Wpf.AvalonDock;
 
 namespace CShell.Modules.Shell.Views
 {

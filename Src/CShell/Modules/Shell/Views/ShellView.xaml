@@ -1,11 +1,11 @@
 ﻿<Window x:Class="CShell.Modules.Shell.Views.ShellView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-		xmlns:ad="http://avalondock.codeplex.com" 
 		xmlns:converters="clr-namespace:CShell.Framework.Converters;assembly=CShellCore"
         xmlns:controls="clr-namespace:CShell.Framework.Controls;assembly=CShellCore"
 		xmlns:cal="http://www.caliburnproject.org"
-        UseLayoutRounding="True"
+		xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+		UseLayoutRounding="True"
         SnapsToDevicePixels="True"
         Title="{Binding Title}" 
         Icon="../../../Icon.ico" 
@@ -18,7 +18,7 @@
 			</ResourceDictionary.MergedDictionaries>
             <converters:ActiveDocumentConverter x:Key="ActiveDocumentConverter" />
             <converters:UriConverter x:Key="UriConverter" />
-			<ad:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+			<xcad:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 		</ResourceDictionary>
 	</Window.Resources>
 
@@ -44,28 +44,28 @@
 			</StatusBarItem>
 		</StatusBar>
 
-		<ad:DockingManager x:Name="Manager" DocumentsSource="{Binding Items}"
+		<xcad:DockingManager x:Name="Manager" DocumentsSource="{Binding Items}"
 						   AnchorablesSource="{Binding ToolsObservable}"
 						   ActiveContent="{Binding ActiveItem, Mode=TwoWay, Converter={StaticResource ActiveDocumentConverter}}">
-			<ad:DockingManager.Theme>
-				<ad:VS2010Theme />
-			</ad:DockingManager.Theme>
-			<ad:DockingManager.LayoutItemTemplate>
+			<xcad:DockingManager.Theme>
+				<xcad:VS2010Theme />
+			</xcad:DockingManager.Theme>
+			<xcad:DockingManager.LayoutItemTemplate>
 				<DataTemplate>
 					<ContentControl cal:View.Model="{Binding}" IsTabStop="False" />
 				</DataTemplate>
-			</ad:DockingManager.LayoutItemTemplate>
-			<ad:DockingManager.LayoutItemContainerStyleSelector>
+			</xcad:DockingManager.LayoutItemTemplate>
+			<xcad:DockingManager.LayoutItemContainerStyleSelector>
 				<controls:PanesStyleSelector>
 					<controls:PanesStyleSelector.DocumentStyle>
-						<Style TargetType="{x:Type ad:LayoutItem}">
+						<Style TargetType="{x:Type xcad:LayoutItem}">
 							<Setter Property="Title" Value="{Binding Model.DisplayName, Mode=OneWay}" />
                             <Setter Property="ContentId" Value="{Binding Model.Uri, Mode=OneWay, Converter={StaticResource UriConverter}}" />
                             <Setter Property="CloseCommand" Value="{Binding Model.CloseCommand}" />
 						</Style>
 					</controls:PanesStyleSelector.DocumentStyle>
 					<controls:PanesStyleSelector.ToolStyle>
-						<Style TargetType="{x:Type ad:LayoutAnchorableItem}">
+						<Style TargetType="{x:Type xcad:LayoutAnchorableItem}">
                             <Setter Property="Title" Value="{Binding Model.DisplayName, Mode=OneWay}" />
                             <Setter Property="ContentId" Value="{Binding Model.Uri, Mode=OneWay, Converter={StaticResource UriConverter}}" />
 							<Setter Property="CloseCommand" Value="{Binding Model.CloseCommand}" />
@@ -74,15 +74,15 @@
 						</Style>
 					</controls:PanesStyleSelector.ToolStyle>
 				</controls:PanesStyleSelector>
-			</ad:DockingManager.LayoutItemContainerStyleSelector>
-			<ad:DockingManager.LayoutUpdateStrategy>
+			</xcad:DockingManager.LayoutItemContainerStyleSelector>
+			<xcad:DockingManager.LayoutUpdateStrategy>
 				<controls:LayoutInitializer />
-			</ad:DockingManager.LayoutUpdateStrategy>
-            <ad:LayoutRoot>
-                <ad:LayoutPanel x:Name="VerticalPanel" Orientation="Vertical">
-                    <ad:LayoutDocumentPane />
-                </ad:LayoutPanel>
-            </ad:LayoutRoot>
-        </ad:DockingManager>
+			</xcad:DockingManager.LayoutUpdateStrategy>
+            <xcad:LayoutRoot>
+                <xcad:LayoutPanel x:Name="VerticalPanel" Orientation="Vertical">
+                    <xcad:LayoutDocumentPane />
+                </xcad:LayoutPanel>
+            </xcad:LayoutRoot>
+        </xcad:DockingManager>
 	</DockPanel>
 </Window>

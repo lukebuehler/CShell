@@ -44,16 +44,6 @@ namespace CShell.Modules.Editors.ViewModels
 	    private CodeTextEditor textEditor;
 	    private EditorView editorView;
 
-		public override string DisplayName
-		{
-			get
-			{
-				if (IsDirty)
-					return fileName + "*";
-				return fileName;
-			}
-		}
-
 	    public string File
 	    {
             get { return path; }
@@ -70,6 +60,10 @@ namespace CShell.Modules.Editors.ViewModels
                     return;
 
                 isDirty = value;
+                if (isDirty)
+                    DisplayName = fileName + "*";
+                else
+                    DisplayName = fileName;
                 NotifyOfPropertyChange(() => IsDirty);
                 NotifyOfPropertyChange(() => DisplayName);
             }
@@ -110,6 +104,7 @@ namespace CShell.Modules.Editors.ViewModels
 		    var decodedPath = Uri.UnescapeDataString(uri.AbsolutePath);
 			this.path = Path.GetFullPath(decodedPath);
 			fileName = Path.GetFileName(path);
+		    DisplayName = fileName;
 		}
 
 		protected override void OnViewLoaded(object view)
@@ -166,6 +161,7 @@ namespace CShell.Modules.Editors.ViewModels
 
                 originalText = textEditor.Text;
                 IsDirty = false;
+                DisplayName = fileName;
                 NotifyOfPropertyChange(() => DisplayName);
             });
         }

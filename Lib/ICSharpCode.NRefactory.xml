@@ -4,6 +4,55 @@
         <name>ICSharpCode.NRefactory</name>
     </assembly>
     <members>
+        <member name="T:ICSharpCode.NRefactory.Analysis.AbiCompatibility">
+            <summary>
+            Used to check the compatibility state of two compilations.
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.Analysis.AbiCompatibility.Equal">
+            <summary>
+            The ABI is equal
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.Analysis.AbiCompatibility.Bigger">
+            <summary>
+            Some items got added, but the ABI remains to be compatible
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.Analysis.AbiCompatibility.Incompatible">
+            <summary>
+            The ABI has changed
+            </summary>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.Analysis.AbiComparer">
+            <summary>
+            The Abi comparer checks the public API of two compilation and determines the compatibility state.
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.Analysis.AbiComparer.Check(ICSharpCode.NRefactory.TypeSystem.ICompilation,ICSharpCode.NRefactory.TypeSystem.ICompilation)">
+            <summary>
+            Check the specified oldProject and newProject if they're compatible.
+            </summary>
+            <param name="oldProject">Old project.</param>
+            <param name="newProject">New project.</param>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.Analysis.TypeGraph">
+            <summary>
+            A graph where type definitions are nodes; and edges are given by inheritance.
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.Analysis.TypeGraph.#ctor(System.Collections.Generic.IEnumerable{ICSharpCode.NRefactory.TypeSystem.IAssembly})">
+            <summary>
+            Builds a graph of all type definitions in the specified set of assemblies.
+            </summary>
+            <param name="assemblies">The input assemblies. The assemblies may belong to multiple compilations.</param>
+            <remarks>The resulting graph may be cyclic if there are cyclic type definitions.</remarks>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.Analysis.TypeGraphNode.#ctor(ICSharpCode.NRefactory.TypeSystem.ITypeDefinition)">
+            <summary>
+            Creates a new unconnected type graph node.
+            </summary>
+        </member>
         <member name="T:ICSharpCode.NRefactory.Documentation.DocumentationComment">
             <summary>
             Represents a documentation comment.
@@ -1094,6 +1143,11 @@
             </code>
             </summary>
         </member>
+        <member name="M:ICSharpCode.NRefactory.AbstractAnnotatable.ClearAnnotations">
+            <summary>
+            Removes all annotations.
+            </summary>
+        </member>
         <member name="P:ICSharpCode.NRefactory.AbstractAnnotatable.Annotations">
             <summary>
             Gets all annotations stored on this AstNode.
@@ -1323,7 +1377,7 @@
             Represents an implicit or explicit type conversion.
             <c>conversionResolveResult.Input.Type</c> is the source type;
             <c>conversionResolveResult.Type</c> is the target type.
-            The <see cref="F:ICSharpCode.NRefactory.Semantics.ConversionResolveResult.Conversion"/> property provides details about the type of conversion.
+            The <see cref="F:ICSharpCode.NRefactory.Semantics.ConversionResolveResult.Conversion"/> property provides details about the kind of conversion.
             </summary>
         </member>
         <member name="F:ICSharpCode.NRefactory.Semantics.ConversionResolveResult.CheckForOverflow">
@@ -2223,6 +2277,22 @@
             Represents a resolved entity.
             </summary>
         </member>
+        <member name="T:ICSharpCode.NRefactory.TypeSystem.ISymbol">
+            <summary>
+            Interface for type system symbols.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.ISymbol.SymbolKind">
+            <summary>
+            This property returns an enum specifying which kind of symbol this is
+            (which derived interfaces of ISymbol are implemented)
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.ISymbol.Name">
+            <summary>
+            Gets the short name of the symbol.
+            </summary>
+        </member>
         <member name="P:ICSharpCode.NRefactory.TypeSystem.ICompilationProvider.Compilation">
             <summary>
             Gets the parent compilation.
@@ -2232,6 +2302,11 @@
         <member name="P:ICSharpCode.NRefactory.TypeSystem.IEntity.EntityType">
             <summary>
             Gets the entity type.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IEntity.Name">
+            <summary>
+            Gets the short name of the entity.
             </summary>
         </member>
         <member name="P:ICSharpCode.NRefactory.TypeSystem.IEntity.Region">
@@ -2295,6 +2370,7 @@
         <member name="P:ICSharpCode.NRefactory.TypeSystem.IEntity.IsShadowing">
             <summary>
             Gets whether this member is declared to be shadowing another member with the same name.
+            (C# 'new' keyword)
             </summary>
         </member>
         <member name="P:ICSharpCode.NRefactory.TypeSystem.IEntity.IsSynthetic">
@@ -2519,554 +2595,6 @@
             Equality test for interning.
             </summary>
         </member>
-        <member name="T:ICSharpCode.NRefactory.TypeSystem.CecilLoader">
-            <summary>
-            Allows loading an IProjectContent from an already compiled assembly.
-            </summary>
-            <remarks>Instance methods are not thread-safe; you need to create multiple instances of CecilLoader
-            if you want to load multiple project contents in parallel.</remarks>
-        </member>
-        <member name="F:ICSharpCode.NRefactory.TypeSystem.CecilLoader.cecilLoaderVersion">
-            <summary>
-            Version number of the cecil loader.
-            Should be incremented when fixing bugs in the cecil loader so that project contents cached on disk
-            (which might be incorrect due to the bug) are re-created.
-            </summary>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.CecilLoader.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:ICSharpCode.NRefactory.TypeSystem.CecilLoader"/> class.
-            </summary>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.CecilLoader.#ctor(System.Boolean)">
-            <summary>
-            Initializes a new instance of the <see cref="T:ICSharpCode.NRefactory.TypeSystem.CecilLoader"/> class.
-            </summary>
-            <param name="createCecilReferences">
-            If true references to the cecil objects are hold. In this case the cecil loader can do a type system -&gt; cecil mapping.
-            </param>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.CecilLoader.#ctor(ICSharpCode.NRefactory.TypeSystem.CecilLoader)">
-            <summary>
-            Creates a nested CecilLoader for lazy-loading.
-            </summary>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.CecilLoader.LoadAssembly(Mono.Cecil.AssemblyDefinition)">
-            <summary>
-            Loads the assembly definition into a project content.
-            </summary>
-            <returns>Unresolved type system representing the assembly</returns>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.CecilLoader.LoadModule(Mono.Cecil.ModuleDefinition)">
-            <summary>
-            Loads the module definition into a project content.
-            </summary>
-            <returns>Unresolved type system representing the assembly</returns>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.CecilLoader.SetCurrentModule(Mono.Cecil.ModuleDefinition)">
-            <summary>
-            Sets the current module.
-            This causes ReadTypeReference() to use <see cref="F:ICSharpCode.NRefactory.TypeSystem.Implementation.DefaultAssemblyReference.CurrentAssembly"/> for references
-            in that module.
-            </summary>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.CecilLoader.LoadType(Mono.Cecil.TypeDefinition)">
-            <summary>
-            Loads a type from Cecil.
-            </summary>
-            <param name="typeDefinition">The Cecil TypeDefinition.</param>
-            <returns>ITypeDefinition representing the Cecil type.</returns>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.CecilLoader.ReadTypeReference(Mono.Cecil.TypeReference,Mono.Cecil.ICustomAttributeProvider)">
-            <summary>
-            Reads a type reference.
-            </summary>
-            <param name="type">The Cecil type reference that should be converted into
-            a type system type reference.</param>
-            <param name="typeAttributes">Attributes associated with the Cecil type reference.
-            This is used to support the 'dynamic' type.</param>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.CecilLoader.ReadSecurityDeclaration(Mono.Cecil.SecurityDeclaration)">
-            <summary>
-            Reads a security declaration.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.CecilLoader.IncludeInternalMembers">
-            <summary>
-            Specifies whether to include internal members. The default is false.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.CecilLoader.LazyLoad">
-            <summary>
-            Specifies whether to use lazy loading. The default is false.
-            If this property is set to true, the CecilLoader will not copy all the relevant information
-            out of the Cecil object model, but will maintain references to the Cecil objects.
-            This speeds up the loading process and avoids loading unnecessary information, but it causes
-            the Cecil objects to stay in memory (which can significantly increase memory usage).
-            It also prevents serialization of the Cecil-loaded type system.
-            </summary>
-            <remarks>
-            Because the type system can be used on multiple threads, but Cecil is not
-            thread-safe for concurrent read access, the CecilLoader will lock on the <see cref="T:Mono.Cecil.ModuleDefinition"/> instance
-            for every delay-loading operation.
-            If you access the Cecil objects directly in your application, you may need to take the same lock.
-            </remarks>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.CecilLoader.DocumentationProvider">
-            <summary>
-            Gets/Sets the documentation provider that is used to retrieve the XML documentation for all members.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.CecilLoader.InterningProvider">
-            <summary>
-            Gets/Sets the interning provider.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.CecilLoader.CancellationToken">
-            <summary>
-            Gets/Sets the cancellation token used by the cecil loader.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.CecilLoader.OnEntityLoaded">
-            <summary>
-            This delegate gets executed whenever an entity was loaded.
-            </summary>
-            <remarks>
-            This callback may be to build a dictionary that maps between
-            entities and cecil objects.
-            Warning: if delay-loading is used and the type system is accessed by multiple threads,
-            the callback may be invoked concurrently on multiple threads.
-            </remarks>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.CecilLoader.HasCecilReferences">
-            <summary>
-            Gets a value indicating whether this instance stores references to the cecil objects.
-            </summary>
-            <value>
-            <c>true</c> if this instance has references to the cecil objects; otherwise, <c>false</c>.
-            </value>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.TypeSystem.Implementation.DefaultUnresolvedAssembly">
-            <summary>
-            Default implementation for <see cref="T:ICSharpCode.NRefactory.TypeSystem.IUnresolvedAssembly"/>.
-            </summary>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.IFreezable.Freeze">
-            <summary>
-            Freezes this instance.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IFreezable.IsFrozen">
-            <summary>
-            Gets if this instance is frozen. Frozen instances are immutable and thus thread-safe.
-            </summary>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.Implementation.AbstractFreezable.Freeze">
-            <summary>
-            Freezes this instance.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.Implementation.AbstractFreezable.IsFrozen">
-            <summary>
-            Gets if this instance is frozen. Frozen instances are immutable and thus thread-safe.
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.TypeSystem.IUnresolvedAssembly">
-            <summary>
-            Represents an unresolved assembly.
-            </summary>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.IAssemblyReference.Resolve(ICSharpCode.NRefactory.TypeSystem.ITypeResolveContext)">
-            <summary>
-            Resolves this assembly.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedAssembly.AssemblyName">
-            <summary>
-            Gets the assembly name (short name).
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedAssembly.FullAssemblyName">
-            <summary>
-            Gets the full assembly name (including public key token etc.)
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedAssembly.Location">
-            <summary>
-            Gets the path to the assembly location. 
-            For projects it is the same as the output path.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedAssembly.AssemblyAttributes">
-            <summary>
-            Gets the list of all assembly attributes in the project.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedAssembly.ModuleAttributes">
-            <summary>
-            Gets the list of all module attributes in the project.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedAssembly.TopLevelTypeDefinitions">
-            <summary>
-            Gets all non-nested types in the assembly.
-            </summary>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.Implementation.DefaultUnresolvedAssembly.#ctor(System.String)">
-            <summary>
-            Creates a new unresolved assembly.
-            </summary>
-            <param name="assemblyName">Full assembly name</param>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.Implementation.DefaultUnresolvedAssembly.AddTypeDefinition(ICSharpCode.NRefactory.TypeSystem.IUnresolvedTypeDefinition)">
-            <summary>
-            Adds a new top-level type definition to this assembly.
-            </summary>
-            <remarks>DefaultUnresolvedAssembly does not support partial classes.
-            Adding more than one part of a type will cause an ArgumentException.</remarks>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.Implementation.DefaultUnresolvedAssembly.AddTypeForwarder(ICSharpCode.NRefactory.TypeSystem.TopLevelTypeName,ICSharpCode.NRefactory.TypeSystem.ITypeReference)">
-            <summary>
-            Adds a type forwarder.
-            This adds both an assembly attribute and an internal forwarder entry, which will be used
-            by the resolved assembly to provide the forwarded types.
-            </summary>
-            <param name="typeName">The name of the type.</param>
-            <param name="referencedType">The reference used to look up the type in the target assembly.</param>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.Implementation.DefaultUnresolvedAssembly.AssemblyName">
-            <summary>
-            Gets/Sets the short assembly name.
-            </summary>
-            <remarks>
-            This class handles the short and the full name independently;
-            if you change the short name, you should also change the full name.
-            </remarks>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.Implementation.DefaultUnresolvedAssembly.FullAssemblyName">
-            <summary>
-            Gets/Sets the full assembly name.
-            </summary>
-            <remarks>
-            This class handles the short and the full name independently;
-            if you change the full name, you should also change the short name.
-            </remarks>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.TypeSystem.IConstantValue">
-            <summary>
-            Represents an unresolved constant value.
-            </summary>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.IConstantValue.Resolve(ICSharpCode.NRefactory.TypeSystem.ITypeResolveContext)">
-            <summary>
-            Resolves the value of this constant.
-            </summary>
-            <param name="context">Context where the constant value will be used.</param>
-            <returns>Resolve result representing the constant value.
-            This method never returns null; in case of errors, an ErrorResolveResult will be returned.</returns>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.TypeSystem.IAssembly">
-            <summary>
-            Represents an assembly.
-            </summary>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.IAssembly.InternalsVisibleTo(ICSharpCode.NRefactory.TypeSystem.IAssembly)">
-            <summary>
-            Gets whether the internals of this assembly are visible in the specified assembly.
-            </summary>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.IAssembly.GetTypeDefinition(ICSharpCode.NRefactory.TypeSystem.TopLevelTypeName)">
-            <summary>
-            Gets the type definition for a top-level type.
-            </summary>
-            <remarks>This method uses ordinal name comparison, not the compilation's name comparer.</remarks>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAssembly.UnresolvedAssembly">
-            <summary>
-            Gets the original unresolved assembly.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAssembly.IsMainAssembly">
-            <summary>
-            Gets whether this assembly is the main assembly of the compilation.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAssembly.AssemblyName">
-            <summary>
-            Gets the assembly name (short name).
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAssembly.FullAssemblyName">
-            <summary>
-            Gets the full assembly name (including public key token etc.)
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAssembly.AssemblyAttributes">
-            <summary>
-            Gets the list of all assembly attributes in the project.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAssembly.ModuleAttributes">
-            <summary>
-            Gets the list of all module attributes in the project.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAssembly.RootNamespace">
-            <summary>
-            Gets the root namespace for this assembly.
-            </summary>
-            <remarks>
-            This always is the namespace without a name - it's unrelated to the 'root namespace' project setting.
-            </remarks>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAssembly.TopLevelTypeDefinitions">
-            <summary>
-            Gets all non-nested types in the assembly.
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.TypeSystem.INamespace">
-            <summary>
-            Represents a resolved namespace.
-            </summary>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.INamespace.GetChildNamespace(System.String)">
-            <summary>
-            Gets a direct child namespace by its short name.
-            Returns null when the namespace cannot be found.
-            </summary>
-            <remarks>
-            This method uses the compilation's current string comparer.
-            </remarks>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.INamespace.GetTypeDefinition(System.String,System.Int32)">
-            <summary>
-            Gets the type with the specified short name and type parameter count.
-            Returns null if the type cannot be found.
-            </summary>
-            <remarks>
-            This method uses the compilation's current string comparer.
-            </remarks>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.INamespace.ExternAlias">
-            <summary>
-            Gets the extern alias for this namespace.
-            Returns an empty string for normal namespaces.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.INamespace.FullName">
-            <summary>
-            Gets the full name of this namespace. (e.g. "System.Collections")
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.INamespace.Name">
-            <summary>
-            Gets the short name of this namespace (e.g. "Collections").
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.INamespace.ParentNamespace">
-            <summary>
-            Gets the parent namespace.
-            Returns null if this is the root namespace.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.INamespace.ChildNamespaces">
-            <summary>
-            Gets the child namespaces in this namespace.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.INamespace.Types">
-            <summary>
-            Gets the types in this namespace.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.INamespace.ContributingAssemblies">
-            <summary>
-            Gets the assemblies that contribute types to this namespace (or to child namespaces).
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.TypeSystem.IUnresolvedAttribute">
-            <summary>
-            Represents an unresolved attribute.
-            </summary>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.IUnresolvedAttribute.CreateResolvedAttribute(ICSharpCode.NRefactory.TypeSystem.ITypeResolveContext)">
-            <summary>
-            Resolves the attribute.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedAttribute.Region">
-            <summary>
-            Gets the code region of this attribute.
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.TypeSystem.IAttribute">
-            <summary>
-            Represents an attribute.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAttribute.Region">
-            <summary>
-            Gets the code region of this attribute.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAttribute.AttributeType">
-            <summary>
-            Gets the type of the attribute.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAttribute.Constructor">
-            <summary>
-            Gets the constructor being used.
-            This property may return null if no matching constructor was found.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAttribute.PositionalArguments">
-            <summary>
-            Gets the positional arguments.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAttribute.NamedArguments">
-            <summary>
-            Gets the named arguments passed to the attribute.
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.TypeSystem.Implementation.AbstractUnresolvedEntity">
-            <summary>
-            Base class for <see cref="T:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity"/> implementations.
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity">
-            <summary>
-            Represents an unresolved entity.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity.EntityType">
-            <summary>
-            Gets the entity type.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity.Region">
-            <summary>
-            Gets the complete entity region (including header+body)
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity.BodyRegion">
-            <summary>
-            Gets the entity body region.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity.DeclaringTypeDefinition">
-            <summary>
-            Gets the declaring class.
-            For members, this is the class that contains the member.
-            For nested classes, this is the outer class. For top-level entities, this property returns null.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity.UnresolvedFile">
-            <summary>
-            Gets the parsed file in which this entity is defined.
-            Returns null if this entity wasn't parsed from source code (e.g. loaded from a .dll with CecilLoader).
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity.Attributes">
-            <summary>
-            Gets the attributes on this entity.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity.IsStatic">
-            <summary>
-            Gets whether this entity is static.
-            Returns true if either the 'static' or the 'const' modifier is set.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity.IsAbstract">
-            <summary>
-            Returns whether this entity is abstract.
-            </summary>
-            <remarks>Static classes also count as abstract classes.</remarks>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity.IsSealed">
-            <summary>
-            Returns whether this entity is sealed.
-            </summary>
-            <remarks>Static classes also count as sealed classes.</remarks>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity.IsShadowing">
-            <summary>
-            Gets whether this member is declared to be shadowing another member with the same name.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity.IsSynthetic">
-            <summary>
-            Gets whether this member is generated by a macro/compiler feature.
-            </summary>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.Implementation.AbstractUnresolvedEntity.ApplyInterningProvider(ICSharpCode.NRefactory.TypeSystem.InterningProvider)">
-            <summary>
-            Uses the specified interning provider to intern
-            strings and lists in this entity.
-            This method does not test arbitrary objects to see if they implement ISupportsInterning;
-            instead we assume that those are interned immediately when they are created (before they are added to this entity).
-            </summary>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.Implementation.AbstractUnresolvedEntity.Clone">
-            <summary>
-            Creates a shallow clone of this entity.
-            Collections (e.g. a type's member list) will be cloned as well, but the elements
-            of said list will not be.
-            If this instance is frozen, the clone will be unfrozen.
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.TypeSystem.IUnresolvedTypeDefinition">
-            <summary>
-            Represents an unresolved class, enum, interface, struct, delegate or VB module.
-            For partial classes, an unresolved type definition represents only a single part.
-            </summary>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.IUnresolvedTypeDefinition.Resolve(ICSharpCode.NRefactory.TypeSystem.ITypeResolveContext)">
-            <summary>
-            Looks up the resolved type definition from the <paramref name="context"/> corresponding to this unresolved
-            type definition.
-            </summary>
-            <param name="context">
-            Context for looking up the type. The context must specify the current assembly.
-            A <see cref="T:ICSharpCode.NRefactory.TypeSystem.SimpleTypeResolveContext"/> that specifies the current assembly is sufficient.
-            </param>
-            <returns>
-            Returns the resolved type definition.
-            In case of an error, returns an <see cref="T:ICSharpCode.NRefactory.TypeSystem.Implementation.UnknownType"/> instance.
-            Never returns null.
-            </returns>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.IUnresolvedTypeDefinition.CreateResolveContext(ICSharpCode.NRefactory.TypeSystem.ITypeResolveContext)">
-            <summary>
-            This method is used to add language-specific elements like the C# UsingScope
-            to the type resolve context.
-            </summary>
-            <param name="parentContext">The parent context (e.g. the parent assembly),
-            including the parent type definition for inner classes.</param>
-            <returns>
-            The parent context, modified to include language-specific elements (e.g. using scope)
-            associated with this type definition.
-            </returns>
-            <remarks>
-            Use <c>unresolvedTypeDef.CreateResolveContext(parentContext).WithTypeDefinition(typeDef)</c> to
-            create the context for use within the type definition.
-            </remarks>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedTypeDefinition.HasExtensionMethods">
-            <summary>
-            Gets whether the type definition contains extension methods.
-            Returns null when the type definition needs to be resolved in order to determine whether
-            methods are extension methods.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedTypeDefinition.AddDefaultConstructorIfRequired">
-            <summary>
-            Gets whether this unresolved type definition causes the addition of a default constructor
-            if no other constructor is present.
-            </summary>
-        </member>
         <member name="T:ICSharpCode.NRefactory.TypeSystem.ComHelper">
             <summary>
             Helper methods for COM.
@@ -3134,6 +2662,198 @@
             if the end column is == -1 the end line is -1 too
             this stands for an unknown end
             </value>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.EntityType.TypeDefinition">
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.ITypeDefinition"/>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.EntityType.Field">
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.IField"/>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.EntityType.Property">
+            <summary>
+            The symbol is a property, but not an indexer.
+            </summary>
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.IProperty"/>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.EntityType.Indexer">
+            <summary>
+            The symbol is an indexer, not a regular property.
+            </summary>
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.IProperty"/>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.EntityType.Event">
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.IEvent"/>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.EntityType.Method">
+            <summary>
+            The symbol is a method which is not an operator/constructor/destructor or accessor.
+            </summary>
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.IMethod"/>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.EntityType.Operator">
+            <summary>
+            The symbol is a user-defined operator.
+            </summary>
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.IMethod"/>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.EntityType.Constructor">
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.IMethod"/>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.EntityType.Destructor">
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.IMethod"/>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.EntityType.Accessor">
+            <summary>
+            The accessor method for a property getter/setter or event add/remove.
+            </summary>
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.IMethod"/>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.TypeSystem.Implementation.DefaultVariable">
+            <summary>
+            Default implementation of <see cref="T:ICSharpCode.NRefactory.TypeSystem.IVariable"/>.
+            </summary>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.TypeSystem.IVariable">
+            <summary>
+            Represents a variable (name/type pair).
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IVariable.Name">
+            <summary>
+            Gets the name of the variable.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IVariable.Region">
+            <summary>
+            Gets the declaration region of the variable.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IVariable.Type">
+            <summary>
+            Gets the type of the variable.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IVariable.IsConst">
+            <summary>
+            Gets whether this variable is a constant (C#-like const).
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IVariable.ConstantValue">
+            <summary>
+            If this field is a constant, retrieves the value.
+            For parameters, this is the default value.
+            </summary>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.TypeSystem.IAttribute">
+            <summary>
+            Represents an attribute.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAttribute.Region">
+            <summary>
+            Gets the code region of this attribute.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAttribute.AttributeType">
+            <summary>
+            Gets the type of the attribute.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAttribute.Constructor">
+            <summary>
+            Gets the constructor being used.
+            This property may return null if no matching constructor was found.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAttribute.PositionalArguments">
+            <summary>
+            Gets the positional arguments.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAttribute.NamedArguments">
+            <summary>
+            Gets the named arguments passed to the attribute.
+            </summary>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.TypeSystem.Implementation.UnresolvedAttributeBlob">
+            <summary>
+            <c>IUnresolvedAttribute</c> implementation that loads the arguments from a binary blob.
+            </summary>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.TypeSystem.IUnresolvedAttribute">
+            <summary>
+            Represents an unresolved attribute.
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.TypeSystem.IUnresolvedAttribute.CreateResolvedAttribute(ICSharpCode.NRefactory.TypeSystem.ITypeResolveContext)">
+            <summary>
+            Resolves the attribute.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedAttribute.Region">
+            <summary>
+            Gets the code region of this attribute.
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.SymbolKind.TypeDefinition">
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.ITypeDefinition"/>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.SymbolKind.Field">
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.IField"/>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.SymbolKind.Property">
+            <summary>
+            The symbol is a property, but not an indexer.
+            </summary>
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.IProperty"/>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.SymbolKind.Indexer">
+            <summary>
+            The symbol is an indexer, not a regular property.
+            </summary>
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.IProperty"/>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.SymbolKind.Event">
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.IEvent"/>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.SymbolKind.Method">
+            <summary>
+            The symbol is a method which is not an operator/constructor/destructor or accessor.
+            </summary>
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.IMethod"/>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.SymbolKind.Operator">
+            <summary>
+            The symbol is a user-defined operator.
+            </summary>
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.IMethod"/>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.SymbolKind.Constructor">
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.IMethod"/>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.SymbolKind.Destructor">
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.IMethod"/>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.SymbolKind.Accessor">
+            <summary>
+            The accessor method for a property getter/setter or event add/remove.
+            </summary>
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.IMethod"/>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.SymbolKind.Namespace">
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.INamespace"/>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.SymbolKind.Variable">
+            <summary>
+            The symbol is a variable, but not a parameter.
+            </summary>
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.IVariable"/>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.SymbolKind.Parameter">
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.IParameter"/>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.SymbolKind.TypeParameter">
+            <seealso cref="T:ICSharpCode.NRefactory.TypeSystem.ITypeParameter"/>
         </member>
         <member name="T:ICSharpCode.NRefactory.TypeSystem.TypeParameterSubstitution">
             <summary>
@@ -3264,6 +2984,11 @@
             <summary>
             Gets whether the type is the specified known type.
             For generic known types, this returns true any parameterization of the type (and also for the definition itself).
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.TypeSystem.TypeSystemExtensions.Import(ICSharpCode.NRefactory.TypeSystem.ICompilation,ICSharpCode.NRefactory.TypeSystem.ISymbol)">
+            <summary>
+            Imports a symbol from another compilation.
             </summary>
         </member>
         <member name="M:ICSharpCode.NRefactory.TypeSystem.TypeSystemExtensions.Import(ICSharpCode.NRefactory.TypeSystem.ICompilation,ICSharpCode.NRefactory.TypeSystem.IType)">
@@ -3596,6 +3321,106 @@
             For properties: shows "{ get; }" or similar.
             </summary>
         </member>
+        <member name="T:ICSharpCode.NRefactory.TypeSystem.IUnresolvedAssembly">
+            <summary>
+            Represents an unresolved assembly.
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.TypeSystem.IAssemblyReference.Resolve(ICSharpCode.NRefactory.TypeSystem.ITypeResolveContext)">
+            <summary>
+            Resolves this assembly.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedAssembly.AssemblyName">
+            <summary>
+            Gets the assembly name (short name).
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedAssembly.FullAssemblyName">
+            <summary>
+            Gets the full assembly name (including public key token etc.)
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedAssembly.Location">
+            <summary>
+            Gets the path to the assembly location. 
+            For projects it is the same as the output path.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedAssembly.AssemblyAttributes">
+            <summary>
+            Gets the list of all assembly attributes in the project.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedAssembly.ModuleAttributes">
+            <summary>
+            Gets the list of all module attributes in the project.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedAssembly.TopLevelTypeDefinitions">
+            <summary>
+            Gets all non-nested types in the assembly.
+            </summary>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.TypeSystem.IAssembly">
+            <summary>
+            Represents an assembly.
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.TypeSystem.IAssembly.InternalsVisibleTo(ICSharpCode.NRefactory.TypeSystem.IAssembly)">
+            <summary>
+            Gets whether the internals of this assembly are visible in the specified assembly.
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.TypeSystem.IAssembly.GetTypeDefinition(ICSharpCode.NRefactory.TypeSystem.TopLevelTypeName)">
+            <summary>
+            Gets the type definition for a top-level type.
+            </summary>
+            <remarks>This method uses ordinal name comparison, not the compilation's name comparer.</remarks>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAssembly.UnresolvedAssembly">
+            <summary>
+            Gets the original unresolved assembly.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAssembly.IsMainAssembly">
+            <summary>
+            Gets whether this assembly is the main assembly of the compilation.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAssembly.AssemblyName">
+            <summary>
+            Gets the assembly name (short name).
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAssembly.FullAssemblyName">
+            <summary>
+            Gets the full assembly name (including public key token etc.)
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAssembly.AssemblyAttributes">
+            <summary>
+            Gets the list of all assembly attributes in the project.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAssembly.ModuleAttributes">
+            <summary>
+            Gets the list of all module attributes in the project.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAssembly.RootNamespace">
+            <summary>
+            Gets the root namespace for this assembly.
+            </summary>
+            <remarks>
+            This always is the namespace without a name - it's unrelated to the 'root namespace' project setting.
+            </remarks>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IAssembly.TopLevelTypeDefinitions">
+            <summary>
+            Gets all non-nested types in the assembly.
+            </summary>
+        </member>
         <member name="M:ICSharpCode.NRefactory.TypeSystem.ICompilation.GetNamespaceForExternAlias(System.String)">
             <summary>
             Gets the root namespace for a given extern alias.
@@ -3643,6 +3468,85 @@
             <summary>
             Gets the name comparer for the language being compiled.
             This is the string comparer used for the INamespace.GetTypeDefinition method.
+            </summary>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.TypeSystem.IConstantValue">
+            <summary>
+            Represents an unresolved constant value.
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.TypeSystem.IConstantValue.Resolve(ICSharpCode.NRefactory.TypeSystem.ITypeResolveContext)">
+            <summary>
+            Resolves the value of this constant.
+            </summary>
+            <param name="context">Context where the constant value will be used.</param>
+            <returns>Resolve result representing the constant value.
+            This method never returns null; in case of errors, an ErrorResolveResult will be returned.</returns>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity">
+            <summary>
+            Represents an unresolved entity.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity.SymbolKind">
+            <summary>
+            Gets the entity type.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity.Region">
+            <summary>
+            Gets the complete entity region (including header+body)
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity.BodyRegion">
+            <summary>
+            Gets the entity body region.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity.DeclaringTypeDefinition">
+            <summary>
+            Gets the declaring class.
+            For members, this is the class that contains the member.
+            For nested classes, this is the outer class. For top-level entities, this property returns null.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity.UnresolvedFile">
+            <summary>
+            Gets the parsed file in which this entity is defined.
+            Returns null if this entity wasn't parsed from source code (e.g. loaded from a .dll with CecilLoader).
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity.Attributes">
+            <summary>
+            Gets the attributes on this entity.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity.IsStatic">
+            <summary>
+            Gets whether this entity is static.
+            Returns true if either the 'static' or the 'const' modifier is set.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity.IsAbstract">
+            <summary>
+            Returns whether this entity is abstract.
+            </summary>
+            <remarks>Static classes also count as abstract classes.</remarks>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity.IsSealed">
+            <summary>
+            Returns whether this entity is sealed.
+            </summary>
+            <remarks>Static classes also count as sealed classes.</remarks>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity.IsShadowing">
+            <summary>
+            Gets whether this member is declared to be shadowing another member with the same name.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity.IsSynthetic">
+            <summary>
+            Gets whether this member is generated by a macro/compiler feature.
             </summary>
         </member>
         <member name="T:ICSharpCode.NRefactory.TypeSystem.IUnresolvedMember">
@@ -3767,40 +3671,15 @@
             Gets whether this field is a constant (C#-like const).
             </summary>
         </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedField.IsFixed">
+            <summary>
+            Gets whether this field is a fixed size buffer (C#-like fixed).
+            If this is true, then ConstantValue contains the size of the buffer.
+            </summary>
+        </member>
         <member name="T:ICSharpCode.NRefactory.TypeSystem.IField">
             <summary>
             Represents a field or constant.
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.TypeSystem.IVariable">
-            <summary>
-            Represents a variable (name/type pair).
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IVariable.Name">
-            <summary>
-            Gets the name of the variable.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IVariable.Region">
-            <summary>
-            Gets the declaration region of the variable.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IVariable.Type">
-            <summary>
-            Gets the type of the variable.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IVariable.IsConst">
-            <summary>
-            Gets whether this variable is a constant (C#-like const).
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.TypeSystem.IVariable.ConstantValue">
-            <summary>
-            If this field is a constant, retrieves the value.
-            For parameters, this is the default value.
             </summary>
         </member>
         <member name="P:ICSharpCode.NRefactory.TypeSystem.IField.Name">
@@ -3821,6 +3700,22 @@
         <member name="P:ICSharpCode.NRefactory.TypeSystem.IField.IsVolatile">
             <summary>
             Gets whether this field is volatile.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IField.IsFixed">
+            <summary>
+            Gets whether this field is a fixed size buffer (C#-like fixed).
+            If this is true, then ConstantValue contains the size of the buffer.
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.TypeSystem.IFreezable.Freeze">
+            <summary>
+            Freezes this instance.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IFreezable.IsFrozen">
+            <summary>
+            Gets if this instance is frozen. Frozen instances are immutable and thus thread-safe.
             </summary>
         </member>
         <member name="T:ICSharpCode.NRefactory.TypeSystem.InterningProvider">
@@ -3918,6 +3813,16 @@
             Otherwise, returns null.
             </summary>
         </member>
+        <member name="M:ICSharpCode.NRefactory.TypeSystem.Implementation.AbstractFreezable.Freeze">
+            <summary>
+            Freezes this instance.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.Implementation.AbstractFreezable.IsFrozen">
+            <summary>
+            Gets if this instance is frozen. Frozen instances are immutable and thus thread-safe.
+            </summary>
+        </member>
         <member name="T:ICSharpCode.NRefactory.TypeSystem.ITypeParameter">
             <summary>
             Type parameter of a generic class/method.
@@ -3927,7 +3832,7 @@
             <summary>
             Get the type of this type parameter's owner.
             </summary>
-            <returns>EntityType.TypeDefinition or EntityType.Method</returns>
+            <returns>SymbolKind.TypeDefinition or SymbolKind.Method</returns>
         </member>
         <member name="P:ICSharpCode.NRefactory.TypeSystem.ITypeParameter.Owner">
             <summary>
@@ -3943,6 +3848,11 @@
         <member name="P:ICSharpCode.NRefactory.TypeSystem.ITypeParameter.Index">
             <summary>
             Gets the index of the type parameter in the type parameter list of the owning method/class.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.ITypeParameter.Name">
+            <summary>
+            Gets the name of the type parameter.
             </summary>
         </member>
         <member name="P:ICSharpCode.NRefactory.TypeSystem.ITypeParameter.Attributes">
@@ -3983,6 +3893,27 @@
         <member name="P:ICSharpCode.NRefactory.TypeSystem.ITypeParameter.HasValueTypeConstraint">
             <summary>
             Gets if the type parameter has the 'struct' constraint.
+            </summary>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.TypeSystem.Implementation.AbstractUnresolvedEntity">
+            <summary>
+            Base class for <see cref="T:ICSharpCode.NRefactory.TypeSystem.IUnresolvedEntity"/> implementations.
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.TypeSystem.Implementation.AbstractUnresolvedEntity.ApplyInterningProvider(ICSharpCode.NRefactory.TypeSystem.InterningProvider)">
+            <summary>
+            Uses the specified interning provider to intern
+            strings and lists in this entity.
+            This method does not test arbitrary objects to see if they implement ISupportsInterning;
+            instead we assume that those are interned immediately when they are created (before they are added to this entity).
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.TypeSystem.Implementation.AbstractUnresolvedEntity.Clone">
+            <summary>
+            Creates a shallow clone of this entity.
+            Collections (e.g. a type's member list) will be cloned as well, but the elements
+            of said list will not be.
+            If this instance is frozen, the clone will be unfrozen.
             </summary>
         </member>
         <member name="T:ICSharpCode.NRefactory.TypeSystem.Implementation.AbstractUnresolvedMember">
@@ -4057,6 +3988,12 @@
             The default value is given by the <see cref="P:ICSharpCode.NRefactory.TypeSystem.IVariable.ConstantValue"/> property.
             </summary>
         </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IParameter.Owner">
+            <summary>
+            Gets the owner of this parameter.
+            May return null; for example when parameters belong to lambdas or anonymous methods.
+            </summary>
+        </member>
         <member name="T:ICSharpCode.NRefactory.TypeSystem.Implementation.DefaultResolvedTypeDefinition">
             <summary>
             Default implementation of <see cref="T:ICSharpCode.NRefactory.TypeSystem.ITypeDefinition"/>.
@@ -4121,6 +4058,111 @@
             Gets whether this type contains extension methods.
             </summary>
             <remarks>This property is used to speed up the search for extension methods.</remarks>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.TypeSystem.Implementation.DefaultUnresolvedAssembly">
+            <summary>
+            Default implementation for <see cref="T:ICSharpCode.NRefactory.TypeSystem.IUnresolvedAssembly"/>.
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.TypeSystem.Implementation.DefaultUnresolvedAssembly.#ctor(System.String)">
+            <summary>
+            Creates a new unresolved assembly.
+            </summary>
+            <param name="assemblyName">Full assembly name</param>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.TypeSystem.Implementation.DefaultUnresolvedAssembly.AddTypeDefinition(ICSharpCode.NRefactory.TypeSystem.IUnresolvedTypeDefinition)">
+            <summary>
+            Adds a new top-level type definition to this assembly.
+            </summary>
+            <remarks>DefaultUnresolvedAssembly does not support partial classes.
+            Adding more than one part of a type will cause an ArgumentException.</remarks>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.TypeSystem.Implementation.DefaultUnresolvedAssembly.AddTypeForwarder(ICSharpCode.NRefactory.TypeSystem.TopLevelTypeName,ICSharpCode.NRefactory.TypeSystem.ITypeReference)">
+            <summary>
+            Adds a type forwarder.
+            This adds both an assembly attribute and an internal forwarder entry, which will be used
+            by the resolved assembly to provide the forwarded types.
+            </summary>
+            <param name="typeName">The name of the type.</param>
+            <param name="referencedType">The reference used to look up the type in the target assembly.</param>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.Implementation.DefaultUnresolvedAssembly.AssemblyName">
+            <summary>
+            Gets/Sets the short assembly name.
+            </summary>
+            <remarks>
+            This class handles the short and the full name independently;
+            if you change the short name, you should also change the full name.
+            </remarks>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.Implementation.DefaultUnresolvedAssembly.FullAssemblyName">
+            <summary>
+            Gets/Sets the full assembly name.
+            </summary>
+            <remarks>
+            This class handles the short and the full name independently;
+            if you change the full name, you should also change the short name.
+            </remarks>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.TypeSystem.INamespace">
+            <summary>
+            Represents a resolved namespace.
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.TypeSystem.INamespace.GetChildNamespace(System.String)">
+            <summary>
+            Gets a direct child namespace by its short name.
+            Returns null when the namespace cannot be found.
+            </summary>
+            <remarks>
+            This method uses the compilation's current string comparer.
+            </remarks>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.TypeSystem.INamespace.GetTypeDefinition(System.String,System.Int32)">
+            <summary>
+            Gets the type with the specified short name and type parameter count.
+            Returns null if the type cannot be found.
+            </summary>
+            <remarks>
+            This method uses the compilation's current string comparer.
+            </remarks>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.INamespace.ExternAlias">
+            <summary>
+            Gets the extern alias for this namespace.
+            Returns an empty string for normal namespaces.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.INamespace.FullName">
+            <summary>
+            Gets the full name of this namespace. (e.g. "System.Collections")
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.INamespace.Name">
+            <summary>
+            Gets the short name of this namespace (e.g. "Collections").
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.INamespace.ParentNamespace">
+            <summary>
+            Gets the parent namespace.
+            Returns null if this is the root namespace.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.INamespace.ChildNamespaces">
+            <summary>
+            Gets the child namespaces in this namespace.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.INamespace.Types">
+            <summary>
+            Gets the types in this namespace.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.INamespace.ContributingAssemblies">
+            <summary>
+            Gets the assemblies that contribute types to this namespace (or to child namespaces).
+            </summary>
         </member>
         <member name="T:ICSharpCode.NRefactory.TypeSystem.Implementation.DefaultUnresolvedAttribute">
             <summary>
@@ -4222,6 +4264,56 @@
             Represents an unresolved type definition.
             </summary>
         </member>
+        <member name="T:ICSharpCode.NRefactory.TypeSystem.IUnresolvedTypeDefinition">
+            <summary>
+            Represents an unresolved class, enum, interface, struct, delegate or VB module.
+            For partial classes, an unresolved type definition represents only a single part.
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.TypeSystem.IUnresolvedTypeDefinition.Resolve(ICSharpCode.NRefactory.TypeSystem.ITypeResolveContext)">
+            <summary>
+            Looks up the resolved type definition from the <paramref name="context"/> corresponding to this unresolved
+            type definition.
+            </summary>
+            <param name="context">
+            Context for looking up the type. The context must specify the current assembly.
+            A <see cref="T:ICSharpCode.NRefactory.TypeSystem.SimpleTypeResolveContext"/> that specifies the current assembly is sufficient.
+            </param>
+            <returns>
+            Returns the resolved type definition.
+            In case of an error, returns an <see cref="T:ICSharpCode.NRefactory.TypeSystem.Implementation.UnknownType"/> instance.
+            Never returns null.
+            </returns>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.TypeSystem.IUnresolvedTypeDefinition.CreateResolveContext(ICSharpCode.NRefactory.TypeSystem.ITypeResolveContext)">
+            <summary>
+            This method is used to add language-specific elements like the C# UsingScope
+            to the type resolve context.
+            </summary>
+            <param name="parentContext">The parent context (e.g. the parent assembly),
+            including the parent type definition for inner classes.</param>
+            <returns>
+            The parent context, modified to include language-specific elements (e.g. using scope)
+            associated with this type definition.
+            </returns>
+            <remarks>
+            Use <c>unresolvedTypeDef.CreateResolveContext(parentContext).WithTypeDefinition(typeDef)</c> to
+            create the context for use within the type definition.
+            </remarks>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedTypeDefinition.HasExtensionMethods">
+            <summary>
+            Gets whether the type definition contains extension methods.
+            Returns null when the type definition needs to be resolved in order to determine whether
+            methods are extension methods.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedTypeDefinition.AddDefaultConstructorIfRequired">
+            <summary>
+            Gets whether this unresolved type definition causes the addition of a default constructor
+            if no other constructor is present.
+            </summary>
+        </member>
         <member name="T:ICSharpCode.NRefactory.TypeSystem.Implementation.DefaultUnresolvedTypeParameter">
             <summary>
             Default implementation of <see cref="T:ICSharpCode.NRefactory.TypeSystem.IUnresolvedTypeParameter"/>.
@@ -4236,7 +4328,7 @@
             <summary>
             Get the type of this type parameter's owner.
             </summary>
-            <returns>EntityType.TypeDefinition or EntityType.Method</returns>
+            <returns>SymbolKind.TypeDefinition or SymbolKind.Method</returns>
         </member>
         <member name="P:ICSharpCode.NRefactory.TypeSystem.IUnresolvedTypeParameter.Index">
             <summary>
@@ -4454,7 +4546,7 @@
             Represents a specialized IProperty (property after type substitution).
             </summary>
         </member>
-        <member name="M:ICSharpCode.NRefactory.TypeSystem.Implementation.TypeParameterReference.Create(ICSharpCode.NRefactory.TypeSystem.EntityType,System.Int32)">
+        <member name="M:ICSharpCode.NRefactory.TypeSystem.Implementation.TypeParameterReference.Create(ICSharpCode.NRefactory.TypeSystem.SymbolKind,System.Int32)">
             <summary>
             Creates a type parameter reference.
             For common type parameter references, this method may return a shared instance.
@@ -4867,6 +4959,9 @@
         <member name="F:ICSharpCode.NRefactory.TypeSystem.KnownTypeCode.IListOfT">
             <summary><c>System.Collections.Generic.IList{T}</c></summary>
         </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.KnownTypeCode.IReadOnlyCollectionOfT">
+            <summary><c>System.Collections.Generic.IReadOnlyCollection{T}</c></summary>
+        </member>
         <member name="F:ICSharpCode.NRefactory.TypeSystem.KnownTypeCode.IReadOnlyListOfT">
             <summary><c>System.Collections.Generic.IReadOnlyList{T}</c></summary>
         </member>
@@ -5079,6 +5174,11 @@
             Gets a type reference pointing to the <c>System.Collections.Generic.IList{T}</c> type.
             </summary>
         </member>
+        <member name="F:ICSharpCode.NRefactory.TypeSystem.KnownTypeReference.IReadOnlyCollectionOfT">
+            <summary>
+            Gets a type reference pointing to the <c>System.Collections.Generic.IReadOnlyCollection{T}</c> type.
+            </summary>
+        </member>
         <member name="F:ICSharpCode.NRefactory.TypeSystem.KnownTypeReference.IReadOnlyListOfT">
             <summary>
             Gets a type reference pointing to the <c>System.Collections.Generic.IReadOnlyList{T}</c> type.
@@ -5199,7 +5299,8 @@
             </summary>
             <remarks>
             'ref int' and 'out int' are considered to be equal.
-            "Method{T}(T a)" and "Method{S}(S b)" are also considered equal.
+            'object' and 'dynamic' are also equal.
+            For generic methods, "Method{T}(T a)" and "Method{S}(S b)" are considered equal.
             However, "Method(T a)" and "Method(S b)" are not considered equal when the type parameters T and S belong to classes.
             </remarks>
         </member>
@@ -5945,6 +6046,323 @@
             <param name='entity'>
             The entity.
             </param>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.Refactoring.IssueMarker">
+            <summary>
+            The issue marker is used to set how an issue should be marked inside the text editor.
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.Refactoring.IssueMarker.None">
+            <summary>
+            The issue is not shown inside the text editor. (But in the task bar)
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.Refactoring.IssueMarker.WavedLine">
+            <summary>
+            The region is marked as underline in the severity color.
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.Refactoring.IssueMarker.DottedLine">
+            <summary>
+            The region is marked as dotted line in the severity color.
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.Refactoring.IssueMarker.GrayOut">
+            <summary>
+            The text is grayed out.
+            </summary>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.Refactoring.Severity">
+            <summary>
+            The severity influences how the task bar reacts on found issues.
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.Refactoring.Severity.None">
+            <summary>
+            None means that the task bar doesn't show the issue.
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.Refactoring.Severity.Error">
+            <summary>
+            Errors are shown in red and that the task bar is in error state if 1 error is found.
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.Refactoring.Severity.Warning">
+            <summary>
+            Warnings are shown in yellow and set the task bar to warning state (if no error is found).
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.Refactoring.Severity.Suggestion">
+            <summary>
+            Suggestions are shown in green and doesn't influence the task bar state
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.Refactoring.Severity.Hint">
+            <summary>
+            Hints are shown in blue and doesn't influence the task bar state
+            </summary>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.Analysis.SymbolCollector">
+            <summary>
+            The symbol collector collects related symbols that form a group of symbols that should be renamed
+            when a name of one symbol changes. For example if a type definition name should be changed
+            the constructors and destructor names should change as well.
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.Analysis.SymbolCollector.GetRelatedSymbols(ICSharpCode.NRefactory.Analysis.TypeGraph,ICSharpCode.NRefactory.TypeSystem.ISymbol)">
+            <summary>
+            Gets the related symbols.
+            </summary>
+            <returns>The related symbols.</returns>
+            <param name="g">The type graph.</param>
+            <param name="m">The symbol to search</param>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.Analysis.SymbolCollector.IncludeOverloads">
+            <summary>
+            Gets or sets a value indicating whether this <see cref="T:ICSharpCode.NRefactory.Analysis.SymbolCollector"/> should include overloads.
+            </summary>
+            <value><c>true</c> if overloads should be included; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.AssemblyLoader.IncludeInternalMembers">
+            <summary>
+            Specifies whether to include internal members. The default is false.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.AssemblyLoader.CancellationToken">
+            <summary>
+            Gets/Sets the cancellation token used by the assembly loader.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.AssemblyLoader.DocumentationProvider">
+            <summary>
+            Gets/Sets the documentation provider that is used to retrieve the XML documentation for all members.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.TypeSystem.AssemblyLoader.InterningProvider">
+            <summary>
+            Gets/Sets the interning provider.
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.UnicodeNewline.LF">
+            <summary>
+            Line Feed, U+000A
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.UnicodeNewline.CR">
+            <summary>
+            Carriage Return, U+000D
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.UnicodeNewline.NEL">
+            <summary>
+            Next Line, U+0085
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.UnicodeNewline.VT">
+            <summary>
+            Vertical Tab, U+000B
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.UnicodeNewline.FF">
+            <summary>
+            Form Feed, U+000C
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.UnicodeNewline.LS">
+            <summary>
+            Line Separator, U+2028
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.UnicodeNewline.PS">
+            <summary>
+            Paragraph Separator, U+2029
+            </summary>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.NewLine">
+            <summary>
+            Defines unicode new lines according to  Unicode Technical Report #13
+            http://www.unicode.org/standard/reports/tr13/tr13-5.html
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.NewLine.CR">
+            <summary>
+            Carriage Return, U+000D
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.NewLine.LF">
+            <summary>
+            Line Feed, U+000A
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.NewLine.NEL">
+            <summary>
+            Next Line, U+0085
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.NewLine.VT">
+            <summary>
+            Vertical Tab, U+000B
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.NewLine.FF">
+            <summary>
+            Form Feed, U+000C
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.NewLine.LS">
+            <summary>
+            Line Separator, U+2028
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.NewLine.PS">
+            <summary>
+            Paragraph Separator, U+2029
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.NewLine.GetDelimiterLength(System.Char,System.Func{System.Char})">
+            <summary>
+            Determines if a char is a new line delimiter.
+            </summary>
+            <returns>0 == no new line, otherwise it returns either 1 or 2 depending of the length of the delimiter.</returns>
+            <param name="curChar">The current character.</param>
+            <param name="nextChar">A callback getting the next character (may be null).</param>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.NewLine.GetDelimiterLength(System.Char,System.Char)">
+            <summary>
+            Determines if a char is a new line delimiter.
+            </summary>
+            <returns>0 == no new line, otherwise it returns either 1 or 2 depending of the length of the delimiter.</returns>
+            <param name="curChar">The current character.</param>
+            <param name="nextChar">The next character (if != LF then length will always be 0 or 1).</param>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.NewLine.GetDelimiterType(System.Char,System.Func{System.Char})">
+            <summary>
+            Gets the new line type of a given char/next char.
+            </summary>
+            <returns>0 == no new line, otherwise it returns either 1 or 2 depending of the length of the delimiter.</returns>
+            <param name="curChar">The current character.</param>
+            <param name="nextChar">A callback getting the next character (may be null).</param>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.NewLine.GetDelimiterType(System.Char,System.Char)">
+            <summary>
+            Gets the new line type of a given char/next char.
+            </summary>
+            <returns>0 == no new line, otherwise it returns either 1 or 2 depending of the length of the delimiter.</returns>
+            <param name="curChar">The current character.</param>
+            <param name="nextChar">The next character (if != LF then length will always be 0 or 1).</param>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.NewLine.IsNewLine(System.Char)">
+            <summary>
+            Determines if a char is a new line delimiter. 
+            
+            Note that the only 2 char wide new line is CR LF and both chars are new line
+            chars on their own. For most cases GetDelimiterLength is the better choice.
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.NewLine.GetString(ICSharpCode.NRefactory.UnicodeNewline)">
+            <summary>
+            Gets the new line as a string.
+            </summary>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.Completion.FrameworkLookup">
+            <summary>
+            The framework lookup provides a fast lookup where an unknow type or extension method may be defined in.
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.Completion.FrameworkLookup.GetExtensionMethodLookups(ICSharpCode.NRefactory.Semantics.UnknownMemberResolveResult)">
+            <summary>
+            This method tries to get a matching extension method.
+            </summary>
+            <returns>The extension method lookups.</returns>
+            <param name="resolveResult">The resolve result.</param>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.Completion.FrameworkLookup.GetLookups(ICSharpCode.NRefactory.Semantics.UnknownIdentifierResolveResult,System.Int32,System.Boolean)">
+            <summary>
+            Tries to get a type out of an unknow identifier result.
+            </summary>
+            <returns>The assemblies the type may be defined (if any).</returns>
+            <param name="resolveResult">The resolve result.</param>
+            <param name="typeParameterCount">Type parameter count.</param>
+            <param name="isInsideAttributeType">If set to <c>true</c> this resolve result may be inside an attribute.</param>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.Completion.FrameworkLookup.GetLookups(ICSharpCode.NRefactory.Semantics.UnknownMemberResolveResult,System.String,System.Int32,System.Boolean)">
+            <summary>
+            Tries to get a type out of an unknow member resolve result. (In case of fully qualified names)
+            </summary>
+            <returns>The assemblies the type may be defined (if any).</returns>
+            <param name="resolveResult">The resolve result.</param>
+            <param name="typeParameterCount">Type parameter count.</param>
+            <param name="isInsideAttributeType">If set to <c>true</c> this resolve result may be inside an attribute.</param>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.Completion.FrameworkLookup.Create(System.String)">
+            <summary>
+            This method returns a new framework builder to build a new framework lookup data file.
+            </summary>
+            <param name="fileName">The file name of the data file.</param>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.Completion.FrameworkLookup.Load(System.String)">
+            <summary>
+            Loads a framework lookup object from a file. May return null, if the file wasn't found or has a version mismatch.
+            </summary>
+            <param name="fileName">File name.</param>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.Completion.FrameworkLookup.GetStableHashCode(System.String)">
+            <summary>
+            Retrieves a hash code for the specified string that is stable across
+            .NET upgrades.
+            
+            Use this method instead of the normal <c>string.GetHashCode</c> if the hash code
+            is persisted to disk.
+            </summary>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.Completion.FrameworkLookup.AssemblyLookup">
+            <summary>
+            The assembly lookup determines where a type might be defined.
+            It contains the assembly &amp; the namespace.
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.Completion.FrameworkLookup.AssemblyLookup.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:ICSharpCode.NRefactory.Completion.FrameworkLookup.AssemblyLookup"/> struct.
+            </summary>
+            <param name="package">The package name.</param>
+            <param name="fullName">The full name of the assembly.</param>
+            <param name="nspace">The namespace the type is in.</param>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.Completion.FrameworkLookup.AssemblyLookup.Namespace">
+            <summary>
+            The namespace the requested type is in.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.Completion.FrameworkLookup.AssemblyLookup.FullName">
+            <summary>
+            Gets the full name af the assembly.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.Completion.FrameworkLookup.AssemblyLookup.Package">
+            <summary>
+            Gets the package the assembly is in.
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.Completion.FrameworkLookup.FrameworkBuilder.AddLookup(System.String,System.String,ICSharpCode.NRefactory.TypeSystem.IUnresolvedTypeDefinition)">
+            <summary>
+            Add a type to the framework lookup.
+            </summary>
+            <param name="packageName">The package the assembly of the type is defined (can be null).</param>
+            <param name="fullAssemblyName">The full assembly name the type is defined (needs to be != null).</param>
+            <param name="type">The type definition  (needs to be != null).</param>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.Utils.ComparableList`1">
+            <summary>
+            A list that can be compared to other ComparableLists for equality.
+            Can not be used to store null values.
+            </summary>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.PatternMatching.AnyNodeOrNull">
+            <summary>
+            Matches any node.
+            </summary>
+            <remarks>Does not match null nodes.</remarks>
         </member>
     </members>
 </doc>

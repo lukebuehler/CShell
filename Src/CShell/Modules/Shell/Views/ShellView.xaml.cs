@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 using System.Windows;
+using Xceed.Wpf.AvalonDock;
 
 namespace CShell.Modules.Shell.Views
 {
@@ -29,7 +30,7 @@ namespace CShell.Modules.Shell.Views
 			InitializeComponent();
 		}
 
-        public AvalonDock.DockingManager DockingManager
+        public DockingManager DockingManager
         {
             get { return this.Manager; }
         }

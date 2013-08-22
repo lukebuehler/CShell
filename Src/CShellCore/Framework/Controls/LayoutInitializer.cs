@@ -19,8 +19,8 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using AvalonDock.Layout;
 using CShell.Framework.Services;
+using Xceed.Wpf.AvalonDock.Layout;
 
 namespace CShell.Framework.Controls
 {

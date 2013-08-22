@@ -33,6 +33,7 @@ namespace CShell.Modules.Workspace.ViewModels
         [ImportingConstructor]
         public WorkspaceViewModel(IEventAggregator eventAggregator)
         {
+            DisplayName = "Workspace Explorer";
             eventAggregator.Subscribe(this);
             var currentWorkspace = CShell.Shell.Workspace;
             if (currentWorkspace != null)
@@ -68,11 +69,6 @@ namespace CShell.Modules.Workspace.ViewModels
         }
 
 	    #region Display
-        public override string DisplayName
-		{
-			get { return "Workspace Explorer"; }
-		}
-
 		public override PaneLocation PreferredLocation
 		{
 			get { return PaneLocation.Left; }

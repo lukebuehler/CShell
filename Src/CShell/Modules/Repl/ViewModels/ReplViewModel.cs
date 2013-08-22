@@ -45,16 +45,13 @@ namespace CShell.Modules.Repl.ViewModels
         {
             eventAggregator.Subscribe(this);
 
+            DisplayName = "C# Interactive";
+
             timer = new Timer(100);
             timer.AutoReset = true;
             timer.Elapsed += TimerOnElapsed;
         }
         
-        public override string DisplayName
-        {
-            get { return "C# Interactive"; }
-        }
-
         public override Uri IconSource
         {
             get { return new Uri("pack://application:,,,/CShell;component/Resources/Icons/Output.png"); }

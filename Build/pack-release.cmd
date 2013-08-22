@@ -8,5 +8,6 @@ rmdir /S /Q "../Bin/Release/ro"
 rmdir /S /Q "../Bin/Release/ru"
 rmdir /S /Q "../Bin/Release/sv"
 rmdir /S /Q "../Bin/Release/zh-Hans"
+rmdir /S /Q "../Bin/Release/Logs"
 
 "C:\Program Files\7-Zip\7z.exe" a -tzip "..\Bin\CShell.zip" "..\Bin\Release\*"

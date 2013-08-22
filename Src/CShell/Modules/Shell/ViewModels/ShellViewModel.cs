@@ -29,7 +29,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using System.Xml;
-using AvalonDock.Layout.Serialization;
 using CShell.Framework;
 using CShell.Framework.Menus;
 using CShell.Framework.Results;
@@ -37,6 +36,7 @@ using CShell.Framework.Services;
 using CShell.Modules.Shell.Views;
 using CShell.Properties;
 using Caliburn.Micro;
+using Xceed.Wpf.AvalonDock.Layout.Serialization;
 using Action = System.Action;
 using Execute = CShell.Framework.Services.Execute;
 

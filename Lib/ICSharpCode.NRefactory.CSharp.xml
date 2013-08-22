@@ -176,6 +176,16 @@
             Statement reachability analysis.
             </summary>
         </member>
+        <member name="T:ICSharpCode.NRefactory.CSharp.DepthFirstAstVisitor`1">
+            <summary>
+            AST visitor with a default implementation that visits all node depth-first.
+            </summary>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.CSharp.IAstVisitor`1">
+            <summary>
+            AST visitor.
+            </summary>
+        </member>
         <member name="T:ICSharpCode.NRefactory.CSharp.Analysis.SemanticHighlightingVisitor`1">
             <summary>
             C# Semantic highlighter.
@@ -392,12 +402,12 @@
         </member>
         <member name="P:ICSharpCode.NRefactory.CSharp.AstNode.Descendants">
             <summary>
-            Gets all descendants of this node (excluding this node itself).
+            Gets all descendants of this node (excluding this node itself) in pre-order.
             </summary>
         </member>
         <member name="P:ICSharpCode.NRefactory.CSharp.AstNode.DescendantsAndSelf">
             <summary>
-            Gets all descendants of this node (including this node itself).
+            Gets all descendants of this node (including this node itself) in pre-order.
             </summary>
         </member>
         <member name="T:ICSharpCode.NRefactory.CSharp.AstNodeCollection`1">
@@ -522,20 +532,20 @@
             Represents a 'cref' reference in XML documentation.
             </summary>
         </member>
-        <member name="P:ICSharpCode.NRefactory.CSharp.DocumentationReference.EntityType">
+        <member name="P:ICSharpCode.NRefactory.CSharp.DocumentationReference.SymbolKind">
             <summary>
             Gets/Sets the entity type.
             Possible values are:
-              <c>EntityType.Operator</c> for operators,
-              <c>EntityType.Indexer</c> for indexers,
-              <c>EntityType.TypeDefinition</c> for references to primitive types,
-              and <c>EntityType.None</c> for everything else.
+              <c>SymbolKind.Operator</c> for operators,
+              <c>SymbolKind.Indexer</c> for indexers,
+              <c>SymbolKind.TypeDefinition</c> for references to primitive types,
+              and <c>SymbolKind.None</c> for everything else.
             </summary>
         </member>
         <member name="P:ICSharpCode.NRefactory.CSharp.DocumentationReference.OperatorType">
             <summary>
             Gets/Sets the operator type.
-            This property is only used when EntityType==Operator.
+            This property is only used when SymbolKind==Operator.
             </summary>
         </member>
         <member name="P:ICSharpCode.NRefactory.CSharp.DocumentationReference.HasParameterList">
@@ -551,13 +561,13 @@
         <member name="P:ICSharpCode.NRefactory.CSharp.DocumentationReference.MemberName">
             <summary>
             Gets/sets the member name.
-            This property is only used when EntityType==None.
+            This property is only used when SymbolKind==None.
             </summary>
         </member>
         <member name="P:ICSharpCode.NRefactory.CSharp.DocumentationReference.ConversionOperatorReturnType">
             <summary>
             Gets/Sets the return type of conversion operators.
-            This property is only used when EntityType==Operator and OperatorType is explicit or implicit.
+            This property is only used when SymbolKind==Operator and OperatorType is explicit or implicit.
             </summary>
         </member>
         <member name="T:ICSharpCode.NRefactory.CSharp.IdentifierExpressionBackreference">
@@ -631,15 +641,13 @@
             negation of the specified relational operator, or BinaryOperatorType.Any if it's not a relational operator
             </returns>
         </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.DepthFirstAstVisitor`1">
+        <member name="M:ICSharpCode.NRefactory.CSharp.CSharpUtil.NegateConditionOperator(ICSharpCode.NRefactory.CSharp.BinaryOperatorType)">
             <summary>
-            AST visitor with a default implementation that visits all node depth-first.
+            Get negation of the condition operator
             </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.IAstVisitor`1">
-            <summary>
-            AST visitor.
-            </summary>
+            <returns>
+            negation of the specified condition operator, or BinaryOperatorType.Any if it's not a condition operator
+            </returns>
         </member>
         <member name="T:ICSharpCode.NRefactory.CSharp.ErrorNode">
             <summary>
@@ -879,11 +887,6 @@
         <member name="T:ICSharpCode.NRefactory.CSharp.DirectionExpression">
             <summary>
             ref Expression
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.EmptyExpression">
-            <summary>
-            Type&lt;[EMPTY]&gt;
             </summary>
         </member>
         <member name="T:ICSharpCode.NRefactory.CSharp.IndexerExpression">
@@ -2883,6 +2886,12 @@
                Exposes the API of the given assembly to the Evaluator
             </summary>
         </member>
+        <member name="P:Mono.CSharp.Evaluator.WaitOnTask">
+            <summary>
+            When set evaluator will automatically wait on Task of async methods. When not
+            set it's called responsibility to handle Task execution
+            </summary>
+        </member>
         <member name="P:Mono.CSharp.Evaluator.InteractiveBaseClass">
              <summary>
                The base class for the classes that host the user generated code
@@ -3425,110 +3434,20 @@
             Maps clauses to method calls. The keys will always be either a <see cref="T:ICSharpCode.NRefactory.CSharp.QueryClause"/> or a <see cref="T:ICSharpCode.NRefactory.CSharp.QueryOrdering"/>
             </summary>
         </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.QueryExpressionExpander.ExpandQueryExpressions(ICSharpCode.NRefactory.CSharp.AstNode,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Expands all occurances of query patterns in the specified node. Returns a clone of the node with all query patterns expanded, or null if there was no query pattern to expand.
+            </summary>
+            <param name="node"></param>
+            <param name="transparentIdentifierNamePicker">A sequence of names to use for transparent identifiers. Once the sequence is over, a fallback name generator is used</param> 
+            <returns></returns>
+        </member>
         <member name="M:ICSharpCode.NRefactory.CSharp.QueryExpressionExpander.ExpandQueryExpressions(ICSharpCode.NRefactory.CSharp.AstNode)">
             <summary>
             Expands all occurances of query patterns in the specified node. Returns a clone of the node with all query patterns expanded, or null if there was no query pattern to expand.
             </summary>
             <param name="node"></param>
             <returns></returns>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.Refactoring.AddUsingAction">
-            <summary>
-            1) When a type cannot be resolved, offers to add a using declaration
-            or to replace it with the fully qualified type name.
-            2) When an extension method cannot be resolved, offers to add a using declaration.
-            3) When the caret is on a namespace name, offers to add a using declaration
-            and simplify the type references to use the new shorter option.
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.Refactoring.ConvertAsToCastAction">
-            <summary>
-            Converts an 'as' expression to a cast expression
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.Refactoring.SpecializedCodeAction`1">
-            <summary>
-            A specialized code action creates a code action assoziated with one special type of ast nodes.
-            </summary>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.SpecializedCodeAction`1.GetAction(ICSharpCode.NRefactory.CSharp.Refactoring.RefactoringContext,`0)">
-            <summary>
-            Gets the action for the specified ast node.
-            </summary>
-            <returns>
-            The code action. May return <c>null</c>, if no action can be provided.
-            </returns>
-            <param name='context'>
-            The refactoring conext.
-            </param>
-            <param name='node'>
-            The AstNode it's ensured that the node is always != null, if called.
-            </param>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.Refactoring.ConvertCastToAsAction">
-            <summary>
-            Converts a cast expression to an 'as' expression
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.Refactoring.ICodeIssueProvider">
-            <summary>
-            The code issue provider gets a list of all code issues in a syntax tree.
-            </summary>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.ICodeIssueProvider.GetIssues(ICSharpCode.NRefactory.CSharp.Refactoring.BaseRefactoringContext)">
-            <summary>
-            Gets all code issues inside a syntax tree.
-            </summary>
-            <param name='context'>
-            The refactoring context of the issues to get.
-            </param>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.GatherVisitorBase`1">
-            <summary>
-            A base class for writing issue provider visitor implementations.
-            </summary>
-        </member>
-        <member name="F:ICSharpCode.NRefactory.CSharp.GatherVisitorBase`1.IssueProvider">
-            <summary>
-            The issue provider. May be <c>null</c> if none was specified.
-            </summary>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.CSharp.GatherVisitorBase`1.#ctor(ICSharpCode.NRefactory.CSharp.Refactoring.BaseRefactoringContext,`0)">
-            <summary>
-            Initializes a new instance of the <see cref="T:ICSharpCode.NRefactory.CSharp.GatherVisitorBase`1"/> class.
-            </summary>
-            <param name="ctx">
-            The refactoring context.
-            </param>
-            <param name="issueProvider">
-            The issue provider.
-            </param>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.CSharp.GatherVisitorBase`1.GetIssues">
-            <summary>
-            Gets all the issues using the context root node as base.
-            </summary>
-            <returns>
-            The issues.
-            </returns>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.MultipleEnumerationIssue.GatherVisitor.SplitNode(ICSharpCode.NRefactory.CSharp.Refactoring.VariableReferenceNode)">
-            <summary>
-            split references in the specified node into sub nodes according to the value they uses
-            </summary>
-            <param name="node">node to split</param>
-            <returns>list of sub nodes</returns>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.MultipleEnumerationIssue.GatherVisitor.GetAssignmentUsageGraph(ICSharpCode.NRefactory.CSharp.Refactoring.VariableReferenceNode)">
-            <summary>
-            convert a variable reference graph starting from the specified node to an assignment usage graph,
-            in which nodes are connect if and only if they contains references using the same assigned value
-            </summary>
-            <param name="startNode">starting node of the variable reference graph</param>
-            <returns>
-            list of VariableReferenceNode, each of which is a starting node of a sub-graph in which references all
-            use the same assigned value
-            </returns>
         </member>
         <member name="T:ICSharpCode.NRefactory.CSharp.Refactoring.DocumentScript">
             <summary>
@@ -3564,6 +3483,12 @@
             on every <see cref="M:ICSharpCode.NRefactory.CSharp.Refactoring.Script.Replace(System.Int32,System.Int32,System.String)"/> call.
             </returns>
         </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.Script.GetSegment(ICSharpCode.NRefactory.CSharp.AstNode)">
+            <summary>
+            Gets the current text segment of the specified AstNode.
+            </summary>
+            <param name="node">The node to get the segment for.</param>
+        </member>
         <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.Script.Replace(System.Int32,System.Int32,System.String)">
             <summary>
             Replaces text.
@@ -3572,44 +3497,40 @@
             <param name="length">The length of the text to be replaced.</param>
             <param name="newText">The new text.</param>
         </member>
-        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.Script.Rename(ICSharpCode.NRefactory.TypeSystem.IEntity,System.String)">
+        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.Script.ChangeModifier(ICSharpCode.NRefactory.CSharp.EntityDeclaration,ICSharpCode.NRefactory.CSharp.Modifiers)">
             <summary>
-            Renames the specified entity.
+            Changes the modifier of a given entity declaration.
             </summary>
-            <param name='entity'>
-            The Entity to rename
-            </param>
-            <param name='name'>
-            The new name, if null the user is prompted for a new name.
-            </param>
+            <param name="entity">The entity.</param>
+            <param name="modifiers">The new modifiers.</param>
         </member>
-        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.Script.RenameTypeParameter(ICSharpCode.NRefactory.TypeSystem.IType,System.String)">
+        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.Script.ChangeBaseTypes(ICSharpCode.NRefactory.CSharp.TypeDeclaration,System.Collections.Generic.IEnumerable{ICSharpCode.NRefactory.CSharp.AstType})">
             <summary>
-            Renames the specified entity.
+            Changes the base types of a type declaration.
             </summary>
-            <param name='type'>
-            The Entity to rename
-            </param>
-            <param name='name'>
-            The new name, if null the user is prompted for a new name.
-            </param>
+            <param name="type">The type declaration to modify.</param>
+            <param name="baseTypes">The new base types.</param>
         </member>
-        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.Script.Rename(ICSharpCode.NRefactory.TypeSystem.IVariable,System.String)">
+        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.Script.AddAttribute(ICSharpCode.NRefactory.CSharp.EntityDeclaration,ICSharpCode.NRefactory.CSharp.AttributeSection)">
             <summary>
-            Renames the specified variable.
+            Adds an attribute section to a given entity.
             </summary>
-            <param name='variable'>
-            The Variable to rename
-            </param>
-            <param name='name'>
-            The new name, if null the user is prompted for a new name.
-            </param>
+            <param name="entity">The entity to add the attribute to.</param>
+            <param name="attr">The attribute to add.</param>
         </member>
-        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.Script.Rename(ICSharpCode.NRefactory.TypeSystem.INamespace,System.String)">
+        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.Script.RemoveAttribute(ICSharpCode.NRefactory.CSharp.Attribute)">
             <summary>
-            Renames the specified namespace.
+            Safely removes an attribue from it's section (removes empty sections).
             </summary>
-            <param name="ns">The namespace</param>
+            <param name="attr">The attribute to be removed.</param>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.Script.Rename(ICSharpCode.NRefactory.TypeSystem.ISymbol,System.String)">
+            <summary>
+            Renames the specified symbol.
+            </summary>
+            <param name='symbol'>
+            The symbol to rename
+            </param>
             <param name='name'>
             The new name, if null the user is prompted for a new name.
             </param>
@@ -3669,6 +3590,47 @@
             Produces a choice pattern for <c>expr1 op expr2</c> or <c>expr2 op expr1</c>.
             </summary>
         </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.PatternHelper.OptionalParentheses(ICSharpCode.NRefactory.CSharp.Expression)">
+            <summary>
+            Optionally allows parentheses around the given expression.
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.PatternHelper.EmbeddedStatement(ICSharpCode.NRefactory.CSharp.Statement)">
+            <summary>
+            Optionally allow a block around the given statement;
+            </summary>
+            <returns>The statement.</returns>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.PatternHelper.NamedParameter(System.String)">
+            <summary>
+            Allows to give parameter declaration group names.
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.PatternHelper.NamedParameter(System.String,ICSharpCode.NRefactory.CSharp.AstType,System.String,ICSharpCode.NRefactory.CSharp.ParameterModifier)">
+            <summary>
+            Allows to give parameter declaration group names.
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.PatternHelper.AnyType(System.Boolean)">
+            <summary>
+            Matches any type
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.PatternHelper.AnyType(System.String,System.Boolean)">
+            <summary>
+            Matches any type
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.PatternHelper.OptionalBlockPattern.UnpackBlockStatement(ICSharpCode.NRefactory.CSharp.Statement)">
+            <summary>
+            Unpacks the given expression if it is a ParenthesizedExpression, CheckedExpression or UncheckedExpression.
+            </summary>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.CSharp.Refactoring.PatternHelper.InternalAnyType">
+            <summary>
+            Matches any other type
+            </summary>
+        </member>
         <member name="T:ICSharpCode.NRefactory.CSharp.Refactoring.RefactoringAstHelper">
             <summary>
             Helper methods for constructing ASTs for refactoring.
@@ -3696,12 +3658,15 @@
             The root statement.
             </param>
         </member>
-        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.BaseRefactoringContext.CreateReachabilityAnalysis(ICSharpCode.NRefactory.CSharp.Statement)">
+        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.BaseRefactoringContext.CreateReachabilityAnalysis(ICSharpCode.NRefactory.CSharp.Statement,ICSharpCode.NRefactory.CSharp.Analysis.ReachabilityAnalysis.RecursiveDetectorVisitor)">
             <summary>
             Creates a new reachability analysis object with a given statement.
             </summary>
             <param name="statement">
             The statement to start the analysis.
+            </param>
+            <param name="recursiveDetectorVisitor">
+            TODO.
             </param>
             <returns>
             The reachability analysis object.
@@ -3732,6 +3697,11 @@
         <member name="P:ICSharpCode.NRefactory.CSharp.Refactoring.BaseRefactoringContext.UseExplicitTypes">
             <summary>
             Gets a value indicating if 'var' keyword should be used or explicit types.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.CSharp.Refactoring.BaseRefactoringContext.TypeGraph">
+            <summary>
+            Gets the type graph for the current compilation.
             </summary>
         </member>
         <member name="P:ICSharpCode.NRefactory.CSharp.Refactoring.BaseRefactoringContext.Services">
@@ -3871,7 +3841,7 @@
         </member>
         <member name="M:ICSharpCode.NRefactory.CSharp.Resolver.IResolveVisitorNavigator.ProcessConversion(ICSharpCode.NRefactory.CSharp.Expression,ICSharpCode.NRefactory.Semantics.ResolveResult,ICSharpCode.NRefactory.Semantics.Conversion,ICSharpCode.NRefactory.TypeSystem.IType)">
             <summary>
-            Notifies the navigator that a conversion was applied.
+            Notifies the navigator that an implicit conversion was applied.
             </summary>
             <param name="expression">The expression that was resolved.</param>
             <param name="result">The resolve result of the expression.</param>
@@ -4008,6 +3978,14 @@
             <summary>
             Gets whether type A is encompassed by type B.
             </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.Resolver.CSharpConversions.IsDelegateCompatible(ICSharpCode.NRefactory.TypeSystem.IMethod,ICSharpCode.NRefactory.TypeSystem.IType)">
+            <summary>
+            Gets whether a <paramref name="method"/> is compatible with a delegate type.
+            §15.2 Delegate compatibility
+            </summary>
+            <param name="method">The method to test for compatibility</param>
+            <param name="delegateType">The delegate type</param>
         </member>
         <member name="M:ICSharpCode.NRefactory.CSharp.Resolver.CSharpConversions.IsDelegateCompatible(ICSharpCode.NRefactory.TypeSystem.IMethod,ICSharpCode.NRefactory.TypeSystem.IMethod,System.Boolean)">
             <summary>
@@ -4279,21 +4257,7 @@
             be wrapped in a <see cref="T:ICSharpCode.NRefactory.Semantics.NamedArgumentResolveResult"/>.
             </summary>
         </member>
-        <member name="M:ICSharpCode.NRefactory.CSharp.Resolver.OverloadResolution.CreateResolveResult(ICSharpCode.NRefactory.Semantics.ResolveResult,System.Collections.Generic.IList{ICSharpCode.NRefactory.Semantics.ResolveResult},ICSharpCode.NRefactory.TypeSystem.IType)">
-            <summary>
-            Creates a ResolveResult representing the result of overload resolution.
-            </summary>
-            <param name="targetResolveResult">
-            The target expression of the call. May be <c>null</c> for static methods/constructors.
-            </param>
-            <param name="initializerStatements">
-            Statements for Objects/Collections initializer.
-            <see cref="F:ICSharpCode.NRefactory.Semantics.InvocationResolveResult.InitializerStatements"/>
-            <param name="returnTypeOverride">
-            If not null, use this instead of the ReturnType of the member as the type of the created resolve result.
-            </param>
-            </param>
-        </member>
+        <!-- Badly formed XML comment ignored for member "M:ICSharpCode.NRefactory.CSharp.Resolver.OverloadResolution.CreateResolveResult(ICSharpCode.NRefactory.Semantics.ResolveResult,System.Collections.Generic.IList{ICSharpCode.NRefactory.Semantics.ResolveResult},ICSharpCode.NRefactory.TypeSystem.IType)" -->
         <member name="P:ICSharpCode.NRefactory.CSharp.Resolver.OverloadResolution.IsExtensionMethodInvocation">
             <summary>
             Gets/Sets whether the methods are extension methods that are being called using extension method syntax.
@@ -4464,6 +4428,22 @@
             E operator |(E x, E y);
             E operator ^(E x, E y);
             </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.Resolver.CSharpResolver.TryConvertEnum(ICSharpCode.NRefactory.Semantics.ResolveResult@,ICSharpCode.NRefactory.TypeSystem.IType,System.Boolean@,ICSharpCode.NRefactory.Semantics.ResolveResult@,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="rr">The input resolve result that should be converted.
+            If a conversion exists, it is applied to the resolve result</param>
+            <param name="targetType">The target type that we should convert to</param>
+            <param name="isNullable">Whether we are dealing with a lifted operator</param>
+            <param name="enumRR">The resolve result that is enum-typed.
+            If necessary, a nullable conversion is applied.</param>
+            <param name="allowConversionFromConstantZero">
+            Whether the conversion from the constant zero is allowed.
+            </param>
+            <returns>True if the conversion is successful; false otherwise.
+            If the conversion is not successful, the ref parameters will not be modified.</returns>
         </member>
         <member name="M:ICSharpCode.NRefactory.CSharp.Resolver.CSharpResolver.ResolveAlias(System.String)">
             <summary>
@@ -4747,6 +4727,12 @@
         <member name="M:ICSharpCode.NRefactory.CSharp.Resolver.DetectSkippableNodesNavigator.ProcessConversion(ICSharpCode.NRefactory.CSharp.Expression,ICSharpCode.NRefactory.Semantics.ResolveResult,ICSharpCode.NRefactory.Semantics.Conversion,ICSharpCode.NRefactory.TypeSystem.IType)">
             <inheritdoc/>
         </member>
+        <member name="T:ICSharpCode.NRefactory.CSharp.Resolver.CastResolveResult">
+            <summary>
+            Represents an explicitly applied conversion (CastExpression or AsExpression)
+            (a result belonging to an AST node; not implicitly inserted 'between' nodes).
+            </summary>
+        </member>
         <member name="T:ICSharpCode.NRefactory.CSharp.Resolver.FindReferencedEntities">
             <summary>
             Find all entities that are referenced in the scanned AST.
@@ -4792,6 +4778,24 @@
             <summary>
             Gets the file names that possibly contain references to the element being searched for.
             </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.Resolver.FindReferences.FindReferencesInFile(ICSharpCode.NRefactory.CSharp.Resolver.IFindReferenceSearchScope,ICSharpCode.NRefactory.CSharp.Resolver.CSharpAstResolver,ICSharpCode.NRefactory.CSharp.Resolver.FoundReferenceCallback,System.Threading.CancellationToken)">
+            <summary>
+            Finds all references in the given file.
+            </summary>
+            <param name="searchScope">The search scope for which to look.</param>
+            <param name="resolver">AST resolver for the file to search in.</param>
+            <param name="callback">Callback used to report the references that were found.</param>
+            <param name="cancellationToken">CancellationToken that may be used to cancel the operation.</param>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.Resolver.FindReferences.FindReferencesInFile(System.Collections.Generic.IList{ICSharpCode.NRefactory.CSharp.Resolver.IFindReferenceSearchScope},ICSharpCode.NRefactory.CSharp.Resolver.CSharpAstResolver,ICSharpCode.NRefactory.CSharp.Resolver.FoundReferenceCallback,System.Threading.CancellationToken)">
+            <summary>
+            Finds all references in the given file.
+            </summary>
+            <param name="searchScopes">The search scopes for which to look.</param>
+            <param name="resolver">AST resolver for the file to search in.</param>
+            <param name="callback">Callback used to report the references that were found.</param>
+            <param name="cancellationToken">CancellationToken that may be used to cancel the operation.</param>
         </member>
         <member name="M:ICSharpCode.NRefactory.CSharp.Resolver.FindReferences.FindReferencesInFile(ICSharpCode.NRefactory.CSharp.Resolver.IFindReferenceSearchScope,ICSharpCode.NRefactory.CSharp.TypeSystem.CSharpUnresolvedFile,ICSharpCode.NRefactory.CSharp.SyntaxTree,ICSharpCode.NRefactory.TypeSystem.ICompilation,ICSharpCode.NRefactory.CSharp.Resolver.FoundReferenceCallback,System.Threading.CancellationToken)">
             <summary>
@@ -4942,6 +4946,10 @@
             <summary>
             Gets the return type inferred when the parameter types are inferred to be <paramref name="parameterTypes"/>
             </summary>
+            <remarks>
+            This method determines the return type inferred from the lambda body, which is used as part of C# type inference.
+            Use the <see cref="P:ICSharpCode.NRefactory.CSharp.Resolver.LambdaResolveResult.ReturnType"/> property to retrieve the actual return type as determined by the target delegate type.
+            </remarks>
         </member>
         <member name="M:ICSharpCode.NRefactory.CSharp.Resolver.LambdaResolveResult.IsValid(ICSharpCode.NRefactory.TypeSystem.IType[],ICSharpCode.NRefactory.TypeSystem.IType,ICSharpCode.NRefactory.CSharp.Resolver.CSharpConversions)">
             <summary>
@@ -4978,6 +4986,13 @@
         <member name="P:ICSharpCode.NRefactory.CSharp.Resolver.LambdaResolveResult.Parameters">
             <summary>
             Gets the list of parameters.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.CSharp.Resolver.LambdaResolveResult.ReturnType">
+            <summary>
+            Gets the return type of the lambda.
+            
+            If the lambda is async, the return type includes <code>Task&lt;T&gt;</code>
             </summary>
         </member>
         <member name="P:ICSharpCode.NRefactory.CSharp.Resolver.LambdaResolveResult.Body">
@@ -5261,6 +5276,11 @@
             This error does not prevent a candidate from being applicable.
             </remarks>
         </member>
+        <member name="T:ICSharpCode.NRefactory.CSharp.Resolver.RenameCallbackArguments">
+            <summary>
+            Arguments for the callback of <see cref="M:ICSharpCode.NRefactory.CSharp.Resolver.FindReferences.RenameReferencesInFile(System.Collections.Generic.IList{ICSharpCode.NRefactory.CSharp.Resolver.IFindReferenceSearchScope},System.String,ICSharpCode.NRefactory.CSharp.Resolver.CSharpAstResolver,System.Action{ICSharpCode.NRefactory.CSharp.Resolver.RenameCallbackArguments},System.Action{ICSharpCode.NRefactory.TypeSystem.Error},System.Threading.CancellationToken)"/>.
+            </summary>
+        </member>
         <member name="T:ICSharpCode.NRefactory.CSharp.Resolver.ResolveAtLocation">
             <summary>
             Helper class that resolves the node at a specified location.
@@ -5506,12 +5526,13 @@
             The insert text. If null, title is taken.
             </param>
         </member>
-        <member name="M:ICSharpCode.NRefactory.CSharp.Completion.ICompletionDataFactory.CreateImportCompletionData(ICSharpCode.NRefactory.TypeSystem.IType,System.Boolean)">
+        <member name="M:ICSharpCode.NRefactory.CSharp.Completion.ICompletionDataFactory.CreateImportCompletionData(ICSharpCode.NRefactory.TypeSystem.IType,System.Boolean,System.Boolean)">
             <summary>
             Creates a completion data that adds the required using for the created type.
             </summary>
             <param name="type">The type to import</param>
             <param name="useFullName">If set to true the full name of the type needs to be used.</param>
+            <param name="addForTypeCreation">If true the completion data is used in 'new' context.</param>
         </member>
         <member name="M:ICSharpCode.NRefactory.CSharp.Completion.IParameterCompletionDataFactory.CreateConstructorProvider(System.Int32,ICSharpCode.NRefactory.TypeSystem.IType,ICSharpCode.NRefactory.CSharp.AstNode)">
             <summary>
@@ -5820,7 +5841,8 @@
         </member>
         <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.CodeAction.#ctor(System.String,System.Action{ICSharpCode.NRefactory.CSharp.Refactoring.Script},ICSharpCode.NRefactory.CSharp.AstNode)">
             <summary>
-            Initializes a new instance of the <see cref="T:ICSharpCode.NRefactory.CSharp.Refactoring.CodeAction"/> class.
+            Initializes a new instance of the <see cref="T:ICSharpCode.NRefactory.CSharp.Refactoring.CodeAction"/> class,
+            using a non-null default value for <see cref="P:ICSharpCode.NRefactory.CSharp.Refactoring.CodeAction.SiblingKey"/>.
             </summary>
             <param name="description">
             The description.
@@ -5832,9 +5854,11 @@
             A node that specifies the start/end positions for the code action.
             </param>
         </member>
+        <!-- Badly formed XML comment ignored for member "M:ICSharpCode.NRefactory.CSharp.Refactoring.CodeAction.#ctor(System.String,System.Action{ICSharpCode.NRefactory.CSharp.Refactoring.Script},ICSharpCode.NRefactory.CSharp.AstNode,System.Object)" -->
         <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.CodeAction.#ctor(System.String,System.Action{ICSharpCode.NRefactory.CSharp.Refactoring.Script},ICSharpCode.NRefactory.TextLocation,ICSharpCode.NRefactory.TextLocation)">
             <summary>
-            Initializes a new instance of the <see cref="T:ICSharpCode.NRefactory.CSharp.Refactoring.CodeAction"/> class.
+            Initializes a new instance of the <see cref="T:ICSharpCode.NRefactory.CSharp.Refactoring.CodeAction"/> class,
+            using a non-null default value for <see cref="P:ICSharpCode.NRefactory.CSharp.Refactoring.CodeAction.SiblingKey"/>.
             </summary>
             <param name="description">
             The description.
@@ -5845,6 +5869,7 @@
             <param name="start">Start position for the code action.</param>
             <param name="end">End position for the code action.</param>
         </member>
+        <!-- Badly formed XML comment ignored for member "M:ICSharpCode.NRefactory.CSharp.Refactoring.CodeAction.#ctor(System.String,System.Action{ICSharpCode.NRefactory.CSharp.Refactoring.Script},ICSharpCode.NRefactory.TextLocation,ICSharpCode.NRefactory.TextLocation,System.Object)" -->
         <member name="P:ICSharpCode.NRefactory.CSharp.Refactoring.CodeAction.Description">
             <summary>
             Gets the description.
@@ -5865,202 +5890,21 @@
             Gets the action end location.
             </summary>
         </member>
+        <member name="P:ICSharpCode.NRefactory.CSharp.Refactoring.CodeAction.SiblingKey">
+            <summary>
+            This property is used to identify which actions are "siblings", ie which actions
+            are the same kind of fix. This is used to group issues when batch fixing them.
+            </summary>
+            <remarks>
+            Although the type is <see cref="T:System.Object"/>, there is a restriction: The instance
+            used must behave well as a key (for instance in a hash table). Additionaly, this
+            value must be independent of the specific <see cref="T:ICSharpCode.NRefactory.CSharp.Refactoring.CodeIssueProvider"/> instance
+            which created it. In other words two different instances of the same issue provider
+            implementation should use the same sibling keys for the same kinds of issues.
+            </remarks>
+            <value>The non-null sibling key if this type of action is batchable, null otherwise.</value>
+        </member>
         <!-- Badly formed XML comment ignored for member "P:ICSharpCode.NRefactory.CSharp.ContextActionAttribute.BoundToIssue" -->
-        <member name="T:ICSharpCode.NRefactory.CSharp.Severity">
-            <summary>
-            The severity influences how the task bar reacts on found issues.
-            </summary>
-        </member>
-        <member name="F:ICSharpCode.NRefactory.CSharp.Severity.None">
-            <summary>
-            None means that the task bar doesn't show the issue.
-            </summary>
-        </member>
-        <member name="F:ICSharpCode.NRefactory.CSharp.Severity.Error">
-            <summary>
-            Errors are shown in red and that the task bar is in error state if 1 error is found.
-            </summary>
-        </member>
-        <member name="F:ICSharpCode.NRefactory.CSharp.Severity.Warning">
-            <summary>
-            Warnings are shown in yellow and set the task bar to warning state (if no error is found).
-            </summary>
-        </member>
-        <member name="F:ICSharpCode.NRefactory.CSharp.Severity.Suggestion">
-            <summary>
-            Suggestions are shown in green and doesn't influence the task bar state
-            </summary>
-        </member>
-        <member name="F:ICSharpCode.NRefactory.CSharp.Severity.Hint">
-            <summary>
-            Hints are shown in blue and doesn't influence the task bar state
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.IssueMarker">
-            <summary>
-            The issue marker is used to set how an issue should be marked inside the text editor.
-            </summary>
-        </member>
-        <member name="F:ICSharpCode.NRefactory.CSharp.IssueMarker.None">
-            <summary>
-            The issue is not shown inside the text editor. (But in the task bar)
-            </summary>
-        </member>
-        <member name="F:ICSharpCode.NRefactory.CSharp.IssueMarker.Underline">
-            <summary>
-            The region is marked as underline in the severity color.
-            </summary>
-        </member>
-        <member name="F:ICSharpCode.NRefactory.CSharp.IssueMarker.GrayOut">
-            <summary>
-            The text is grayed out.
-            </summary>
-        </member>
-        <!-- Badly formed XML comment ignored for member "T:ICSharpCode.NRefactory.CSharp.Refactoring.ConditionalToNullCoalescingIssue" -->
-        <member name="T:ICSharpCode.NRefactory.CSharp.Refactoring.NotImplementedExceptionIssue">
-            <summary>
-            This inspector just shows that there is a not implemented exception. It doesn't offer a fix.
-            Should only be shown in overview bar, no underlining.
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.Refactoring.RedundantInternalIssue">
-            <summary>
-            Finds redundant internal modifiers.
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.Refactoring.RedundantNamespaceUsageIssue">
-            <summary>
-            Finds redundant namespace usages.
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.Refactoring.RedundantPrivateIssue">
-            <summary>
-            Finds redundant internal modifiers.
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.Refactoring.RedundantThisIssue">
-            <summary>
-            Finds redundant namespace usages.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.CSharp.Refactoring.RedundantThisIssue.IgnoreConstructors">
-            <summary>
-            Specifies whether to ignore redundant 'this' in constructors.
-            "this.Name = name;"
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.Refactoring.RedundantUsingIssue">
-            <summary>
-            Finds redundant using declarations.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.CSharp.Refactoring.RedundantUsingIssue.NamespacesToKeep">
-            <summary>
-            The list of namespaces that should be kept even if they are not being used.
-            Used in SharpDevelop to always keep the "System" namespace around.
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.Refactoring.StringIsNullOrEmptyIssue">
-            <summary>
-            Checks for str == null &amp;&amp; str == " "
-            Converts to: string.IsNullOrEmpty (str)
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.Refactoring.UseVarKeywordIssue">
-            <summary>
-            Checks for places where the 'var' keyword can be used. Note that the action is actually done with a context
-            action.
-            </summary>
-        </member>
-        <!-- Badly formed XML comment ignored for member "T:ICSharpCode.NRefactory.CSharp.Refactoring.IntroduceFormatItemAction" -->
-        <member name="P:ICSharpCode.NRefactory.CSharp.Refactoring.CreateEventInvocatorAction.UseExplictType">
-            <summary>
-            If <c>true</c> an explicit type will be used for the handler variable; otherwise, 'var' will be used as type.
-            Default value is <c>false</c>
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.Refactoring.ConvertHexToDecAction">
-            <summary>
-            Convert a hex numer to dec. For example: 0x10 -> 16
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.Refactoring.ConvertForeachToForAction">
-            <summary>
-            Converts a foreach loop to for.
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.Refactoring.ConvertDecToHexAction">
-            <summary>
-            Convert a dec numer to hex. For example: 16 -> 0x10
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.Refactoring.CheckIfParameterIsNullAction">
-            <summary>
-            Creates a 'if (param == null) throw new System.ArgumentNullException ();' contruct for a parameter.
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.Refactoring.AddAnotherAccessorAction">
-            <summary>
-            Add another accessor to a property declaration that has only one.
-            </summary>
-        </member>
-        <member name="F:ICSharpCode.NRefactory.CSharp.Refactoring.NamingStyle.PascalCase">
-            <summary>
-            PascalCase
-            </summary>
-        </member>
-        <member name="F:ICSharpCode.NRefactory.CSharp.Refactoring.NamingStyle.CamelCase">
-            <summary>
-            camelCase
-            </summary>
-        </member>
-        <member name="F:ICSharpCode.NRefactory.CSharp.Refactoring.NamingStyle.AllUpper">
-            <summary>
-            ALLUPPER
-            </summary>
-        </member>
-        <member name="F:ICSharpCode.NRefactory.CSharp.Refactoring.NamingStyle.AllLower">
-            <summary>
-            alllower
-            </summary>
-        </member>
-        <member name="F:ICSharpCode.NRefactory.CSharp.Refactoring.NamingStyle.FirstUpper">
-            <summary>
-            Firstupper
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.CSharp.Refactoring.NamingRule.RequiredPrefixes">
-            <summary>
-            If set, identifiers are required to be prefixed with one of these values.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.CSharp.Refactoring.NamingRule.AllowedPrefixes">
-            <summary>
-            If set, identifiers are allowed to be prefixed with one of these values.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.CSharp.Refactoring.NamingRule.RequiredSuffixes">
-            <summary>
-            If set, identifiers are required to be suffixed with one of these values.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.CSharp.Refactoring.NamingRule.ForbiddenPrefixes">
-            <summary>
-            If set, identifiers cannot be prefixed by any of these values.
-            </summary>
-        </member>
-        <!-- Badly formed XML comment ignored for member "P:ICSharpCode.NRefactory.CSharp.Refactoring.NamingRule.ForbiddenSuffixes" -->
-        <member name="P:ICSharpCode.NRefactory.CSharp.Refactoring.NamingRule.AffectedEntity">
-            <summary>
-            Gets or sets the affected entity.
-            </summary>
-        </member>
-        <member name="P:ICSharpCode.NRefactory.CSharp.Refactoring.NamingRule.VisibilityMask">
-            <summary>
-            Gets or sets the modifiers mask
-            </summary>
-        </member>
-        <!-- Badly formed XML comment ignored for member "P:ICSharpCode.NRefactory.CSharp.Refactoring.NamingRule.NamingStyle" -->
         <member name="T:ICSharpCode.NRefactory.CSharp.TextEditorOptions">
             <summary>
             The text editor options class holds basic information about the text editor settings that influences code generation and formatting beside
@@ -6198,17 +6042,6 @@
             Suggested base name.
             </param>
         </member>
-        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.ITypeCriterion.SatisfiedBy(ICSharpCode.NRefactory.TypeSystem.IType)">
-            <summary>
-            Checks if the given type satisfies the critrion.
-            </summary>
-            <returns>
-            <c>true</c>, if the type satisfies the criterion, <c>false</c> otherwise.
-            </returns>
-            <param name='type'>
-            The type to check.
-            </param>
-        </member>
         <member name="P:Mono.CSharp.SeekableStreamReader.Position">
             <remarks>
               This value corresponds to the current position in a stream of characters.
@@ -6270,38 +6103,6 @@
             It's used to hide the internals of extension method invocation in certain situation to simulate the 
             syntactic way of writing extension methods on semantic level.
             </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.AbiCompatibility">
-            <summary>
-            Used to check the compatibility state of two compilations.
-            </summary>
-        </member>
-        <member name="F:ICSharpCode.NRefactory.CSharp.AbiCompatibility.Equal">
-            <summary>
-            The ABI is equal
-            </summary>
-        </member>
-        <member name="F:ICSharpCode.NRefactory.CSharp.AbiCompatibility.Bigger">
-            <summary>
-            Some items got added, but the ABI remains to be compatible
-            </summary>
-        </member>
-        <member name="F:ICSharpCode.NRefactory.CSharp.AbiCompatibility.Incompatible">
-            <summary>
-            The ABI has changed
-            </summary>
-        </member>
-        <member name="T:ICSharpCode.NRefactory.CSharp.AbiComparer">
-            <summary>
-            The Abi comparer checks the public API of two compilation and determines the compatibility state.
-            </summary>
-        </member>
-        <member name="M:ICSharpCode.NRefactory.CSharp.AbiComparer.Check(ICSharpCode.NRefactory.TypeSystem.ICompilation,ICSharpCode.NRefactory.TypeSystem.ICompilation)">
-            <summary>
-            Check the specified oldProject and newProject if they're compatible.
-            </summary>
-            <param name="oldProject">Old project.</param>
-            <param name="newProject">New project.</param>
         </member>
         <member name="T:ICSharpCode.NRefactory.CSharp.CSharpFormatter">
             <summary>
@@ -6375,6 +6176,217 @@
             <summary>
             Applies the changes to the given Script instance.
             </summary>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.CSharp.IntroduceQueryExpressions">
+            <summary>
+            Decompiles query expressions.
+            Based on C# 4.0 spec, §7.16.2 Query expression translation
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.IntroduceQueryExpressions.ValidateThenByChain(ICSharpCode.NRefactory.CSharp.InvocationExpression,System.String)">
+            <summary>
+            Ensure that all ThenBy's are correct, and that the list of ThenBy's is terminated by an 'OrderBy' invocation.
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.IntroduceQueryExpressions.MatchSimpleLambda(ICSharpCode.NRefactory.CSharp.Expression,System.String@,ICSharpCode.NRefactory.CSharp.Expression@)">
+            <summary>Matches simple lambdas of the form "a => b"</summary>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.CSharp.CombineQueryExpressions">
+            <summary>
+            Combines query expressions and removes transparent identifiers.
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.CombineQueryExpressions.RemoveTransparentIdentifierReferences(ICSharpCode.NRefactory.CSharp.AstNode,System.String)">
+            <summary>
+            Removes all occurrences of transparent identifiers
+            </summary>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.CSharp.Refactoring.CodeIssueProvider">
+            <summary>
+            The code issue provider gets a list of all code issues in a syntax tree.
+            </summary>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.Refactoring.CodeIssueProvider.GetIssues(ICSharpCode.NRefactory.CSharp.Refactoring.BaseRefactoringContext,System.String)">
+            <summary>
+            Gets all code issues inside a syntax tree.
+            </summary>
+            <param name='context'>
+            The refactoring context of the issues to get.
+            </param>
+            <param name='subIssue'>
+            The name of the sub issue to run.
+            </param>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.Analysis.NullValueAnalysis.VariableStatusInfo.ReceiveIncoming(ICSharpCode.NRefactory.CSharp.Analysis.NullValueAnalysis.VariableStatusInfo)">
+            <summary>
+            Modifies the variable state to consider a new incoming path
+            </summary>
+            <returns><c>true</c>, if the state has changed, <c>false</c> otherwise.</returns>
+            <param name="incomingState">The variable state of the incoming path</param>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.CSharp.Analysis.NullValueAnalysis.ConditionalBranchInfo.TrueResultVariableNullStates">
+            <summary>
+            True if the variable is null for the true path, false if it is false for the true path.
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.CSharp.Analysis.NullValueAnalysis.ConditionalBranchInfo.FalseResultVariableNullStates">
+            <summary>
+            True if the variable is null for the false path, false if it is false for the false path.
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.CSharp.Analysis.NullValueAnalysis.VisitorResult.NullableReturnResult">
+            <summary>
+            Indicates the return value of the expression.
+            </summary>
+            <remarks>
+            Only applicable for expressions.
+            </remarks>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.CSharp.Analysis.NullValueAnalysis.VisitorResult.EnumeratedValueResult">
+            <summary>
+            Indicates the value of each item in an array or linq query.
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.CSharp.Analysis.NullValueAnalysis.VisitorResult.ConditionalBranchInfo">
+            <summary>
+            Information that indicates the restrictions to add
+            when branching.
+            </summary>
+            <remarks>
+            Used in if/else statements, conditional expressions and
+            while statements.
+            </remarks>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.CSharp.Analysis.NullValueAnalysis.VisitorResult.Variables">
+            <summary>
+            The state of the variables after the expression is executed.
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.CSharp.Analysis.NullValueAnalysis.VisitorResult.KnownBoolResult">
+            <summary>
+            The known bool result of an expression.
+            </summary>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.CSharp.Analysis.NullValueStatus">
+            <summary>
+            Represents the null value status of a variable at a specific location.
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.CSharp.Analysis.NullValueStatus.Unknown">
+            <summary>
+            The value of the variable is unknown, possibly due to limitations
+            of the null value analysis.
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.CSharp.Analysis.NullValueStatus.CapturedUnknown">
+            <summary>
+            The value of the variable is unknown and even assigning it to a
+            value won't change its state, since it has been captured by a lambda
+            that may change it at any time (potentially even from a different thread).
+            Only going out of scope and creating a new variable may change the value
+            of this variable.
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.CSharp.Analysis.NullValueStatus.Unassigned">
+            <summary>
+            This variable is potentially unassigned.
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.CSharp.Analysis.NullValueStatus.DefinitelyNull">
+            <summary>
+            The value of the variable is provably null.
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.CSharp.Analysis.NullValueStatus.PotentiallyNull">
+            <summary>
+            The value of the variable might or might not be null
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.CSharp.Analysis.NullValueStatus.DefinitelyNotNull">
+            <summary>
+            The value of the variable is provably not null
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.CSharp.Analysis.NullValueStatus.UnreachablePosition">
+            <summary>
+            The position of this node is unreachable, therefore the value
+            of the variable is not meaningful.
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.CSharp.Analysis.NullValueStatus.Error">
+            <summary>
+            The analyser has encountered an error when attempting to find the value
+            of this variable.
+            </summary>
+        </member>
+        <member name="T:ICSharpCode.NRefactory.CSharp.Analysis.LocalDeclarationSpace">
+            <summary>
+            Represents a declaration space. (§3.3)
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.NRefactory.CSharp.Analysis.LocalDeclarationSpace.declarations">
+            <summary>
+            Maps from variable name to the declarations in this declaration space.
+            </summary>
+            <remarks>
+            This maps from variable name
+            </remarks>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.Analysis.LocalDeclarationSpace.GetNameDeclarations(System.String)">
+            <summary>
+            Get all nodes declaring the name specified in <paramref name="name"/>.
+            </summary>
+            <returns>The declaring nodes.</returns>
+            <param name="name">The declaration name.</param>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.Analysis.LocalDeclarationSpace.AddChildSpace(ICSharpCode.NRefactory.CSharp.Analysis.LocalDeclarationSpace)">
+            <summary>
+            Adds a child declaration space.
+            </summary>
+            <param name="child">The <see cref="!:DeclarationSpace"/> to add.</param>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.Analysis.LocalDeclarationSpace.AddDeclaration(System.String,ICSharpCode.NRefactory.CSharp.AstNode)">
+            <summary>
+            Adds a new declaration to the declaration space.
+            </summary>
+            <param name="name">The name of the declared variable.</param>
+            <param name="node">A node associated with the declaration.</param>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.Analysis.LocalDeclarationSpace.ContainsName(System.String,System.Boolean)">
+            <summary>
+            Determines if the name exists in the this declaration space.
+            </summary>
+            <returns><c>true</c>, if the name specified in <paramref name="name"/> is used in this variable declaration space, <c>false</c> otherwise.</returns>
+            <param name="name">The name to look for.</param>
+            <param name="includeChildren">When <c>true</c>, child declaration spaces are included in the search.</param>
+        </member>
+        <member name="M:ICSharpCode.NRefactory.CSharp.Analysis.LocalDeclarationSpace.IsNameUsed(System.String)">
+            <summary>
+            Determines whether the name specified in <paramref name="name"/> is used in surrouding code.
+            </summary>
+            <returns><c>true</c> if the name is used, <c>false</c> otherwise.</returns>
+            <param name="name">The name to check.</param>
+            <remarks>
+            Contrary to <see cref="M:ICSharpCode.NRefactory.CSharp.Analysis.LocalDeclarationSpace.ContainsName(System.String,System.Boolean)"/>, this method also checks parent declaration spaces
+            for name conflicts. Typically, this will be the right method to use when determining if a name can be used.
+            </remarks>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.CSharp.Analysis.LocalDeclarationSpace.Children">
+            <summary>
+            The child declaration spaces.
+            </summary>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.CSharp.Analysis.LocalDeclarationSpace.Parent">
+            <summary>
+            The parent declaration space.
+            </summary>
+            <value>The parent.</value>
+        </member>
+        <member name="P:ICSharpCode.NRefactory.CSharp.Analysis.LocalDeclarationSpace.DeclaredNames">
+            <summary>
+            The names declared in this declaration space, excluding child spaces.
+            </summary>
+            <value>The declared names.</value>
         </member>
     </members>
 </doc>

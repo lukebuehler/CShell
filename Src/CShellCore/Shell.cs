@@ -32,9 +32,9 @@ namespace CShell
     /// </summary>
     public static partial class Shell
     {
-        private static readonly Lazy<IShell> shellLazy = new Lazy<IShell>(IoC.Get<IShell>, true);
+        private static readonly Lazy<IShell> shellLazy = new Lazy<IShell>(() => IoC.Get<IShell>(), true);
 
-        private static readonly Lazy<IRepl> replLazy = new Lazy<IRepl>(IoC.Get<IRepl>, true);
+        private static readonly Lazy<IRepl> replLazy = new Lazy<IRepl>(() => IoC.Get<IRepl>(), true);
         /// <summary>
         /// Gets the interface to modify the REPL window.
         /// </summary>
@@ -43,7 +43,7 @@ namespace CShell
             get { return replLazy.Value; }
         }
 
-        private static readonly Lazy<IOutput> outputLazy = new Lazy<IOutput>(IoC.Get<IOutput>, true);
+        private static readonly Lazy<IOutput> outputLazy = new Lazy<IOutput>(()=>IoC.Get<IOutput>(), true);
         
         /// <summary>
         /// Gets the interface to modify the console output window.

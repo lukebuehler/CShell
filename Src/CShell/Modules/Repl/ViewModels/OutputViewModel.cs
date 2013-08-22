@@ -50,12 +50,8 @@ namespace CShell.Modules.Repl.ViewModels
             FontSize = 12;
             BackgroundColor = Color.FromArgb(255, 40, 40, 40);
             TextColor = Color.FromArgb(255, 242, 242, 242);
+            DisplayName = "Output";
         }
-
-		public override string DisplayName
-		{
-			get { return "Output"; }
-		}
 
 		public override PaneLocation PreferredLocation
 		{

@@ -58,7 +58,9 @@ namespace CShell
             var directoryCatalog = new DirectoryCatalog(@"./");
             AssemblySource.Instance.AddRange(
                 directoryCatalog.Parts
+                    .AsParallel()
                     .Select(part => ReflectionModelServices.GetPartType(part).Value.Assembly)
+                    .ToList()
                     .Where(assembly => !AssemblySource.Instance.Contains(assembly)));
             var catalog = new AggregateCatalog(AssemblySource.Instance.Select(x => new AssemblyCatalog(x)));
             _container = new CompositionContainer(catalog);

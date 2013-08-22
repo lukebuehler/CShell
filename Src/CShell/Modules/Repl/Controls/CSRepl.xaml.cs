@@ -25,6 +25,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
 using System.Windows.Media;
 using CShell.Code;
@@ -328,10 +329,13 @@ namespace CShell.Modules.Repl.Controls
             var enumerable = o as IEnumerable;
             if(enumerable != null)
             {
-                var items = enumerable.Cast<object>().ToList();
+                var items = enumerable.Cast<object>().Take(21).ToList();
+                var firstItems = items.Take(20).ToList();
                 var sb = new StringBuilder();
                 sb.Append("{");
-                sb.Append(String.Join(", ", items));
+                sb.Append(String.Join(", ", firstItems));
+                if (items.Count > firstItems.Count)
+                    sb.Append("...");
                 sb.Append("}");
                 return sb.ToString();
             }

@@ -9,7 +9,7 @@ CShell is perfect to explore data and quickly drill deeper into information sinc
 
 If you just want to test one or two lines of C# code without creating a new console project in Visual Studio just fire up CShell, type the code you wanna test and you immediately can see if it works the way you want.
 
-![Screenshot](https://raw.github.com/lukebuhlerCShell/master/Doc/Screenshot1.png)
+![Screenshot](https://raw.githubusercontent.com/lukebuehler/CShell/master/Doc/Screenshot1.png)
 
 How to Build
 ------------

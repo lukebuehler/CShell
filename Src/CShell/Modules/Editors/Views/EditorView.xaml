@@ -4,11 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
-             xmlns:completion="clr-namespace:ICSharpCode.CodeCompletion;assembly=ICSharpCode.CodeCompletion"
+             xmlns:codeCompletion="clr-namespace:CShellCore.CodeCompletion;assembly=CShellCore.CodeCompletion"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <completion:CodeTextEditor
+        <codeCompletion:CodeTextEditor
             Name="textEditor"
             FontFamily="Consolas"
             SyntaxHighlighting="C#"

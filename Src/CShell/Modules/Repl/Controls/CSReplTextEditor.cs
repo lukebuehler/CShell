@@ -1,4 +1,4 @@
-﻿using ICSharpCode.CodeCompletion;
+﻿using CShellCore.CodeCompletion;
 using ICSharpCode.NRefactory.Editor;
 using System;
 using System.Collections.Generic;

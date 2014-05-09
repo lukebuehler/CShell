@@ -1,32 +1,15 @@
-﻿#region License
-// CShell, A Simple C# Scripting IDE
-// Copyright (C) 2013  Arnova Asset Management Ltd., Lukas Buhler
-// 
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// 
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#endregion
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CShellCore")]
+[assembly: AssemblyTitle("CShell")]
 [assembly: AssemblyDescription("A Simple C# Scripting IDE")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Arnova")]
-[assembly: AssemblyProduct("CShellCore")]
+[assembly: AssemblyProduct("CShell")]
 [assembly: AssemblyCopyright("Copyright © Arnova Asset Management Ltd 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -37,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("218298d8-aa8f-4644-956f-8fd65d54a6c2")]
+[assembly: Guid("380faaad-c726-4460-8667-998e05e10c33")]
 
 // Version information for an assembly consists of the following four values:
 //

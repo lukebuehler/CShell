@@ -27,7 +27,6 @@ using CShell.Framework.Services;
 using CShell.Modules.Editors.ViewModels;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.CodeCompletion;
 
 namespace CShell.Modules.Editors.Views
 {

@@ -68,7 +68,7 @@ namespace CShell.Modules.Repl.Controls
             textEditor.TextArea.PreviewKeyDown += TextAreaOnPreviewKeyDown;
             textEditor.IsEnabled = false;
             textEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("C#");
-            textEditor.Document.FileName = "repl.csx";
+            textEditor.FileName = "repl.csx";
             textEditor.Repl = this;
             this.Content = textEditor;
 
@@ -434,7 +434,7 @@ namespace CShell.Modules.Repl.Controls
             var vars = ScriptingEngine.GetVars();
             var code = vars + lineText;
             offset += vars.Length;
-            var doc = new ReadOnlyDocument(new StringTextSource(code), textEditor.Document.FileName);
+            var doc = new ReadOnlyDocument(new ICSharpCode.NRefactory.Editor.StringTextSource(code), textEditor.FileName);
             return doc;
         }
         #endregion

@@ -25,13 +25,13 @@ using System.Windows.Input;
 using CShell.Framework;
 using CShell.Framework.Services;
 using CShell.Modules.Editors.Views;
+using CShellCore.CodeCompletion;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using Execute = CShell.Framework.Services.Execute;
-using ICSharpCode.CodeCompletion;
 
 namespace CShell.Modules.Editors.ViewModels
 {
@@ -112,8 +112,7 @@ namespace CShell.Modules.Editors.ViewModels
             editorView = (EditorView)view;
             textEditor = editorView.textEditor;
             if(System.IO.File.Exists(path))
-                textEditor.Load(path);
-		    textEditor.Document.FileName = path;
+                textEditor.OpenFile(path);
             originalText = textEditor.Text;
 
             textEditor.TextChanged += delegate

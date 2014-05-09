@@ -24,13 +24,11 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using ICSharpCode.NRefactory.Editor;
-using ICSharpCode.NRefactory.TypeSystem;
+using CShellCore.CodeCompletion;
 using Mono.CSharp;
 
 using CShell.Code;
 using CShell.Util;
-using ICSharpCode.CodeCompletion;
 
 
 namespace CShell
@@ -85,8 +83,8 @@ namespace CShell
             Evaluate("using System; using System.Linq; using System.Collections; using System.Collections.Generic;");
 
             //init the code completion so that the first character typed is not delayed
-            var readOnlyDocument = new ReadOnlyDocument(new StringTextSource(""), "init.csx");
-            codeCompletion.GetCompletions(readOnlyDocument, 0);
+            //var readOnlyDocument = new ReadOnlyDocument(new StringTextSource(""), "init.csx");
+            //codeCompletion.GetCompletions(readOnlyDocument, 0);
         }
 
         public void Dispose()

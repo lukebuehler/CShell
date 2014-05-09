@@ -29,7 +29,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Arnova")]
 [assembly: AssemblyProduct("CShell")]
-[assembly: AssemblyCopyright("Copyright © Arnova Asset Management Ltd 2013")]
+[assembly: AssemblyCopyright("Copyright © Arnova Asset Management Ltd 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

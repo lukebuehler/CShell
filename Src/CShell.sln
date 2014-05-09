@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30110.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Files", "Files", "{CE1B7BD1-A200-4887-8090-42C10D816D2F}"
 	ProjectSection(SolutionItems) = preProject
 		..\Doc\Links.txt = ..\Doc\Links.txt
@@ -18,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{4A604F
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CShell", "CShell\CShell.csproj", "{751E2557-C070-480D-A3B9-662CDFE03907}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CShellCore.CodeCompletion", "CShellCore.CodeCompletion\CShellCore.CodeCompletion.csproj", "{2ADF8E19-B896-4778-8391-BC55FB100852}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +45,12 @@ Global
 		{751E2557-C070-480D-A3B9-662CDFE03907}.Release|Any CPU.Build.0 = Release|Any CPU
 		{751E2557-C070-480D-A3B9-662CDFE03907}.Release|x86.ActiveCfg = Release|x86
 		{751E2557-C070-480D-A3B9-662CDFE03907}.Release|x86.Build.0 = Release|x86
+		{2ADF8E19-B896-4778-8391-BC55FB100852}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2ADF8E19-B896-4778-8391-BC55FB100852}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2ADF8E19-B896-4778-8391-BC55FB100852}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2ADF8E19-B896-4778-8391-BC55FB100852}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2ADF8E19-B896-4778-8391-BC55FB100852}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2ADF8E19-B896-4778-8391-BC55FB100852}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

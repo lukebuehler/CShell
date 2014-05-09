@@ -29,8 +29,8 @@ x + x;
 
 // The state is preserved now just enter "x" in the REPL and hit enter: The variable "x" containing the value 7 is still there.
 
-// Methods can be declared too, but only in classes. Select the class and send it to the REPL:
-// (It's commented out so as not to mess up the code completion, execute it without the comments)
+// Methods can be declared too, but only in classes. Select the class and send it to the REPL.
+// Select lines 35-45 and press Alt+Enter, to evaluate the class an make it available for later.
 /*
 static class MyMath
 {

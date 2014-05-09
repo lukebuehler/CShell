@@ -56,6 +56,27 @@ namespace CShell
         {
             //to start we just add the already loaded assemblies to the container & the assemblies in exe folder
             var directoryCatalog = new DirectoryCatalog(@"./");
+
+            //use this code to look into loader exceptions, the code bellow is faster.
+            //try
+            //{
+            //    // load the assembly or type
+            //    foreach (var part in directoryCatalog.Parts)
+            //    {
+            //        var assembly = ReflectionModelServices.GetPartType(part).Value.Assembly;
+            //        if (!AssemblySource.Instance.Contains(assembly))
+            //            AssemblySource.Instance.Add(assembly);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    if (ex is System.Reflection.ReflectionTypeLoadException)
+            //    {
+            //        var typeLoadException = ex as ReflectionTypeLoadException;
+            //        var loaderExceptions = typeLoadException.LoaderExceptions;
+            //    }
+            //}
+
             AssemblySource.Instance.AddRange(
                 directoryCatalog.Parts
                     .AsParallel()

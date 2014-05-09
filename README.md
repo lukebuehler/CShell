@@ -13,7 +13,7 @@ If you just want to test one or two lines of C# code without creating a new cons
 
 How to Build
 ------------
-To build VisualStuido 2010 or higher is requred. Open the solution and build the project or configure the build script in the /Build folder to point to the right Visual Studio 'vcvarsall' script.
+To build Visual Studio 2010 or higher is required. Open the solution and build the project or configure the build script in the /Build folder to point to the right Visual Studio 'vcvarsall' script.
 
 For the first build some NuGet packages have to be downloaded make sure you have NuGet installed and package restore enabled (Tools>Options>Package Manager>Package Restore).
 

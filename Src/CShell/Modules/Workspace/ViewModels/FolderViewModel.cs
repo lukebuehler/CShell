@@ -81,22 +81,28 @@ namespace CShell.Modules.Workspace.ViewModels
             var filters = filterStrings.Select(fs=> new Regex(fs, RegexOptions.IgnoreCase)).ToArray();
 
             var items = new BindableCollection<TreeViewModel>();
-            var dirs = directoryInfo.GetDirectories();
-            foreach (var dir in dirs)
+            try
             {
-                if(filters.Any(f => f.IsMatch(dir.Name)))
-                    continue;
-                var folderVm = new FolderViewModel(dir, workspace);
-                items.Add(folderVm);
+              var dirs = directoryInfo.GetDirectories();
+              foreach (var dir in dirs)
+              {
+                  if(filters.Any(f => f.IsMatch(dir.Name)))
+                      continue;
+                  var folderVm = new FolderViewModel(dir, workspace);
+                  items.Add(folderVm);
+              }
+              var files = directoryInfo.GetFiles();
+              foreach (var file in files)
+              {
+                  if (filters.Any(f => f.IsMatch(file.Name)))
+                      continue;
+                  var fileVm = new FileViewModel(file);
+                  items.Add(fileVm);
+              }
             }
-            var files = directoryInfo.GetFiles();
-            foreach (var file in files)
-            {
-                if (filters.Any(f => f.IsMatch(file.Name)))
-                    continue;
-                var fileVm = new FileViewModel(file);
-                items.Add(fileVm);
-            }
+            catch (UnauthorizedAccessException ) // Does not have access to the folder cannot iterate.
+            { }
+
             return items;
         }
 

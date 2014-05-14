@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
-             xmlns:codeCompletion="clr-namespace:CShellCore.CodeCompletion;assembly=CShellCore.CodeCompletion"
+             xmlns:codeCompletion="clr-namespace:CShell.Completion;assembly=CShell.Completion"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>

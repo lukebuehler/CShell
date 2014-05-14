@@ -23,18 +23,17 @@ using System.Linq;
 using System.Text;
 using CShell.Framework.Results;
 using Caliburn.Micro;
+using CShell.ScriptCs;
 
 namespace CShell.Modules.Workspace.ViewModels
 {
     public class RootFolderViewModel : FolderViewModel
     {
-        private readonly CShell.Workspace workspace;
         private FileSystemWatcher fileSystemWatcher;
 
-        public RootFolderViewModel(string path, CShell.Workspace workspace)
+        public RootFolderViewModel(string path, WorkspaceNew workspace)
             :base(path, workspace)
         {
-            this.workspace = workspace;
             DisplayName = directoryInfo.FullName;
             IsEditable = false;
             IsExpanded = true;
@@ -45,7 +44,7 @@ namespace CShell.Modules.Workspace.ViewModels
 
         private void Initialize()
         {
-            workspace.PropertyChanged += WorkspaceOnPropertyChanged;
+            //Workspace.PropertyChanged += WorkspaceOnPropertyChanged;
             fileSystemWatcher = new FileSystemWatcher();
 
             fileSystemWatcher.Path = directoryInfo.FullName;
@@ -66,7 +65,7 @@ namespace CShell.Modules.Workspace.ViewModels
             if (args.PropertyName == "RootFolder")
             {
                 fileSystemWatcher.EnableRaisingEvents = false;
-                directoryInfo = new DirectoryInfo(workspace.RootFolder);
+                directoryInfo = new DirectoryInfo(Workspace.RootFolder);
                 DisplayName = directoryInfo.FullName;
 
                 Children.Clear();

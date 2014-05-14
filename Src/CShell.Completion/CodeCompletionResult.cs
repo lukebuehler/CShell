@@ -1,6 +1,6 @@
 ﻿#region License
 // CShell, A Simple C# Scripting IDE
-// Copyright (C) 2012  Arnova Asset Management Ltd., Lukas Buhler
+// Copyright (C) 2013  Arnova Asset Management Ltd., Lukas Buhler
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,24 +15,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System.Windows;
-using Xceed.Wpf.AvalonDock;
 
-namespace CShell.Modules.Shell.Views
+using System.Collections.Generic;
+using ICSharpCode.AvalonEdit.CodeCompletion;
+
+namespace CShell.Completion
 {
-	/// <summary>
-	/// Interaction logic for ShellView.xaml
-	/// </summary>
-	public partial class ShellView : Window, IShellView
-	{
-		public ShellView()
-		{
-		        InitializeComponent();
-		}
+    public class CodeCompletionResult
+    {
+        public List<ICSharpCode.AvalonEdit.CodeCompletion.ICompletionData> CompletionData = new List<ICompletionData>();
+        public ICSharpCode.AvalonEdit.CodeCompletion.ICompletionData SuggestedCompletionDataItem;
+        public int TriggerWordLength;
+        public string TriggerWord;
 
-        public DockingManager DockingManager
-        {
-            get { return this.Manager; }
-        }
+        public IOverloadProvider OverloadProvider;
     }
 }

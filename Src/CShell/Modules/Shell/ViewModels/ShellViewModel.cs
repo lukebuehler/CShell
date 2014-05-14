@@ -152,22 +152,24 @@ namespace CShell.Modules.Shell.ViewModels
         public void Opened(string[] args)
         {
             //if a workspace was specified in the arguments open it now
-            if (args != null && args.Length > 0 && !String.IsNullOrEmpty(args[0]))
-            {
-                var cshellFile = args[0];
-                new OpenWorkspaceResult(cshellFile).BeginExecute(null);
-            }
-            else if (Settings.Default.OpenLastWorkspace && File.Exists(Settings.Default.LastWorkspace))
-            {
-                var cshellFile = Settings.Default.LastWorkspace;
-                new OpenWorkspaceResult(cshellFile).BeginExecute(null);
-            }
-            else if(Settings.Default.IsFirstStartup)
-            {
-                //open the default workspace if this is the first startup
-                Settings.Default.IsFirstStartup = false;
-                new OpenWorkspaceResult(Constants.CShellDefaultFilePath).BeginExecute(null);
-            }
+            //if (args != null && args.Length > 0 && !String.IsNullOrEmpty(args[0]))
+            //{
+            //    var cshellFile = args[0];
+            //    new OpenWorkspaceResult(cshellFile).BeginExecute(null);
+            //}
+            //else if (Settings.Default.OpenLastWorkspace && File.Exists(Settings.Default.LastWorkspace))
+            //{
+            //    var cshellFile = Settings.Default.LastWorkspace;
+            //    new OpenWorkspaceResult(cshellFile).BeginExecute(null);
+            //}
+            //else if(Settings.Default.IsFirstStartup)
+            //{
+            //    //open the default workspace if this is the first startup
+            //    Settings.Default.IsFirstStartup = false;
+            //    new OpenWorkspaceResult(Constants.CShellDefaultFilePath).BeginExecute(null);
+            //}
+
+            //new OpenWorkspaceResult(@"C:\Users\Luke\Dropbox\CShell").BeginExecute(null);
 
         }
 

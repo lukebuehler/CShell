@@ -30,6 +30,8 @@ using System.Windows.Threading;
 using CShell.Framework;
 using CShell.Framework.Services;
 using Caliburn.Micro;
+using CShell.ScriptCs;
+using Xceed.Wpf.AvalonDock;
 
 namespace CShell
 {
@@ -55,14 +57,16 @@ namespace CShell
         protected override void Configure()
         {
             //to start we just add the already loaded assemblies to the container & the assemblies in exe folder
-            var directoryCatalog = new DirectoryCatalog(@"./");
+            //var directoryCatalog = new DirectoryCatalog(@"./", "CShell*");
 
-            //use this code to look into loader exceptions, the code bellow is faster.
+
+            ////use this code to look into loader exceptions, the code bellow is faster.
             //try
             //{
-            //    // load the assembly or type
             //    foreach (var part in directoryCatalog.Parts)
             //    {
+
+            //        // load the assembly or type
             //        var assembly = ReflectionModelServices.GetPartType(part).Value.Assembly;
             //        if (!AssemblySource.Instance.Contains(assembly))
             //            AssemblySource.Instance.Add(assembly);
@@ -77,8 +81,15 @@ namespace CShell
             //    }
             //}
 
+            var c = new AggregateCatalog(
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(IShell))),
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(DockingManager))),
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(Xceed.Wpf.AvalonDock.Themes.AeroTheme))),
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(Xceed.Wpf.AvalonDock.Themes.VS2010Theme)))
+                );
+
             AssemblySource.Instance.AddRange(
-                directoryCatalog.Parts
+                c.Parts
                     .AsParallel()
                     .Select(part => ReflectionModelServices.GetPartType(part).Value.Assembly)
                     .ToList()
@@ -91,12 +102,15 @@ namespace CShell
             var eventAggregator = new EventAggregator();
             batch.AddExportedValue<IEventAggregator>(eventAggregator);
             batch.AddExportedValue(new AssemblyLoader(_container, eventAggregator));
+            //ScriptCS exports
+            batch.AddExportedValue<IReplExecutorFactory>(new ReplExecutorFactory(new ScriptServicesBuilder()));
+
             batch.AddExportedValue(_container);
             //batch.AddExportedValue(catalog);
             _container.Compose(batch);
         }
 
-        protected override void OnStartup(object sender, System.Windows.StartupEventArgs e)
+        protected override void OnStartup(object sender, StartupEventArgs e)
         {
             //the order of the statements here is important
 

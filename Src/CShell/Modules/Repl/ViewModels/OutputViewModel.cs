@@ -31,7 +31,7 @@ namespace CShell.Modules.Repl.ViewModels
     [Export]
     [Export(typeof(IOutput))]
     [Export(typeof(ITool))]
-    public class OutputViewModel : Tool, IOutput, IHandle<WorkspaceOpenedEventArgs>, IHandle<WorkspaceClosingEventArgs>
+    public class OutputViewModel : Tool, IOutput
 	{
 		private IOutputView _view;
 
@@ -127,18 +127,7 @@ namespace CShell.Modules.Repl.ViewModels
 	        Write(consoleEventArgs.Text);
 	    }
 
-        public void Handle(WorkspaceOpenedEventArgs message)
-        {
-            var scriptingEngine = message.Workspace.ScriptingEngine;
-            scriptingEngine.ConsoleOutput -= ScriptingEngineOnConsoleOutput;
-            scriptingEngine.ConsoleOutput += ScriptingEngineOnConsoleOutput;
-        }
-
-        public void Handle(WorkspaceClosingEventArgs message)
-        {
-            var scriptingEngine = message.Workspace.ScriptingEngine;
-            scriptingEngine.ConsoleOutput -= ScriptingEngineOnConsoleOutput;
-        }
+       
 
         #region Appearance from IOutput
         private string font;

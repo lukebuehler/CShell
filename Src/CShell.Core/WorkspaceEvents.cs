@@ -15,24 +15,28 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System.Windows;
-using Xceed.Wpf.AvalonDock;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace CShell.Modules.Shell.Views
+namespace CShell
 {
-	/// <summary>
-	/// Interaction logic for ShellView.xaml
-	/// </summary>
-	public partial class ShellView : Window, IShellView
-	{
-		public ShellView()
-		{
-		        InitializeComponent();
-		}
-
-        public DockingManager DockingManager
+    public class WorkspaceOpeningEventArgs : EventArgs
+    {
+        public WorkspaceOpeningEventArgs(string workspaceDirectory)
         {
-            get { return this.Manager; }
+            WorkspaceDirectory = workspaceDirectory;
         }
+        public string WorkspaceDirectory { get; private set; }
+    }
+
+    public class WorkspaceOpenedEventArgs : EventArgs
+    {
+        public WorkspaceOpenedEventArgs(string workspaceDirectory)
+        {
+            WorkspaceDirectory = workspaceDirectory;
+        }
+        public string WorkspaceDirectory { get; private set; }
     }
 }

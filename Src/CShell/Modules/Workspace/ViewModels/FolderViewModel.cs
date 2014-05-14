@@ -24,6 +24,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using CShell.Framework.Results;
 using CShell.Modules.Workspace.Results;
+using CShell.ScriptCs;
 using CShell.Util;
 using Caliburn.Micro;
 using Microsoft.Win32;
@@ -33,18 +34,23 @@ namespace CShell.Modules.Workspace.ViewModels
     public class FolderViewModel : TreeViewModel
     {
         protected DirectoryInfo directoryInfo;
-        private readonly CShell.Workspace workspace;
+        private readonly WorkspaceNew workspace;
 
-        protected FolderViewModel(string path, CShell.Workspace workspace)
+        protected FolderViewModel(string path, WorkspaceNew workspace)
             :this(new DirectoryInfo(path),workspace)
         { }
 
-        public FolderViewModel(DirectoryInfo info, CShell.Workspace workspace)
+        public FolderViewModel(DirectoryInfo info, WorkspaceNew workspace)
         {
             directoryInfo = info;
             this.workspace = workspace;
             DisplayName = directoryInfo.Name;
             IsEditable = true;
+        }
+
+        public WorkspaceNew Workspace
+        {
+            get { return workspace; }
         }
 
         public override Uri IconSource
@@ -76,7 +82,7 @@ namespace CShell.Modules.Workspace.ViewModels
 
         protected BindableCollection<TreeViewModel> LoadChildren()
         {
-            var filer = workspace.Filter ?? "";
+            var filer = "";//workspace.Filter ?? "";
             var filterStrings = filer.Split().Select(WildcardToRegex).ToArray();
             var filters = filterStrings.Select(fs=> new Regex(fs, RegexOptions.IgnoreCase)).ToArray();
 

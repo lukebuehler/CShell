@@ -42,14 +42,10 @@ namespace CShell.Modules.Shell
 
 		public override void Initialize()
 		{
-		    var newWorkspace = new MenuItem("New Workspace...", NewWorkspace);
-            //var newFile = new MenuItem("_New File...", NewFile);
 		    var openWorkspace = new MenuItem("Open Workspace...", OpenWorkspace);
             var openFile = new MenuItem("_Open File...", OpenFile)
                 .WithIcon("/Resources/Icons/Open.png")
                 .WithGlobalShortcut(ModifierKeys.Control, Key.O);
-            var closeWorkspace = new MenuItem("Close Workspace", CloseWorkspace)
-                .WithActivator(workspaceActivator);
             var closeFile = new MenuItem("_Close", CloseFile);
 		    var save = new MenuItem("Save", Save)
 		        .WithIcon("Resources/Icons/Icons.16x16.SaveIcon.png")
@@ -63,13 +59,9 @@ namespace CShell.Modules.Shell
             //populate the menu
             MainMenu.First(item=>item.Name == "File")
                 .Add(
-                    newWorkspace,
-                    //newFile,
-                    MenuItemBase.Separator,
                     openWorkspace,
                     openFile,
                     MenuItemBase.Separator,
-                    closeWorkspace,
                     closeFile,
                     MenuItemBase.Separator,
                     save,
@@ -87,30 +79,22 @@ namespace CShell.Modules.Shell
                 );
 		}
 
-        private IEnumerable<IResult> NewWorkspace()
-        {
-            var dialog = new SaveFileDialog();
-            dialog.Filter = CShell.Constants.CShellFileTypes;
-            dialog.DefaultExt = CShell.Constants.CShellFileExtension;
-            yield return Show.Dialog(dialog);
-            yield return new CloseWorkspaceResult();
-            yield return new OpenWorkspaceResult(dialog.FileName);
-        }
+        //private IEnumerable<IResult> NewWorkspace()
+        //{
+        //    var dialog = new SaveFileDialog();
+        //    dialog.Filter = CShell.Constants.CShellFileTypes;
+        //    dialog.DefaultExt = CShell.Constants.CShellFileExtension;
+        //    yield return Show.Dialog(dialog);
+        //    yield return new CloseWorkspaceResult();
+        //    yield return new OpenWorkspaceResult(dialog.FileName);
+        //}
 
         private IEnumerable<IResult> OpenWorkspace()
         {
-            var dialog = new OpenFileDialog();
-            dialog.Filter = CShell.Constants.CShellFileTypes;
-            dialog.DefaultExt = CShell.Constants.CShellFileExtension;
-            yield return Show.Dialog(dialog);
-            yield return new CloseWorkspaceResult();
-            yield return new OpenWorkspaceResult(dialog.FileName);
-        }
-
-
-        private IEnumerable<IResult> CloseWorkspace()
-        {
-            yield return new CloseWorkspaceResult();
+            var folderResult = Show.FolderDialog();
+            yield return folderResult;
+            var folder = folderResult.SelectedFolder;
+            yield return new OpenWorkspaceResult(folder);
         }
 
 

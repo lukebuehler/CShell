@@ -32,7 +32,7 @@ namespace CShell.Modules.Repl.ViewModels
     [Export(typeof(ReplViewModel))]
     [Export(typeof(IRepl))]
     [Export(typeof(ITool))]
-    public class ReplViewModel : Tool, IRepl, IHandle<WorkspaceOpeningEventArgs>, IHandle<WorkspaceClosedEventArgs>
+    public class ReplViewModel : Tool, IRepl
     {
         private readonly Timer timer;
         private IRepl internalRepl;
@@ -104,15 +104,6 @@ namespace CShell.Modules.Repl.ViewModels
             }
         }
 
-        public void Handle(WorkspaceOpeningEventArgs message)
-        {
-            replView.ScriptingEngine = message.Workspace.ScriptingEngine;
-        }
-
-        public void Handle(WorkspaceClosedEventArgs message)
-        {
-            replView.ScriptingEngine = null;
-        }
 
         #region IRepl wrapper implementaion
         public void Clear()

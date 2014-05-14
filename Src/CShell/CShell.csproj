@@ -97,6 +97,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Lib\AvalonDock.2.0.2000\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
     </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero">
+      <HintPath>..\..\Lib\AvalonDock.2.0.2000\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
     <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Lib\AvalonDock.2.0.2000\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
@@ -329,16 +332,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CShellCore.CodeCompletion\CShellCore.CodeCompletion.csproj">
-      <Project>{2adf8e19-b896-4778-8391-bc55fb100852}</Project>
-      <Name>CShellCore.CodeCompletion</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CShellCore\CShellCore.csproj">
-      <Project>{5D2479EA-0D1E-4381-AD9C-998CCEC2DC21}</Project>
-      <Name>CShellCore</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Icon.png" />
   </ItemGroup>
   <ItemGroup>
@@ -404,6 +397,20 @@
     <Resource Include="Resources\Icons\Icons.16x16.UndoIcon.png" />
     <Resource Include="Resources\Icons\Icons.16x16.XMLFileIcon.png" />
     <Resource Include="Resources\Icons\Output.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CShell.Completion\CShell.Completion.csproj">
+      <Project>{2adf8e19-b896-4778-8391-bc55fb100852}</Project>
+      <Name>CShell.Completion</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CShell.Core\CShell.Core.csproj">
+      <Project>{5d2479ea-0d1e-4381-ad9c-998ccec2dc21}</Project>
+      <Name>CShell.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CShell.ScriptCs\CShell.ScriptCs.csproj">
+      <Project>{6fee7bd7-f709-459b-9f37-153d22ab917a}</Project>
+      <Name>CShell.ScriptCs</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

@@ -23,32 +23,40 @@ using CShell.Framework.Results;
 using CShell.Framework.Services;
 using CShell.Properties;
 using Caliburn.Micro;
+using CShell.ScriptCs;
 
 namespace CShell.Modules.Workspace.ViewModels
 {
 	[Export]
     [Export(typeof(ITool))]
-    public class WorkspaceViewModel : Tool, IHandle<WorkspaceOpenedEventArgs>, IHandle<WorkspaceClosingEventArgs>
+    public class WorkspaceViewModel : Tool, IHandle<WorkspaceOpenedEventArgs>
 	{
         [ImportingConstructor]
-        public WorkspaceViewModel(IEventAggregator eventAggregator)
+        public WorkspaceViewModel(IRepl repl, IReplExecutorFactory replExecutorFactory, IEventAggregator eventAggregator)
         {
             DisplayName = "Workspace Explorer";
             eventAggregator.Subscribe(this);
-            var currentWorkspace = CShell.Shell.Workspace;
-            if (currentWorkspace != null)
-                LoadWorkspace(currentWorkspace);
+
+            workspace = new WorkspaceNew(repl, replExecutorFactory);
         }
 
-	    private void LoadWorkspace(CShell.Workspace workspace)
+	    private readonly WorkspaceNew workspace;
+
+        private TreeViewModel tree;
+        public TreeViewModel Tree
         {
+            get { return tree; }
+        }
+
+	    private void OpenWorkspace(string workspaceDirectory)
+        {
+            workspace.SetRootFolder(workspaceDirectory);
+
             tree = new TreeViewModel();
-            CShellFile = new CShellFileViewModel(workspace.CShellFile);
-            tree.Children.Add(cShellFile);
 
             //add the assembly references
-	        var refs = new AssemblyReferencesViewModel(workspace.Assemblies);
-            tree.Children.Add(refs);
+            //var refs = new AssemblyReferencesViewModel(workspace.Assemblies);
+            //tree.Children.Add(refs);
 
             //add the file tree
             //var files = new FileReferencesViewModel(workspace.Files, null);
@@ -58,7 +66,7 @@ namespace CShell.Modules.Workspace.ViewModels
             NotifyOfPropertyChange(() => Tree);
         }
 
-        private void UnloadWorkspace(CShell.Workspace workspace)
+        private void CloseWorkspace(CShell.Workspace workspace)
         {
             if(tree != null)
             {
@@ -85,31 +93,16 @@ namespace CShell.Modules.Workspace.ViewModels
         }
         #endregion
 
-	    private CShellFileViewModel cShellFile;
-        public CShellFileViewModel CShellFile
-	    {
-	        get { return cShellFile; }
-	        set { cShellFile = value; NotifyOfPropertyChange(()=>CShellFile);}
-	    }
-
-	    private TreeViewModel tree;
-	    public TreeViewModel Tree
-	    {
-            get { return tree; }
-	    }
+	    
 
         public void Handle(WorkspaceOpenedEventArgs message)
         {
-            LoadWorkspace(message.Workspace);
+            OpenWorkspace(message.WorkspaceDirectory);
             //save the .cshell file path
-            Settings.Default.LastWorkspace = message.Workspace.CShellFile;
+            Settings.Default.LastWorkspace = message.WorkspaceDirectory;
             Settings.Default.Save();
         }
 
-        public void Handle(WorkspaceClosingEventArgs message)
-        {
-            UnloadWorkspace(message.Workspace);
-        }
 
         public IEnumerable<IResult> Open(object node)
         {

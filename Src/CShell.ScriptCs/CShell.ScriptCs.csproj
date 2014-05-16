@@ -75,6 +75,7 @@
     <Compile Include="ReplExecutor.cs" />
     <Compile Include="ReplExecutorFactory.cs" />
     <Compile Include="ReplScriptHost.cs" />
+    <Compile Include="ScriptResultExtensions.cs" />
     <Compile Include="ScriptServicesBuilder.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -22,7 +22,6 @@ namespace CShell.Modules.Repl.Views
 {
     public interface IReplView
     {
-        ScriptingEngine ScriptingEngine { get; set; }
         IRepl GetRepl();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ScriptCs;
+using ScriptCs.Contracts;
 
 namespace CShell.ScriptCs
 {
@@ -13,7 +14,7 @@ namespace CShell.ScriptCs
 
         public IReplExecutor Create(CShell.Framework.Services.IRepl repl)
         {
-            return new ReplExecutor(
+            var replExecutor = new ReplExecutor(
                 repl, 
                 scriptServices.ObjectSerializer, 
                 scriptServices.FileSystem, 
@@ -21,7 +22,14 @@ namespace CShell.ScriptCs
                 scriptServices.Engine, 
                 scriptServices.Logger);
 
-            //todo: register the replExecutor with the repl
+            var workingDirectory = scriptServices.FileSystem.CurrentDirectory;
+            var assemblies = scriptServices.AssemblyResolver.GetAssemblyPaths(workingDirectory);
+            var scriptPacks = scriptServices.ScriptPackResolver.GetPacks();
+
+            replExecutor.Initialize(assemblies, scriptPacks);
+            repl.Initialize(replExecutor);
+
+            return replExecutor;
         }
     }
 }

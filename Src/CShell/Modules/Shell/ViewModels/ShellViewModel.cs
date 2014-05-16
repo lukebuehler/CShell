@@ -168,9 +168,6 @@ namespace CShell.Modules.Shell.ViewModels
             //    Settings.Default.IsFirstStartup = false;
             //    new OpenWorkspaceResult(Constants.CShellDefaultFilePath).BeginExecute(null);
             //}
-
-            //new OpenWorkspaceResult(@"C:\Users\Luke\Dropbox\CShell").BeginExecute(null);
-
         }
 
         public void Close()

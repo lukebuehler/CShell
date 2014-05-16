@@ -31,13 +31,12 @@ namespace CShell.ScriptCs
             this.serializer = serializer;
         }
 
-        public string Buffer { get; set; }
-
-
         public override ScriptResult Execute(string script, params string[] scriptArgs)
         {
+            var result = new ScriptResult();
             try
             {
+                repl.EvaluateStarted(script, null);
                 var preProcessResult = FilePreProcessor.ProcessScript(script);
 
                 ImportNamespaces(preProcessResult.Namespaces.ToArray());
@@ -50,9 +49,7 @@ namespace CShell.ScriptCs
 
                 //replControl.Foreground = Brushes.Cyan;
 
-                Buffer += preProcessResult.Code;
-
-                var result = ScriptEngine.Execute(Buffer, null, References, Namespaces, ScriptPackSession);
+                result = ScriptEngine.Execute(preProcessResult.Code, null, References, Namespaces, ScriptPackSession);
                 if (result == null) return new ScriptResult();
 
                 if (result.CompileExceptionInfo != null)
@@ -76,7 +73,7 @@ namespace CShell.ScriptCs
                 {
                     //Console.ForegroundColor = ConsoleColor.Yellow;
 
-                    var serializedResult = serializer.Serialize(result.ReturnValue);
+                    //var serializedResult = serializer.Serialize(result.ReturnValue);
                     //replControl.WriteResultLine(serializedResult);
                 }
                 else if (result.CompileExceptionInfo == null && result.ExecuteExceptionInfo == null)
@@ -84,7 +81,6 @@ namespace CShell.ScriptCs
                     //replControl.WriteResultLine("");
                 }
 
-                Buffer = null;
                 return result;
             }
             catch (FileNotFoundException fileEx)
@@ -102,6 +98,7 @@ namespace CShell.ScriptCs
             }
             finally
             {
+                repl.EvaluateCompleted(result);
                 //Console.ResetColor();
             }
         }

@@ -25,6 +25,7 @@ using CShell.Framework.Services;
 using CShell.Modules.Repl.Controls;
 using CShell.Modules.Repl.Views;
 using Caliburn.Micro;
+using ScriptCs.Contracts;
 using Execute = CShell.Framework.Services.Execute;
 
 namespace CShell.Modules.Repl.ViewModels
@@ -106,6 +107,21 @@ namespace CShell.Modules.Repl.ViewModels
 
 
         #region IRepl wrapper implementaion
+        public void Initialize(IReplExecutor replExecutor)
+        {
+            Execute.OnUIThread(() => internalRepl.Initialize(replExecutor));
+        }
+
+        public void EvaluateStarted(string input, string sourceFile)
+        {
+            Execute.OnUIThread(() => internalRepl.EvaluateStarted(input, sourceFile));
+        }
+
+        public void EvaluateCompleted(ScriptResult result)
+        {
+            Execute.OnUIThread(() => internalRepl.EvaluateCompleted(result));
+        }
+
         public void Clear()
         {
             Execute.OnUIThread(()=>internalRepl.Clear());
@@ -180,5 +196,7 @@ namespace CShell.Modules.Repl.ViewModels
         }
         #endregion
 
+
+       
     }//end class
 }

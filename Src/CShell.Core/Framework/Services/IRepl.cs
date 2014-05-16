@@ -18,13 +18,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Windows.Media;
+using ScriptCs.Contracts;
 
 namespace CShell.Framework.Services
 {
     public interface IRepl
     {
+        void Initialize(IReplExecutor replExecutor);
+
+        void EvaluateStarted(string input, string sourceFile);
+        void EvaluateCompleted(ScriptResult result);
+
         void Clear();
         bool IsEvaluating { get; }
 

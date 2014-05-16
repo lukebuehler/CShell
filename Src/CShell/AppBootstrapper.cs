@@ -28,6 +28,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Threading;
 using CShell.Framework;
+using CShell.Framework.Results;
 using CShell.Framework.Services;
 using Caliburn.Micro;
 using CShell.ScriptCs;
@@ -126,8 +127,8 @@ namespace CShell
             // this is the main reason the order matters, once the workspace is opened all modules and their dlls need to be loaded.
             var shell = IoC.Get<IShell>();
             shell.Opened(e.Args);
-        }
 
+        }
 
         protected override void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {

@@ -34,7 +34,6 @@ namespace CShell.ScriptCs
         {
             RootFolder = dir;
             replExecutor = replExecutorFactory.Create(repl);
-
         }
 
         private void Close()

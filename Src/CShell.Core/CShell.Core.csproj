@@ -183,7 +183,7 @@
     <Resource Include="Framework\LICENCE.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CShellCore.CodeCompletion\CShell.Completion.csproj">
+    <ProjectReference Include="..\CShell.Completion\CShell.Completion.csproj">
       <Project>{2adf8e19-b896-4778-8391-bc55fb100852}</Project>
       <Name>CShell.Completion</Name>
     </ProjectReference>

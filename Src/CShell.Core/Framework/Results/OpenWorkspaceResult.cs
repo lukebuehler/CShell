@@ -39,24 +39,24 @@ namespace CShell.Framework.Results
 
         public override void Execute(ActionExecutionContext context)
         {
-            IoC.Get<IEventAggregator>().Publish(new WorkspaceOpenedEventArgs(workspaceDirectory));
-            //try
-            //{
-            //    if (!String.IsNullOrEmpty(cshellFile))
-            //    {
-            //        //some of this is synchronous which can mess up the UI (especially on startup), so we execute it on a seperate thread
-            //        Task.Factory.StartNew(()=>Shell.OpenWorkspace(cshellFile).Wait(TimeSpan.FromSeconds(30)))
-            //            .ContinueWith(t2 => OnCompleted(t2.Exception));
-            //    }
-            //    else
-            //    {
-            //        OnCompleted(null);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    OnCompleted(ex);
-            //}
+            
+            try
+            {
+                if (!String.IsNullOrEmpty(workspaceDirectory))
+                {
+                    //some of this is synchronous which can mess up the UI (especially on startup), so we execute it on a seperate thread
+                    Task.Factory.StartNew(() => IoC.Get<IEventAggregator>().Publish(new WorkspaceOpenedEventArgs(workspaceDirectory)))
+                        .ContinueWith(t2 => OnCompleted(t2.Exception));
+                }
+                else
+                {
+                    OnCompleted(null);
+                }
+            }
+            catch (Exception ex)
+            {
+                OnCompleted(ex);
+            }
         }
     }
 }

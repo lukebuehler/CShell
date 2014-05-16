@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
-using System.Threading.Tasks;
 using Common.Logging;
+using Common.Logging.Simple;
 using CShell.ScriptCs.Package;
-using NuGet;
 using ScriptCs;
 using ScriptCs.Contracts;
 using ScriptCs.Engine.Roslyn;
-using ScriptCs.Exceptions;
 using IFileSystem = ScriptCs.Contracts.IFileSystem;
+using LogLevel = Common.Logging.LogLevel;
 
 namespace CShell.ScriptCs
 {
@@ -23,6 +17,9 @@ namespace CShell.ScriptCs
 
         public ScriptServices Build()
         {
+            //TODO: this need to be wired up properly using our own IoC container from caliburn.
+
+            logger = new ConsoleOutLogger("Console", LogLevel.Debug, true, false, false, "HH:mm:ss");
             var engine = new RoslynScriptEngine(new ReplScriptHostFactory(), logger);
             var filePreProcessor = new FilePreProcessor(fileSystem, logger, new ILineProcessor[] {});
             var packageAssemblyResolver = new PackageAssemblyResolver(fileSystem, new PackageContainer(fileSystem, logger), logger);

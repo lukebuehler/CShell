@@ -22,7 +22,13 @@ namespace CShell.ScriptCs
             this.replExecutorFactory = replExecutorFactory;
         }
 
+        public IReplExecutor ReplExecutor
+        {
+            get { return replExecutor; }
+        }
+
         public string RootFolder { get; private set; }
+
 
         public void SetRootFolder(string dir)
         {

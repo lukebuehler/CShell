@@ -55,8 +55,8 @@ namespace CShell.Modules.Workspace.ViewModels
             tree = new TreeViewModel();
 
             //add the assembly references
-            //var refs = new AssemblyReferencesViewModel(workspace.Assemblies);
-            //tree.Children.Add(refs);
+            var refs = new AssemblyReferencesViewModel(workspace.ReplExecutor);
+            tree.Children.Add(refs);
 
             //add the file tree
             //var files = new FileReferencesViewModel(workspace.Files, null);

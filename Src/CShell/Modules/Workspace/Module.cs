@@ -92,7 +92,7 @@ namespace CShell.Modules.Workspace
             dialog.Filter = Constants.AssemblyFileFilter;
             dialog.Multiselect = true;
             yield return Show.Dialog(dialog);
-            yield return new AddReferencesResult(CShell.Shell.Workspace.Assemblies, dialog.FileNames);
+            //yield return new AddReferencesResult(CShell.Shell.Workspace.Assemblies, dialog.FileNames);
         }
 
         public IEnumerable<IResult> AddReferenceFromGac()
@@ -101,8 +101,8 @@ namespace CShell.Modules.Workspace
             var dialog = new AssemblyGacViewModel();
             yield return Show.Dialog(dialog, windowSettings);
             var selectedAssemblies = dialog.SelectedAssemblies.Select(item => item.AssemblyName).ToArray();
-            if (selectedAssemblies.Length <= dialog.MaxSelectedAssemblyCount)
-                yield return new AddReferencesResult(CShell.Shell.Workspace.Assemblies, dialog.SelectedAssemblies.Select(item => item.AssemblyName));
+            //if (selectedAssemblies.Length <= dialog.MaxSelectedAssemblyCount)
+            //    yield return new AddReferencesResult(CShell.Shell.Workspace.Assemblies, dialog.SelectedAssemblies.Select(item => item.AssemblyName));
         }
 
 

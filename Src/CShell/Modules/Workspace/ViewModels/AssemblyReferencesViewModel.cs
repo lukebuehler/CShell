@@ -25,33 +25,34 @@ using CShell.Framework.Results;
 using CShell.Modules.Workspace.Results;
 using Caliburn.Micro;
 using Microsoft.Win32;
+using ScriptCs.Contracts;
 
 namespace CShell.Modules.Workspace.ViewModels
 {
     public class AssemblyReferencesViewModel : TreeViewModel
     {
-        private readonly AssemblyReferences assemblyReferences;
+        private readonly IReplExecutor replExecutor;
 
-        public AssemblyReferencesViewModel(AssemblyReferences assemblyReferences)
+        public AssemblyReferencesViewModel(IReplExecutor replExecutor)
         {
-            this.assemblyReferences = assemblyReferences;
-            DisplayName = "References";
+            this.replExecutor = replExecutor;
+            DisplayName = "Loaded References";
 
-            assemblyReferences.CollectionChanged += AssemblyReferencesOnCollectionChanged;
+            replExecutor.AssemblyReferencesChanged += ReplExecutorOnAssemblyReferencesChanged;
             Reload();
         }
 
         private void Reload()
         {
             Children.Clear();
-            foreach (var assembly in assemblyReferences.OrderBy(a=>a.AssemblyName.Name))
-            {
-                var assemblyVM = new AssemblyReferenceViewModel(assembly, assemblyReferences);
-                Children.Add(assemblyVM);
-            }
+            var refs = new List<AssemblyReferenceViewModel>();
+            refs.AddRange(replExecutor.AssemblyReferences.PathReferences.Select(path=>new AssemblyReferenceViewModel(path, replExecutor)));
+            refs.AddRange(replExecutor.AssemblyReferences.Assemblies.Select(assembly=>new AssemblyReferenceViewModel(assembly, replExecutor)));
+            refs = refs.OrderBy(refVm => refVm.DisplayName).ToList();
+            Children.AddRange(refs);
         }
 
-        private void AssemblyReferencesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void ReplExecutorOnAssemblyReferencesChanged(object sender, EventArgs eventArgs)
         {
             Reload();
         }
@@ -60,7 +61,7 @@ namespace CShell.Modules.Workspace.ViewModels
         {
             if (disposing)
             {
-                assemblyReferences.CollectionChanged -= AssemblyReferencesOnCollectionChanged;
+                replExecutor.AssemblyReferencesChanged -= ReplExecutorOnAssemblyReferencesChanged;
             }
             base.Dispose(disposing);
         }
@@ -82,7 +83,7 @@ namespace CShell.Modules.Workspace.ViewModels
             dialog.Filter = CShell.Constants.AssemblyFileFilter;
             dialog.Multiselect = true;
             yield return Show.Dialog(dialog);
-            yield return new AddReferencesResult(assemblyReferences, dialog.FileNames);
+            //yield return new AddReferencesResult(assemblyReferences, dialog.FileNames);
         }
 
         public IEnumerable<IResult> AddReferenceFromGac()
@@ -91,8 +92,8 @@ namespace CShell.Modules.Workspace.ViewModels
             var dialog = new AssemblyGacViewModel();
             yield return Show.Dialog(dialog, windowSettings);
             var selectedAssemblies = dialog.SelectedAssemblies.Select(item => item.AssemblyName).ToArray();
-            if(selectedAssemblies.Length <= dialog.MaxSelectedAssemblyCount)
-                yield return new AddReferencesResult(assemblyReferences, dialog.SelectedAssemblies.Select(item=>item.AssemblyName));
+            //if(selectedAssemblies.Length <= dialog.MaxSelectedAssemblyCount)
+            //    yield return new AddReferencesResult(assemblyReferences, dialog.SelectedAssemblies.Select(item=>item.AssemblyName));
         }
 
     }//end class

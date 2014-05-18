@@ -40,14 +40,14 @@ namespace CShell
             CShellFileName = Path.GetFileNameWithoutExtension(cshellFile);
             this.engine = new ScriptingEngine();
 
-            assemblies = new AssemblyReferences(engine);
+            //assemblies = new AssemblyReferences(engine);
             //files = new FileReferences("Files");
             RootFolder = Path.GetDirectoryName(cshellFile);
             RootFolder = Path.GetFullPath(RootFolder);
 
             //make sure we add the CShell assembly
             var cshellCoreAssembly = Assembly.GetExecutingAssembly();
-            assemblies.Add(new AssemblyReference(cshellCoreAssembly) { Removable = false });
+            //assemblies.Add(new AssemblyReference(cshellCoreAssembly) { Removable = false });
             engine.Evaluate("using CShell; using CShell.Sinks;");
         }
 
@@ -63,8 +63,8 @@ namespace CShell
         }
 
         //conatains refs to dlls
-        private readonly AssemblyReferences assemblies;
-        public AssemblyReferences Assemblies { get { return assemblies; } }
+        //private readonly AssemblyReferences assemblies;
+        //public AssemblyReferences Assemblies { get { return assemblies; } }
 
         private string rootFolder;
 
@@ -149,7 +149,7 @@ namespace CShell
                 .ContinueWith(t =>
                 {
                     //release resources
-                    assemblies.Dispose();
+                    //assemblies.Dispose();
                     //set the workspace direcotry back to the bin
                     Environment.CurrentDirectory = startupDirectory;
                 });

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -31,6 +32,16 @@ namespace CShell.ScriptCs
             this.serializer = serializer;
         }
 
+        public AssemblyReferences AssemblyReferences { get { return base.References; } }
+        public string WorkspaceDirectory { get { return base.FileSystem.CurrentDirectory; } }
+
+        public event EventHandler<EventArgs> AssemblyReferencesChanged;
+        protected virtual void OnAssemblyReferencesChanged()
+        {
+            EventHandler<EventArgs> handler = AssemblyReferencesChanged;
+            if (handler != null) handler(this, EventArgs.Empty);
+        }
+
         public override ScriptResult Execute(string script, params string[] scriptArgs)
         {
             var result = new ScriptResult();
@@ -41,11 +52,15 @@ namespace CShell.ScriptCs
 
                 ImportNamespaces(preProcessResult.Namespaces.ToArray());
 
-                foreach (var reference in preProcessResult.References)
-                {
-                    var referencePath = FileSystem.GetFullPath(Path.Combine(Constants.BinFolder, reference));
-                    AddReferences(FileSystem.FileExists(referencePath) ? referencePath : reference);
-                }
+                var referencesToAdd = preProcessResult.References.Select(reference =>
+                    {
+                        var referencePath = FileSystem.GetFullPath(Path.Combine(Constants.BinFolder, reference));
+                        return FileSystem.FileExists(referencePath) ? referencePath : reference;
+                    })
+                    .ToArray();
+               
+                if(referencesToAdd.Length > 0)
+                    AddReferencesAndNotify(referencesToAdd);
 
                 //replControl.Foreground = Brushes.Cyan;
 
@@ -101,6 +116,30 @@ namespace CShell.ScriptCs
                 repl.EvaluateCompleted(result);
                 //Console.ResetColor();
             }
+        }
+
+        public void AddReferencesAndNotify(params Assembly[] references)
+        {
+            base.AddReferences(references);
+            OnAssemblyReferencesChanged();
+        }
+
+        public void RemoveReferencesAndNotify(params Assembly[] references)
+        {
+            base.RemoveReferences(references);
+            OnAssemblyReferencesChanged();
+        }
+
+        public void AddReferencesAndNotify(params string[] references)
+        {
+            base.AddReferences(references);
+            OnAssemblyReferencesChanged();
+        }
+
+        public void RemoveReferencesAndNotify(params string[] references)
+        {
+            base.RemoveReferences(references);
+            OnAssemblyReferencesChanged();
         }
     }
 }

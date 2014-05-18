@@ -102,7 +102,7 @@ namespace CShell
             batch.AddExportedValue<IWindowManager>(new WindowManager());
             var eventAggregator = new EventAggregator();
             batch.AddExportedValue<IEventAggregator>(eventAggregator);
-            batch.AddExportedValue(new AssemblyLoader(_container, eventAggregator));
+            //batch.AddExportedValue(new AssemblyLoader(_container, eventAggregator));
             //ScriptCS exports
             batch.AddExportedValue<IReplExecutorFactory>(new ReplExecutorFactory(new ScriptServicesBuilder()));
 

@@ -21,7 +21,7 @@ namespace CShell.ScriptCs
 
             logger = new ConsoleOutLogger("Console", LogLevel.Debug, true, false, false, "HH:mm:ss");
             var engine = new RoslynScriptEngine(new ReplScriptHostFactory(), logger);
-            var filePreProcessor = new FilePreProcessor(fileSystem, logger, new ILineProcessor[] {});
+            var filePreProcessor = new FilePreProcessor(fileSystem, logger, new ILineProcessor[] {new LoadLineProcessor(fileSystem), new ReferenceLineProcessor(fileSystem), new UsingLineProcessor() });
             var packageAssemblyResolver = new PackageAssemblyResolver(fileSystem, new PackageContainer(fileSystem, logger), logger);
             var installationProvider = new NugetInstallationProvider(fileSystem, logger);
 

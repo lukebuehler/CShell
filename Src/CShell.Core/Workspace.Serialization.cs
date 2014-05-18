@@ -41,15 +41,15 @@ namespace CShell
         {
             var ws = new WorkspaceContainer();
             //add the assemblies that have a file name
-            foreach (var assemblyFile in this.Assemblies.Where(a=>a.FullPath != null))
-            {
-                ws.AssemblyFileReferences.Add(assemblyFile.FilePath);
-            }
-            //add the assemblies that have no file name, also only the ones that are removable, the nonremovable assemblies are from CShell
-            foreach (var assemblyFile in this.Assemblies.Where(a => a.FullPath == null && a.Removable))
-            {
-                ws.AssemblyNameReferences.Add(assemblyFile.AssemblyName.FullName);
-            }
+            //foreach (var assemblyFile in this.Assemblies.Where(a=>a.FullPath != null))
+            //{
+            //    ws.AssemblyFileReferences.Add(assemblyFile.FilePath);
+            //}
+            ////add the assemblies that have no file name, also only the ones that are removable, the nonremovable assemblies are from CShell
+            //foreach (var assemblyFile in this.Assemblies.Where(a => a.FullPath == null && a.Removable))
+            //{
+            //    ws.AssemblyNameReferences.Add(assemblyFile.AssemblyName.FullName);
+            //}
 
             //save the file settings
             ws.RootFolder = RootFolder;
@@ -98,14 +98,14 @@ namespace CShell
                 xmlReader.ReadStartElement();
                 ws = (WorkspaceContainer) serializer.Deserialize(xmlReader);
 
-                foreach (var assemblyFile in ws.AssemblyFileReferences)
-                {
-                    this.Assemblies.Add(assemblyFile);
-                }
-                foreach (var assemblyName in ws.AssemblyNameReferences)
-                {
-                    this.Assemblies.Add(new AssemblyReference(new AssemblyName(assemblyName)));
-                }
+                //foreach (var assemblyFile in ws.AssemblyFileReferences)
+                //{
+                //    this.Assemblies.Add(assemblyFile);
+                //}
+                //foreach (var assemblyName in ws.AssemblyNameReferences)
+                //{
+                //    this.Assemblies.Add(new AssemblyReference(new AssemblyName(assemblyName)));
+                //}
 
                 //restore file settings
                 RootFolder = ws.RootFolder ?? "";

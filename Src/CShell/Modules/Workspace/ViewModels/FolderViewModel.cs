@@ -34,13 +34,13 @@ namespace CShell.Modules.Workspace.ViewModels
     public class FolderViewModel : TreeViewModel
     {
         protected DirectoryInfo directoryInfo;
-        private readonly WorkspaceNew workspace;
+        private readonly CShell.Workspace workspace;
 
-        protected FolderViewModel(string path, WorkspaceNew workspace)
+        protected FolderViewModel(string path, CShell.Workspace workspace)
             :this(new DirectoryInfo(path),workspace)
         { }
 
-        public FolderViewModel(DirectoryInfo info, WorkspaceNew workspace)
+        public FolderViewModel(DirectoryInfo info, CShell.Workspace workspace)
         {
             directoryInfo = info;
             this.workspace = workspace;
@@ -48,7 +48,7 @@ namespace CShell.Modules.Workspace.ViewModels
             IsEditable = true;
         }
 
-        public WorkspaceNew Workspace
+        public CShell.Workspace Workspace
         {
             get { return workspace; }
         }
@@ -57,10 +57,20 @@ namespace CShell.Modules.Workspace.ViewModels
         {
             get
             {
-                if (IsExpanded)
-                    return new Uri("pack://application:,,,/CShell;component/Resources/Icons/Folder.Open.png");
+                if (RelativePath.Equals("bin", StringComparison.OrdinalIgnoreCase) || RelativePath.Equals("packages", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (IsExpanded)
+                        return new Uri("pack://application:,,,/CShell;component/Resources/Icons/ReferenceFolder.Open.png");
+                    else
+                        return new Uri("pack://application:,,,/CShell;component/Resources/Icons/ReferenceFolder.Closed.png");
+                }
                 else
-                    return new Uri("pack://application:,,,/CShell;component/Resources/Icons/Folder.Closed.png");
+                {
+                    if (IsExpanded)
+                        return new Uri("pack://application:,,,/CShell;component/Resources/Icons/Folder.Open.png");
+                    else
+                        return new Uri("pack://application:,,,/CShell;component/Resources/Icons/Folder.Closed.png");
+                }
             }
         }
 

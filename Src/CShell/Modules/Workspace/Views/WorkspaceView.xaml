@@ -58,14 +58,8 @@
         </TreeView.ItemContainerStyle>
 
         <TreeView.Resources>
-            <HierarchicalDataTemplate DataType="{x:Type cshell:CShellFileViewModel}">
-                <StackPanel Orientation="Horizontal" DataContext="{Binding}" ToolTip="{Binding ToolTip}" >
-                    <Image Source="{Binding IconSource}" />
-                    <TextBlock Text="{Binding DisplayName}" Margin="3,2,3,3" />
-                </StackPanel>
-            </HierarchicalDataTemplate>
 
-            <HierarchicalDataTemplate DataType="{x:Type cshell:RootFolderViewModel}" ItemsSource="{Binding Children}">
+            <HierarchicalDataTemplate DataType="{x:Type cshell:FolderRootViewModel}" ItemsSource="{Binding Children}">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="{Binding IconSource}" />
                     <TextBlock Text="{Binding DisplayName}" Margin="3,2,3,3" />
@@ -83,7 +77,7 @@
             
             <HierarchicalDataTemplate DataType="{x:Type cshell:FolderViewModel}" ItemsSource="{Binding Children}">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="{Binding IconSource}" />
+                    <Image Source="{Binding IconSource}" Height="16" Width="16" />
                     <Controls:EditableTextBlock Text="{Binding DisplayName, Mode=TwoWay}" IsInEditMode="{Binding IsInEditMode, Mode=TwoWay}" IsEditable="{Binding IsEditable, Mode=TwoWay}" Margin="3,2,3,3" />
                     <StackPanel.ContextMenu>
                         <ContextMenu>
@@ -99,7 +93,7 @@
             </HierarchicalDataTemplate>
             <HierarchicalDataTemplate DataType="{x:Type cshell:FileViewModel}" ItemsSource="{Binding Children}">
                 <StackPanel Orientation="Horizontal" DataContext="{Binding}" ToolTip="{Binding ToolTip}" >
-                    <Image Source="{Binding IconSource}" />
+                    <Image Source="{Binding IconSource}" Height="16" Width="16" />
                     <Controls:EditableTextBlock Text="{Binding DisplayName, Mode=TwoWay}" IsInEditMode="{Binding IsInEditMode, Mode=TwoWay}" IsEditable="{Binding IsEditable, Mode=TwoWay}" Margin="3,2,3,3" />
                     <StackPanel.ContextMenu>
                         <ContextMenu>

@@ -109,7 +109,7 @@ namespace CShell.Completion
                 {
                     var offset = 0;
                     var doc = GetCompletionDocument(out offset);
-                    results = Completion.GetCompletions(doc, offset, controlSpace);
+                    results = Completion.GetCompletions(doc, offset, controlSpace, GetNamespaces());
                 }
                 catch (Exception exception)
                 {
@@ -197,6 +197,11 @@ namespace CShell.Completion
         {
             offset = CaretOffset;
             return new ReadOnlyDocument(new StringTextSource(Text), FileName);
+        }
+
+        protected virtual string[] GetNamespaces()
+        {
+            return null;
         }
         #endregion
 

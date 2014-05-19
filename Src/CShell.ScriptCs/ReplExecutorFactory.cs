@@ -12,8 +12,10 @@ namespace CShell.ScriptCs
             scriptServices = builder.Build();
         }
 
-        public IReplExecutor Create(CShell.Framework.Services.IRepl repl)
+        public IReplExecutor Create(CShell.Framework.Services.IRepl repl, string workspaceDirectory)
         {
+            scriptServices.FileSystem.CurrentDirectory = workspaceDirectory;
+
             var replExecutor = new ReplExecutor(
                 repl, 
                 scriptServices.ObjectSerializer, 
@@ -22,8 +24,7 @@ namespace CShell.ScriptCs
                 scriptServices.Engine, 
                 scriptServices.Logger);
 
-            var workingDirectory = scriptServices.FileSystem.CurrentDirectory;
-            var assemblies = scriptServices.AssemblyResolver.GetAssemblyPaths(workingDirectory);
+            var assemblies = scriptServices.AssemblyResolver.GetAssemblyPaths(scriptServices.FileSystem.CurrentDirectory);
             var scriptPacks = scriptServices.ScriptPackResolver.GetPacks();
 
             replExecutor.Initialize(assemblies, scriptPacks);

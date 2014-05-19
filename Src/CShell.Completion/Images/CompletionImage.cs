@@ -27,7 +27,7 @@ namespace CShell.Completion.Images
 		
 		static BitmapImage LoadBitmap(string name)
 		{
-			BitmapImage image = new BitmapImage(new Uri("pack://application:,,,/CShellCore.CodeCompletion;component/Images/" + name + ".png"));
+			BitmapImage image = new BitmapImage(new Uri("pack://application:,,,/CShell.Completion;component/Images/" + name + ".png"));
 			image.Freeze();
 			return image;
 		}

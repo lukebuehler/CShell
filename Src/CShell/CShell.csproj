@@ -190,9 +190,7 @@
     <Compile Include="Modules\Workspace\ViewModels\AssemblyGacViewModel.cs" />
     <Compile Include="Modules\Workspace\ViewModels\AssemblyReferencesViewModel.cs" />
     <Compile Include="Modules\Workspace\ViewModels\AssemblyReferenceViewModel.cs" />
-    <Compile Include="Modules\Workspace\ViewModels\CShellFileViewModel.cs" />
-    <Compile Include="Modules\Workspace\ViewModels\RootFolderSettingsViewModel.cs" />
-    <Compile Include="Modules\Workspace\ViewModels\RootFolderViewModel.cs" />
+    <Compile Include="Modules\Workspace\ViewModels\FolderRootViewModel.cs" />
     <Compile Include="Modules\Workspace\ViewModels\FileViewModel.cs" />
     <Compile Include="Modules\Workspace\ViewModels\FolderViewModel.cs" />
     <Compile Include="Modules\Workspace\ViewModels\TreeViewModel.cs" />

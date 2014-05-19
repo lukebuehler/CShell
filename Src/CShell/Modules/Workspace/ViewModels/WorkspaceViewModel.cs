@@ -17,6 +17,7 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using CShell.Framework;
 using CShell.Framework.Results;
@@ -29,54 +30,27 @@ namespace CShell.Modules.Workspace.ViewModels
 {
 	[Export]
     [Export(typeof(ITool))]
-    public class WorkspaceViewModel : Tool, IHandle<WorkspaceOpenedEventArgs>
+    public class WorkspaceViewModel : Tool
 	{
-        [ImportingConstructor]
-        public WorkspaceViewModel(IRepl repl, IReplExecutorFactory replExecutorFactory, IEventAggregator eventAggregator)
-        {
-            DisplayName = "Workspace Explorer";
-            eventAggregator.Subscribe(this);
+	    private readonly IShell shell;
+        private readonly CShell.Workspace workspace;
 
-            workspace = new WorkspaceNew(repl, replExecutorFactory);
+	    [ImportingConstructor]
+        public WorkspaceViewModel(CShell.Workspace workspace)
+        {
+            this.shell = shell;
+            DisplayName = "Workspace Explorer";
+	        this.workspace = workspace;
+            this.workspace.PropertyChanged += WorkspaceOnPropertyChanged;
         }
 
-	    private readonly WorkspaceNew workspace;
-
+	    #region Display
         private TreeViewModel tree;
         public TreeViewModel Tree
         {
             get { return tree; }
         }
 
-	    private void OpenWorkspace(string workspaceDirectory)
-        {
-            workspace.SetRootFolder(workspaceDirectory);
-
-            tree = new TreeViewModel();
-
-            //add the assembly references
-            var refs = new AssemblyReferencesViewModel(workspace.ReplExecutor);
-            tree.Children.Add(refs);
-
-            //add the file tree
-            //var files = new FileReferencesViewModel(workspace.Files, null);
-            var files = new RootFolderViewModel(workspace.RootFolder, workspace);
-            tree.Children.Add(files);
-
-            NotifyOfPropertyChange(() => Tree);
-        }
-
-        private void CloseWorkspace(CShell.Workspace workspace)
-        {
-            if(tree != null)
-            {
-                tree.Dispose();
-                tree = null;
-                NotifyOfPropertyChange(() => Tree);
-            }
-        }
-
-	    #region Display
 		public override PaneLocation PreferredLocation
 		{
 			get { return PaneLocation.Left; }
@@ -93,25 +67,40 @@ namespace CShell.Modules.Workspace.ViewModels
         }
         #endregion
 
-	    
-
-        public void Handle(WorkspaceOpenedEventArgs message)
+        private void WorkspaceOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            OpenWorkspace(message.WorkspaceDirectory);
-            //save the .cshell file path
-            Settings.Default.LastWorkspace = message.WorkspaceDirectory;
-            Settings.Default.Save();
-        }
+            if (propertyChangedEventArgs.PropertyName == "WorkspaceDirectory")
+            {   //teardown the current workspace
+                if (tree != null)
+                {
+                    tree.Dispose();
+                    tree = null;
+                    NotifyOfPropertyChange(() => Tree);
+                }
 
+                tree = new TreeViewModel();
+
+                //add the assembly references
+                var refs = new AssemblyReferencesViewModel(workspace.ReplExecutor);
+                tree.Children.Add(refs);
+
+                //add the file tree
+                //var files = new FileReferencesViewModel(workspace.Files, null);
+                var files = new FolderRootViewModel(workspace.WorkspaceDirectory, workspace);
+                tree.Children.Add(files);
+
+                NotifyOfPropertyChange(() => Tree);
+
+                Settings.Default.LastWorkspace = workspace.WorkspaceDirectory;
+                Settings.Default.Save();
+            }
+        }
 
         public IEnumerable<IResult> Open(object node)
         {
             var fileVM = node as FileViewModel;
             if(fileVM != null)
                 yield return Show.Document(fileVM.RelativePath);
-            var fileCShellVm = node as CShellFileViewModel;
-            if(fileCShellVm != null)
-                yield return Show.Document(fileCShellVm.RelativePath);
             yield break;
         }
 

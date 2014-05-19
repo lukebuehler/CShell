@@ -27,11 +27,11 @@ using CShell.ScriptCs;
 
 namespace CShell.Modules.Workspace.ViewModels
 {
-    public class RootFolderViewModel : FolderViewModel
+    public class FolderRootViewModel : FolderViewModel
     {
         private FileSystemWatcher fileSystemWatcher;
 
-        public RootFolderViewModel(string path, WorkspaceNew workspace)
+        public FolderRootViewModel(string path, CShell.Workspace workspace)
             :base(path, workspace)
         {
             DisplayName = directoryInfo.FullName;
@@ -65,7 +65,7 @@ namespace CShell.Modules.Workspace.ViewModels
             if (args.PropertyName == "RootFolder")
             {
                 fileSystemWatcher.EnableRaisingEvents = false;
-                directoryInfo = new DirectoryInfo(Workspace.RootFolder);
+                directoryInfo = new DirectoryInfo(Workspace.WorkspaceDirectory);
                 DisplayName = directoryInfo.FullName;
 
                 Children.Clear();
@@ -110,8 +110,8 @@ namespace CShell.Modules.Workspace.ViewModels
         #region Edit Root Folder
         public IEnumerable<IResult> ChangeRootFolder()
         {
-            yield return Show.Dialog<RootFolderSettingsViewModel>();
-
+            //yield return Show.Dialog<RootFolderSettingsViewModel>();
+            yield break;
         }
 
         #endregion

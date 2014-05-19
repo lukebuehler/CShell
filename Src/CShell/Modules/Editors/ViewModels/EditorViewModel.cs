@@ -124,8 +124,8 @@ namespace CShell.Modules.Editors.ViewModels
 		    textEditor.ShowLineNumbers = true;
 		    textEditor.SyntaxHighlighting = GetHighlighting(Path.GetExtension(path));
 
-            if (CShell.Shell.Workspace != null && CShell.Shell.Workspace.ScriptingEngine.CodeCompletion != null)
-                textEditor.Completion = CShell.Shell.Workspace.ScriptingEngine.CodeCompletion;
+            //if (CShell.Shell.Workspace != null && CShell.Shell.Workspace.ScriptingEngine.CodeCompletion != null)
+            //    textEditor.Completion = CShell.Shell.Workspace.ScriptingEngine.CodeCompletion;
 
             //debug to see what commands are available in the editor
             //var c = textEditor.TextArea.CommandBindings;

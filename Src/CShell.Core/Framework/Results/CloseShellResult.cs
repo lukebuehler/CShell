@@ -26,40 +26,25 @@ using Application = System.Windows.Application;
 
 namespace CShell.Framework.Results
 {
-    public class CloseWorkspaceResult : ResultBase
+    public class CloseShellResult : ResultBase
     {
-        private readonly bool closeApp;
 
         /// <summary>
         /// Closes the current workspace.
         /// </summary>
-        public CloseWorkspaceResult()
+        public CloseShellResult()
         {}
-
-        /// <summary>
-        /// Closes the current workspace and if the close app flag is set also the whole CShell application.
-        /// </summary>
-        public CloseWorkspaceResult(bool closeApp)
-        {
-            this.closeApp = closeApp;
-        }
 
         public override void Execute(ActionExecutionContext context)
         {
-            //try
-            //{
-            //    Shell.CloseWorkspace()
-            //        .ContinueWith(t =>
-            //        {
-            //            OnCompleted(t.Exception);
-            //            if (closeApp)
-            //                Caliburn.Micro.Execute.OnUIThread(()=>Application.Current.MainWindow.Close());
-            //        });
-            //}
-            //catch (Exception ex)
-            //{
-            //    OnCompleted(ex);
-            //}
+            try
+            {
+                Caliburn.Micro.Execute.OnUIThread(() => Application.Current.MainWindow.Close());
+            }
+            catch (Exception ex)
+            {
+                OnCompleted(ex);
+            }
         }
     }
 }

@@ -32,7 +32,7 @@ namespace CShell.Completion
     {
         public readonly IDocument OriginalDocument;
         public readonly int OriginalOffset;
-        public readonly string OriginalUsings;
+        public readonly string[] OriginalNamespaces;
 
         public readonly int Offset;
         public readonly IDocument Document;
@@ -49,14 +49,14 @@ namespace CShell.Completion
         /// <param name="offset">The offset.</param>
         /// <param name="projectContent">Content of the project.</param>
         /// <param name="usings">The usings.</param>
-        public CSharpCompletionContext(IDocument document, int offset, IProjectContent projectContent, string usings = null)
+        public CSharpCompletionContext(IDocument document, int offset, IProjectContent projectContent, string[] namespaces = null)
         {
             OriginalDocument = document;
             OriginalOffset = offset;
-            OriginalUsings = usings;
+            OriginalNamespaces = namespaces;
 
             //if the document is a c# script we have to soround the document with some code.
-            Document = PrepareCompletionDocument(document, ref offset, usings);
+            Document = PrepareCompletionDocument(document, ref offset, namespaces);
             Offset = offset;
 
             var syntaxTree = new CSharpParser().Parse(Document, Document.FileName);
@@ -74,7 +74,7 @@ namespace CShell.Completion
         }
 
         private static Regex replaceRegex = new Regex("[^a-zA-Z0-9_]");
-        private static IDocument PrepareCompletionDocument(IDocument document, ref int offset, string usings = null)
+        private static IDocument PrepareCompletionDocument(IDocument document, ref int offset, string[] namespaces = null)
         {
             if (String.IsNullOrEmpty(document.FileName))
                 return document;
@@ -92,7 +92,12 @@ namespace CShell.Completion
                 var className = replaceRegex.Replace(fileNameWithoutExtension, "");
                 className = className.TrimStart('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'); //there can be no number at the beginning of the class name
                 var header = "";
-                header += (usings ?? "") + Environment.NewLine;
+                if (namespaces != null && namespaces.Length > 0)
+                {
+                    foreach (var ns in namespaces)
+                        header += "using " + ns + "; ";
+                    header += Environment.NewLine;
+                }
                 header += "static class " + className + " {" + Environment.NewLine;
                 header += "static void Script(){" + Environment.NewLine;
                 var footer = "";

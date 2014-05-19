@@ -91,7 +91,7 @@ namespace CShell.Completion
 
         public void Update(IDocument document, int offset)
         {
-            var completionContext = new CSharpCompletionContext(document, offset, context.ProjectContent, context.OriginalUsings);
+            var completionContext = new CSharpCompletionContext(document, offset, context.ProjectContent, context.OriginalNamespaces);
             Update(completionContext);
         }
 

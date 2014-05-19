@@ -156,18 +156,18 @@ namespace CShell.Modules.Shell.ViewModels
             if (args != null && args.Length > 0 && !String.IsNullOrEmpty(args[0]))
             {
                 var workspaceDir = args[0];
-                new OpenWorkspaceResult(workspaceDir).BeginExecute(null);
+                new ChangeWorkspaceResult(workspaceDir).BeginExecute(null);
             }
-            else if (Settings.Default.OpenLastWorkspace && File.Exists(Settings.Default.LastWorkspace))
+            else if (Settings.Default.OpenLastWorkspace && Directory.Exists(Settings.Default.LastWorkspace))
             {
                 var workspaceDir = Settings.Default.LastWorkspace;
-                new OpenWorkspaceResult(workspaceDir).BeginExecute(null);
+                new ChangeWorkspaceResult(workspaceDir).BeginExecute(null);
             }
             else if (Settings.Default.IsFirstStartup)
             {
                 //open the default workspace if this is the first startup
                 Settings.Default.IsFirstStartup = false;
-                new OpenWorkspaceResult(Constants.CShellDefaultWorkspacePath).BeginExecute(null);
+                new ChangeWorkspaceResult(Constants.CShellDefaultWorkspacePath).BeginExecute(null);
             }
         }
 
@@ -198,7 +198,8 @@ namespace CShell.Modules.Shell.ViewModels
             if (CShell.Shell.Workspace != null)
             {
                 e.Cancel = true;
-                yield return new CloseWorkspaceResult(true);
+                yield return new ChangeWorkspaceResult(null);
+                yield return new CloseShellResult();
             }
         }
         #endregion

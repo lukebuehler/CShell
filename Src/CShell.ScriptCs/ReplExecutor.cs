@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Common.Logging;
 using CShell.Framework.Services;
+using CShell.Util;
 using ScriptCs;
 using ScriptCs.Contracts;
 
@@ -32,7 +33,6 @@ namespace CShell.ScriptCs
             this.serializer = serializer;
         }
 
-        public AssemblyReferences AssemblyReferences { get { return base.References; } }
         public string WorkspaceDirectory { get { return base.FileSystem.CurrentDirectory; } }
 
         public event EventHandler<EventArgs> AssemblyReferencesChanged;
@@ -140,6 +140,46 @@ namespace CShell.ScriptCs
         {
             base.RemoveReferences(references);
             OnAssemblyReferencesChanged();
+        }
+
+        public string[] GetReferencesAsPaths()
+        {
+            var paths = new List<string>();
+            paths.AddRange(References.PathReferences);
+            paths.AddRange(References.Assemblies.Select(a=>a.GetName().Name));
+            return paths.ToArray();
+        }
+
+        public string[] GetReferencesAsFullPaths()
+        {
+            var paths = new List<string>();
+            foreach (var reference in References.PathReferences)
+            {
+                var fullPath = reference;
+                //look in the bin folder
+                if(!File.Exists(fullPath))
+                    fullPath = FileSystem.GetFullPath(Path.Combine(Constants.BinFolder, reference));
+                //try to resolve as relaive path
+                if (!File.Exists(fullPath))
+                    fullPath = PathHelper.ToAbsolutePath(FileSystem.CurrentDirectory, reference);
+                //try to find in GAC
+                if (!File.Exists(fullPath))
+                {
+                    var assemblyName = GlobalAssemblyCache.FindBestMatchingAssemblyName(reference);
+                    if(assemblyName != null)
+                        fullPath = GlobalAssemblyCache.FindAssemblyInNetGac(assemblyName);
+                }
+
+                if(File.Exists(fullPath))
+                    paths.Add(fullPath);
+            }
+            paths.AddRange(References.Assemblies.Select(a => a.Location));
+            return paths.ToArray();
+        }
+
+        public string[] GetNamespaces()
+        {
+            return Namespaces.ToArray();
         }
     }
 }

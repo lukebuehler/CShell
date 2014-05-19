@@ -29,6 +29,7 @@ using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
 using System.Windows.Media;
 using CShell.Code;
+using CShell.Completion;
 using CShell.Framework.Services;
 using CShell.ScriptCs;
 using CShell.Util;
@@ -90,12 +91,39 @@ namespace CShell.Modules.Repl.Controls
             Clear();
         }
 
+        internal IReplExecutor ReplExecutor { get { return replExecutor; } }
+
         #region IRepl Interface Implementation
         public void Initialize(IReplExecutor replExecutor)
         {
+            //unhook old executor
+            if (this.replExecutor != null)
+            {
+                this.replExecutor.AssemblyReferencesChanged -= ReplExecutorOnAssemblyReferencesChanged;
+            }
             this.replExecutor = replExecutor;
+            this.replExecutor.AssemblyReferencesChanged += ReplExecutorOnAssemblyReferencesChanged;
+            this.textEditor.Completion = new CSharpCompletion();
+            ReplExecutorOnAssemblyReferencesChanged(null, null);
             Clear();
             textEditor.IsEnabled = true;
+        }
+
+        private void ReplExecutorOnAssemblyReferencesChanged(object sender, EventArgs eventArgs)
+        {
+            if (textEditor.Completion == null)
+                return;
+
+            var replRefs = replExecutor.GetReferencesAsFullPaths().ToList();
+            var completionRefs = textEditor.Completion.GetAssemblies().ToList();
+            var toAdd = replRefs.Where(r => !completionRefs.Contains(r)).ToList();
+            var toRemove = completionRefs.Where(r => !replRefs.Contains(r)).Where(r => !r.EndsWith("mscorlib.dll")).ToList();
+
+            foreach (var r in toRemove)
+                textEditor.Completion.RemoveAssembly(r);
+
+            foreach (var r in toAdd)
+                textEditor.Completion.AddAssembly(r);
         }
 
         private string currrentInput;
@@ -387,7 +415,7 @@ namespace CShell.Modules.Repl.Controls
             var line = Doc.GetLineByOffset(Offset);
             offset = Offset - line.Offset - prompt.Length;
 
-            var vars = new string[0]; //ScriptingEngine.GetVars();
+            var vars = ""; //ScriptingEngine.GetVars();
             var code = vars + lineText;
             offset += vars.Length;
             var doc = new ReadOnlyDocument(new ICSharpCode.NRefactory.Editor.StringTextSource(code), textEditor.FileName);
@@ -569,6 +597,8 @@ namespace CShell.Modules.Repl.Controls
         }
         #endregion
 
+
+       
 
         
     }//end class

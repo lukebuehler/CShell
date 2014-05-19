@@ -46,8 +46,7 @@ namespace CShell.Modules.Workspace.ViewModels
         {
             Children.Clear();
             var refs = new List<AssemblyReferenceViewModel>();
-            refs.AddRange(replExecutor.AssemblyReferences.PathReferences.Select(path=>new AssemblyReferenceViewModel(path, replExecutor)));
-            refs.AddRange(replExecutor.AssemblyReferences.Assemblies.Select(assembly=>new AssemblyReferenceViewModel(assembly, replExecutor)));
+            refs.AddRange(replExecutor.GetReferencesAsPaths().Select(path=>new AssemblyReferenceViewModel(path, replExecutor)));
             refs = refs.OrderBy(refVm => refVm.DisplayName).ToList();
             Children.AddRange(refs);
         }

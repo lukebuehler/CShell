@@ -94,7 +94,7 @@ namespace CShell.Modules.Shell
             var folderResult = Show.FolderDialog();
             yield return folderResult;
             var folder = folderResult.SelectedFolder;
-            yield return new OpenWorkspaceResult(folder);
+            yield return new ChangeWorkspaceResult(folder);
         }
 
 

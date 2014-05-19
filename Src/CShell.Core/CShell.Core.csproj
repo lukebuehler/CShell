@@ -90,7 +90,6 @@
     <Compile Include="Framework\Services\Execute.cs" />
     <Compile Include="IReplExecutorFactory.cs" />
     <Compile Include="IReplExecutor.cs" />
-    <Compile Include="New.cs" />
     <Compile Include="Shell.Sinks.Xhtml.cs" />
     <Compile Include="Framework\Controls\AutoGreyableImage.cs" />
     <Compile Include="Framework\Controls\ToolBar.cs" />
@@ -118,9 +117,9 @@
     <Compile Include="Framework\Menus\StandardMenuItem.cs" />
     <Compile Include="Framework\ModuleBase.cs" />
     <Compile Include="Framework\RelayCommand.cs" />
-    <Compile Include="Framework\Results\CloseWorkspaceResult.cs" />
+    <Compile Include="Framework\Results\CloseShellResult.cs" />
     <Compile Include="Framework\Results\ShowFolderDialogResult.cs" />
-    <Compile Include="Framework\Results\OpenWorkspaceResult.cs" />
+    <Compile Include="Framework\Results\ChangeWorkspaceResult.cs" />
     <Compile Include="Framework\Results\ResultExtensions.cs" />
     <Compile Include="Framework\Results\ResultBase.cs" />
     <Compile Include="Framework\Results\Run.cs" />
@@ -157,7 +156,6 @@
     <Compile Include="Sinks\Plotting.cs" />
     <Compile Include="Shell.Workspace.cs" />
     <Compile Include="Sinks\IXhtmlSink.cs" />
-    <Compile Include="ICShellFile.cs" />
     <Compile Include="AssemblyReferences.cs" />
     <Compile Include="ScriptingEngine.cs" />
     <Compile Include="Shell.Documents.cs" />
@@ -181,12 +179,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Framework\LICENCE.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CShell.Completion\CShell.Completion.csproj">
-      <Project>{2adf8e19-b896-4778-8391-bc55fb100852}</Project>
-      <Name>CShell.Completion</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

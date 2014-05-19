@@ -35,19 +35,19 @@ namespace CShell.Code
         public string SourceFile;
     }
 
-    public class EvaluateCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
-    {
-        private readonly EvaluatorResult result;
+    //public class EvaluateCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    //{
+    //    private readonly EvaluatorResult result;
 
-        public EvaluateCompletedEventArgs(EvaluatorResult result, Exception error, bool cancelled, object userState)
-            : base(error, cancelled, userState)
-        {
-            this.result = result;
-        }
+    //    public EvaluateCompletedEventArgs(EvaluatorResult result, Exception error, bool cancelled, object userState)
+    //        : base(error, cancelled, userState)
+    //    {
+    //        this.result = result;
+    //    }
 
-        public EvaluatorResult Resuslt
-        {
-            get { return result; }
-        }
-    }
+    //    public EvaluatorResult Resuslt
+    //    {
+    //        get { return result; }
+    //    }
+    //}
 }

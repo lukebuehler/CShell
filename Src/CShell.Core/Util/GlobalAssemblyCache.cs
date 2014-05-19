@@ -32,7 +32,7 @@ namespace CShell.Util
     /// Class with static members to access the content of the global assembly
     /// cache.
     /// </summary>
-    internal static class GlobalAssemblyCache
+    public static class GlobalAssemblyCache
     {
         static readonly string cachedGacPathV2 = Fusion.GetGacPath(false);
         static readonly string cachedGacPathV4 = Fusion.GetGacPath(true);
@@ -104,7 +104,7 @@ namespace CShell.Util
                 assemblyName.GetDisplayName(sb, ref nChars, 0);
 
                 string fullName = sb.ToString();
-                if (publicKey != null)
+                if (!string.IsNullOrEmpty(publicKey))
                 {
                     info = fullName.Split(',');
                     if (publicKey != info[3].Substring(info[3].LastIndexOf('=') + 1))

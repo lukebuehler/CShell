@@ -15,5 +15,10 @@ namespace CShell.Modules.Repl.Controls
         {
             return Repl.GetCompletionDocument(out offset);
         }
+
+        protected override string[] GetNamespaces()
+        {
+            return Repl.ReplExecutor.GetNamespaces().ToArray();
+        }
     }
 }

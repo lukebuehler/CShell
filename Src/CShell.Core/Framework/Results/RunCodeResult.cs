@@ -43,7 +43,7 @@ namespace CShell.Framework.Results
         {
             if(Shell.Workspace != null)
             {
-                Shell.Workspace.ScriptingEngine.EvaluateAsync(code, sourceFile);
+                Shell.Workspace.ReplExecutor.Execute(code, sourceFile);
                 OnCompleted(null);
             }
         }

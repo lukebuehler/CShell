@@ -68,31 +68,31 @@ namespace CShell
         /// </summary>
         /// <param name="input">The code to evaluate.</param>
         /// <returns>The results of the evaluation.</returns>
-        public static EvaluatorResult Evaluate(string input)
-        {
-            if (Workspace == null)
-                return null;
-            return Workspace.ScriptingEngine.Evaluate(input);
-        }
+        //public static EvaluatorResult Evaluate(string input)
+        //{
+        //    if (Workspace == null)
+        //        return null;
+        //    return Workspace.ScriptingEngine.Evaluate(input);
+        //}
 
         /// <summary>
         /// Evaluates all the code in a file.
         /// </summary>
         /// <param name="filePath">The path to the file. Can be relative to the root path of the workspace, e.g. "subfolder/file.csx"</param>
         /// <returns>The results of the evaluation.</returns>
-        public static EvaluatorResult EvaluateFile(string filePath)
-        {
-            if (Workspace == null)
-                return null;
-            if (filePath == null) throw new ArgumentNullException("filePath");
-            if (File.Exists(filePath))
-            {
-                var fileText = System.IO.File.ReadAllText(filePath);
-                return Workspace.ScriptingEngine.Evaluate(fileText, filePath);
-            }
-            else
-                throw new FileNotFoundException("filePath not found.", filePath);
-        }
+        //public static EvaluatorResult EvaluateFile(string filePath)
+        //{
+        //    if (Workspace == null)
+        //        return null;
+        //    if (filePath == null) throw new ArgumentNullException("filePath");
+        //    if (File.Exists(filePath))
+        //    {
+        //        var fileText = System.IO.File.ReadAllText(filePath);
+        //        return Workspace.ScriptingEngine.Evaluate(fileText, filePath);
+        //    }
+        //    else
+        //        throw new FileNotFoundException("filePath not found.", filePath);
+        //}
 
         /// <summary>
         /// Evaluates all the code in a file.
@@ -101,12 +101,12 @@ namespace CShell
         /// <returns><c>true</c> if the evaluation succeeded, otherwise <c>false</c>.</returns>
         public static bool TryEvaluateFile(string filePath)
         {
-            if (Workspace == null)
-                return false;
-            if (File.Exists(filePath))
-            {
-                return !EvaluateFile(filePath).HasErrors;
-            }
+            //if (Workspace == null)
+            //    return false;
+            //if (File.Exists(filePath))
+            //{
+            //    return !EvaluateFile(filePath).HasErrors;
+            //}
             return false;
         }
 

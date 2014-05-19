@@ -39,12 +39,6 @@ namespace CShell.Modules.Repl.ViewModels
         public OutputViewModel(IEventAggregator eventAggregator)
         {
             eventAggregator.Subscribe(this);
-            if (CShell.Shell.Workspace != null)
-            {
-                var scriptingEngine = CShell.Shell.Workspace.ScriptingEngine;
-                scriptingEngine.ConsoleOutput -= ScriptingEngineOnConsoleOutput;
-                scriptingEngine.ConsoleOutput += ScriptingEngineOnConsoleOutput;
-            }
             BufferLength = 200;
             Font = "Consolas";
             FontSize = 12;

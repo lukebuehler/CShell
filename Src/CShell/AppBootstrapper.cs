@@ -25,6 +25,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using CShell.Framework;
@@ -126,9 +128,14 @@ namespace CShell
             //3. & finally forward the arguments to the shell that it can open the workspace if one was specified in the arguments.
             // this is the main reason the order matters, once the workspace is opened all modules and their dlls need to be loaded.
             var shell = IoC.Get<IShell>();
-            shell.Opened(e.Args);
 
+            Task.Run(async () =>
+            {
+                await Task.Delay(100);
+                await Caliburn.Micro.Execute.OnUIThreadAsync(() => shell.Opened(e.Args));
+            });
         }
+
 
         protected override void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {

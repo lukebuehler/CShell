@@ -74,6 +74,7 @@ namespace CShell.Modules.Repl.ViewModels
             internalRepl = replView.GetRepl();
 
             timer.Start();
+            base.OnViewLoaded(view);
         }
 
         protected override void OnDeactivate(bool close)

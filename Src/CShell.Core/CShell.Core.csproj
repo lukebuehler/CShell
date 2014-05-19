@@ -54,11 +54,11 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="ScriptCs.Contracts, Version=0.6.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\scriptcs\src\ScriptCs.Core\bin\Debug\ScriptCs.Contracts.dll</HintPath>
+      <HintPath>..\..\Lib\ScriptCs\ScriptCs.Contracts.dll</HintPath>
     </Reference>
     <Reference Include="ScriptCs.Core, Version=0.6.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\scriptcs\src\ScriptCs.Core\bin\Debug\ScriptCs.Core.dll</HintPath>
+      <HintPath>..\..\Lib\ScriptCs\ScriptCs.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />

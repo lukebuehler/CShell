@@ -77,11 +77,11 @@
     </Reference>
     <Reference Include="ICSharpCode.NRefactory, Version=5.0.0.0, Culture=neutral, PublicKeyToken=d4bfe873e7598c49, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Lib\ICSharpCode.NRefactory.5.3.0\lib\Net40\ICSharpCode.NRefactory.dll</HintPath>
+      <HintPath>..\..\Lib\NRefactory\ICSharpCode.NRefactory.dll</HintPath>
     </Reference>
     <Reference Include="ScriptCs.Contracts, Version=0.6.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\scriptcs\src\ScriptCs.Core\bin\Debug\ScriptCs.Contracts.dll</HintPath>
+      <HintPath>..\..\Lib\ScriptCs\ScriptCs.Contracts.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -116,7 +116,7 @@
       <HintPath>..\..\Lib\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="XhtmlDumper">
-      <HintPath>..\..\Lib\XhtmlDumper.dll</HintPath>
+      <HintPath>..\..\Lib\XhtmlDumper\XhtmlDumper.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

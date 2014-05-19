@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -152,25 +153,25 @@ namespace CShell.Modules.Shell.ViewModels
         public void Opened(string[] args)
         {
             //if a workspace was specified in the arguments open it now
-            //if (args != null && args.Length > 0 && !String.IsNullOrEmpty(args[0]))
-            //{
-            //    var cshellFile = args[0];
-            //    new OpenWorkspaceResult(cshellFile).BeginExecute(null);
-            //}
-            //else if (Settings.Default.OpenLastWorkspace && File.Exists(Settings.Default.LastWorkspace))
-            //{
-            //    var cshellFile = Settings.Default.LastWorkspace;
-            //    new OpenWorkspaceResult(cshellFile).BeginExecute(null);
-            //}
-            //else if(Settings.Default.IsFirstStartup)
-            //{
-            //    //open the default workspace if this is the first startup
-            //    Settings.Default.IsFirstStartup = false;
-            //    new OpenWorkspaceResult(Constants.CShellDefaultFilePath).BeginExecute(null);
-            //}
+            if (args != null && args.Length > 0 && !String.IsNullOrEmpty(args[0]))
+            {
+                var workspaceDir = args[0];
+                new OpenWorkspaceResult(workspaceDir).BeginExecute(null);
+            }
+            else if (Settings.Default.OpenLastWorkspace && File.Exists(Settings.Default.LastWorkspace))
+            {
+                var workspaceDir = Settings.Default.LastWorkspace;
+                new OpenWorkspaceResult(workspaceDir).BeginExecute(null);
+            }
+            else if (Settings.Default.IsFirstStartup)
+            {
+                //open the default workspace if this is the first startup
+                Settings.Default.IsFirstStartup = false;
+                new OpenWorkspaceResult(Constants.CShellDefaultWorkspacePath).BeginExecute(null);
+            }
         }
 
-        public void Close()
+	    public void Close()
 		{
 			Application.Current.MainWindow.Close();
 		}

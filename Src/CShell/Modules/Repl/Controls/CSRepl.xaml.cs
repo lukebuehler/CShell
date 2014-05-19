@@ -395,9 +395,15 @@ namespace CShell.Modules.Repl.Controls
                     return;
                 }
             }
-            if(key == Key.Home || key == Key.End)
+            if (key == Key.End)
             {
                 MoveCaretToEnd();
+                keyEventArgs.Handled = true;
+                return;
+            }
+            if (key == Key.Home)
+            {
+                MoveCaretToAfterPrompt();
                 keyEventArgs.Handled = true;
                 return;
             }
@@ -466,6 +472,13 @@ namespace CShell.Modules.Repl.Controls
         {
             textEditor.CaretOffset = Doc.TextLength;
             textEditor.ScrollToEnd(); 
+        }
+
+        private void MoveCaretToAfterPrompt()
+        {
+            var lastLine = Doc.GetLineByNumber(Doc.LineCount);
+            var offsetAfterPrompt = lastLine.Offset + prompt.Length;
+            textEditor.CaretOffset = offsetAfterPrompt;
         }
 
         private bool IsCaretAtCurrentLine()

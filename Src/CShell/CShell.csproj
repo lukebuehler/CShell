@@ -132,6 +132,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Modules\Editors\Controls\CodeCompletionTextEditor.cs" />
     <Compile Include="Modules\Editors\EditorProvider.cs" />
     <Compile Include="Modules\Editors\ViewModels\EditorViewModel.cs" />
     <Compile Include="Modules\Editors\Views\EditorView.xaml.cs">
@@ -414,6 +415,7 @@
       <Name>CShell.ScriptCs</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -34,9 +34,6 @@ namespace CShell.Modules.Editors.Views
 	/// </summary>
 	public partial class EditorView : UserControl
 	{
-        CompletionWindow completionWindow;
-        OverloadInsightWindow insightWindow;
-
 		public EditorView()
 		{
 			InitializeComponent();

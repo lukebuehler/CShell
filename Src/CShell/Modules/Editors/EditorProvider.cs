@@ -34,8 +34,13 @@ namespace CShell.Modules.Editors
             ".cs",
             ".csx",
             ".txt",
-            ".cmd"
+            ".cmd",
+            ".xml",
+            ".config",
         };
+
+        [Import]
+        public CShell.Workspace Workspace { get; set; }
 
 		public bool Handles(Uri uri)
 		{
@@ -45,7 +50,7 @@ namespace CShell.Modules.Editors
 
         public IDocument Create(Uri uri)
 		{
-			var editor = new EditorViewModel();
+			var editor = new EditorViewModel(Workspace);
 			editor.Open(uri);
 			return editor;
 		}

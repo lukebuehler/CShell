@@ -109,7 +109,7 @@ namespace CShell.Completion
                 {
                     var offset = 0;
                     var doc = GetCompletionDocument(out offset);
-                    results = Completion.GetCompletions(doc, offset, controlSpace, false, GetNamespaces());
+                    results = Completion.GetCompletions(doc, offset, controlSpace, GetNamespaces());
                 }
                 catch (Exception exception)
                 {

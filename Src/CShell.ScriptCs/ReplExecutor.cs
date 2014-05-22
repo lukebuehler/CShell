@@ -40,7 +40,7 @@ namespace CShell.ScriptCs
             this.packageInstaller = packageInstaller;
             this.resolver = resolver;
 
-            replCompletion = new CSharpCompletion();
+            replCompletion = new CSharpCompletion(true);
             replCompletion.AddReferences(GetReferencesAsPaths());
 
             //since it's quite expensive to initialize the "System." references we clone the REPL code completion

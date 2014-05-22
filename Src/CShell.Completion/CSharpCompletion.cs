@@ -20,15 +20,18 @@ namespace CShell.Completion
 {
     public class CSharpCompletion : ICompletion
     {
+        private readonly bool isRepl;
         private IProjectContent projectContent;
 
-        private CSharpCompletion(IProjectContent projectContent)
+        private CSharpCompletion(IProjectContent projectContent, bool isRepl)
         {
             this.projectContent = projectContent;
+            this.isRepl = isRepl;
         }
 
-        public CSharpCompletion()
+        public CSharpCompletion(bool isRepl)
         {
+            this.isRepl = isRepl;
             projectContent = new CSharpProjectContent();
             var assemblies = new Assembly[]
             {
@@ -89,7 +92,7 @@ namespace CShell.Completion
             }
         }
 
-        public CodeCompletionResult GetCompletions(IDocument document, int offset, bool controlSpace = false, bool saveDeclarations = false, string[] namespaces = null)
+        public CodeCompletionResult GetCompletions(IDocument document, int offset, bool controlSpace = false, string[] namespaces = null)
         {
             var result = new CodeCompletionResult();
 
@@ -213,9 +216,9 @@ namespace CShell.Completion
         }
 
 
-        public ICompletion Clone()
+        public ICompletion Clone(bool isRepl = false)
         {
-            return new CSharpCompletion(projectContent);
+            return new CSharpCompletion(projectContent, isRepl);
         }
 
 

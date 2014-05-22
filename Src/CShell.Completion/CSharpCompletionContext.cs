@@ -48,7 +48,7 @@ namespace CShell.Completion
         /// <param name="document">The document, make sure the FileName property is set on the document.</param>
         /// <param name="offset">The offset.</param>
         /// <param name="projectContent">Content of the project.</param>
-        /// <param name="usings">The usings.</param>
+        /// <param name="namespaces">The refernced namespaces.</param>
         public CSharpCompletionContext(IDocument document, int offset, IProjectContent projectContent, string[] namespaces = null)
         {
             OriginalDocument = document;

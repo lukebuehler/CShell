@@ -21,7 +21,7 @@ namespace CShell
         void AddReferences(params string[] references);
         void RemoveReferences(params string[] references);
 
-        CodeCompletionResult GetCompletions(IDocument document, int offset, bool controlSpace = false, bool saveDeclarations = false, string[] namespaces = null);
-        ICompletion Clone();
+        CodeCompletionResult GetCompletions(IDocument document, int offset, bool controlSpace = false, string[] namespaces = null);
+        ICompletion Clone(bool isRepl = false);
     }
 }

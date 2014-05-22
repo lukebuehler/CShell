@@ -17,6 +17,7 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using Caliburn.Micro;
@@ -25,6 +26,9 @@ namespace CShell.Framework.Results
 {
     public class RunCodeResult : ResultBase
     {
+        [Import]
+        public Workspace Workspace { get; set; }
+
         private readonly string code;
         private readonly string sourceFile;
 
@@ -41,9 +45,9 @@ namespace CShell.Framework.Results
 
         public override void Execute(ActionExecutionContext context)
         {
-            if(Shell.Workspace != null)
+            if(Workspace != null && Workspace.ReplExecutor != null)
             {
-                Shell.Workspace.ReplExecutor.Execute(code, sourceFile);
+                Workspace.ReplExecutor.Execute(code, sourceFile);
                 OnCompleted(null);
             }
         }

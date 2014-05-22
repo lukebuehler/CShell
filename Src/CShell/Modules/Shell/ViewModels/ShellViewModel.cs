@@ -46,6 +46,7 @@ namespace CShell.Modules.Shell.ViewModels
 	[Export(typeof(IShell))]
 	public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell
 	{
+	    private bool closing = false;
 	    private IShellView shellView;
         private readonly ILog log = LogManager.GetLog(typeof(IShell));
 
@@ -195,9 +196,10 @@ namespace CShell.Modules.Shell.ViewModels
             // for the async close process to have enough time BEFORE the app closes we need to first cancel the close 
             // and then continue once the closing of the workspace is complete, and all of this in an async matter.
             // TODO: check if there are any unsaved documents and handle that properly first.
-            if (CShell.Shell.Workspace != null)
+            if (!closing)
             {
                 e.Cancel = true;
+                closing = true;
                 yield return new ChangeWorkspaceResult(null);
                 yield return new CloseShellResult();
             }
@@ -269,7 +271,20 @@ namespace CShell.Modules.Shell.ViewModels
                 });
             }
         }//end method
+
+        public CShell.Workspace.WindowLocation GetWindowLocation()
+        {
+            return shellView.GetWindowLocation();
+        }
+
+        public void RestoreWindowLocation(CShell.Workspace.WindowLocation windowLocation)
+        {
+            shellView.RestoreWindowLocation(windowLocation);
+        }
         #endregion
 
+
+
+       
     }//end class
 }

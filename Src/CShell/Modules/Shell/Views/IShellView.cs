@@ -25,6 +25,9 @@ namespace CShell.Modules.Shell.Views
 {
     public interface IShellView
     {
-        DockingManager DockingManager { get;} 
+        DockingManager DockingManager { get;}
+
+        CShell.Workspace.WindowLocation GetWindowLocation();
+        void RestoreWindowLocation(CShell.Workspace.WindowLocation windowLocation);
     }
 }

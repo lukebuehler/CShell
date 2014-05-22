@@ -42,6 +42,7 @@ namespace CShell
         public const string CShellEmptyFile = "Empty.cshell";
         public const string CShellFileTypes = "Workspace|*.cshell|All Files|*.*";
         public const string CShellFileExtension = ".cshell";
+        public const string LayoutFile = "layout.config";
 
 
         public const string SinkXhtml = "sink://cshell/xhtml/";

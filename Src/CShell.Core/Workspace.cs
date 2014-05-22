@@ -24,6 +24,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using Caliburn.Micro;
 using CShell.Framework.Services;
 using CShell.Util;
@@ -61,6 +62,7 @@ namespace CShell
             {
                 //run teardown script
                 //try to save the layout
+                SaveLayout();
             }
 
             replExecutor = null;
@@ -71,6 +73,7 @@ namespace CShell
                 //create executor
                 replExecutor = replExecutorFactory.Create(repl, dir);
                 //restore layout
+                LoadLayout();
 
                 //load libs
 
@@ -80,6 +83,8 @@ namespace CShell
             NotifyOfPropertyChange(() => WorkspaceDirectory);
             NotifyOfPropertyChange(() => ReplExecutor);
         }
+
+       
 
         #region Helpers
 

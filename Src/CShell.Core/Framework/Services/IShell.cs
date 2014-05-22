@@ -46,5 +46,7 @@ namespace CShell.Framework.Services
 
         void SaveLayout(XmlWriter xmlWriter);
         void LoadLayout(XmlReader xmlReader);
+        CShell.Workspace.WindowLocation GetWindowLocation();
+        void RestoreWindowLocation(CShell.Workspace.WindowLocation windowLocation);
 	}
 }

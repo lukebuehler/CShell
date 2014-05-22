@@ -30,122 +30,58 @@ using Caliburn.Micro;
 
 namespace CShell
 {
-    //public sealed partial class Workspace
-    //{
-    //    public void Save(string path)
-    //    {
-    //        Save(path, false);
-    //    }
+    public sealed partial class Workspace
+    {
+        private void SaveLayout()
+        {
+            var path = Path.Combine(WorkspaceDirectory, Constants.LayoutFile);
+            var settings = new XmlWriterSettings();
+            settings.Indent = true;
+            var windowLocation = shell.GetWindowLocation();
 
-    //    public void Save(string path, bool saveShellLayout)
-    //    {
-    //        var ws = new WorkspaceContainer();
-    //        //add the assemblies that have a file name
-    //        //foreach (var assemblyFile in this.Assemblies.Where(a=>a.FullPath != null))
-    //        //{
-    //        //    ws.AssemblyFileReferences.Add(assemblyFile.FilePath);
-    //        //}
-    //        ////add the assemblies that have no file name, also only the ones that are removable, the nonremovable assemblies are from CShell
-    //        //foreach (var assemblyFile in this.Assemblies.Where(a => a.FullPath == null && a.Removable))
-    //        //{
-    //        //    ws.AssemblyNameReferences.Add(assemblyFile.AssemblyName.FullName);
-    //        //}
+            var serializer = new XmlSerializer(typeof(WindowLocation));
+            using (var xmlWriter = XmlWriter.Create(path, settings))
+            {
+                xmlWriter.WriteStartDocument();
+                xmlWriter.WriteStartElement("CShellLayout");
+                serializer.Serialize(xmlWriter, windowLocation);
+                shell.SaveLayout(xmlWriter);
+                xmlWriter.WriteEndElement();
+            }
+        }
 
-    //        //save the file settings
-    //        ws.RootFolder = RootFolder;
-    //        ws.Filter = Filter;
+        private void LoadLayout()
+        {
+            var path = Path.Combine(WorkspaceDirectory, Constants.LayoutFile);
+            if(!File.Exists(path))
+                return;
 
-    //        var serializer = new XmlSerializer(typeof(WorkspaceContainer));
-    //        //using (var textWriter = new StreamWriter(path))
-    //        var settings = new XmlWriterSettings();
-    //        settings.Indent = true;
-    //        //settings.OmitXmlDeclaration = true;
-    //        using (var xmlWriter = XmlWriter.Create(path, settings))
-    //        {
-    //            xmlWriter.WriteStartDocument();
-    //            xmlWriter.WriteStartElement("CShell");
-    //            serializer.Serialize(xmlWriter, ws);
+            var settings = new XmlReaderSettings();
+            settings.IgnoreWhitespace = true;
 
-    //            if(saveShellLayout)
-    //            {
-    //                //todo: better way of getting the current shell
-    //                var shell = IoC.Get<IShell>();
-    //                if(shell != null)
-    //                    shell.SaveLayout(xmlWriter);
-    //            }
+            var serializer = new XmlSerializer(typeof(WindowLocation));
+            using (var xmlReader = XmlReader.Create(path, settings))
+            {
+                xmlReader.ReadStartElement();
+                var windowLocation = (WindowLocation)serializer.Deserialize(xmlReader);
+                shell.RestoreWindowLocation(windowLocation);
 
-    //            xmlWriter.WriteEndElement();
-    //        }
-    //    }
+                shell.LoadLayout(xmlReader);
+            }
+        }
 
-    //    public bool Load(string path)
-    //    {
-    //        return Load(path, false);
-    //    }
+        [Browsable(false)]
+        [XmlRootAttribute("WindowLocation", IsNullable = false)]
+        public class WindowLocation
+        {
+            public double Top { get; set; }
+            public double Left { get; set; }
+            public double Height { get; set; }
+            public double Width { get; set; }
+            public string State { get; set; }
+            public int Monitor { get; set; }
+        }
 
-    //    public bool Load(string path, bool loadShellLayout)
-    //    {
-    //        if (!File.Exists(path))
-    //            return false;
-    //        var serializer = new XmlSerializer(typeof(WorkspaceContainer));
-    //        WorkspaceContainer ws = null;
-
-    //        var settings = new XmlReaderSettings();
-    //        settings.IgnoreWhitespace = true;
-    //        //using (var reader = new StreamReader(path))
-    //        using (var xmlReader = XmlReader.Create(path, settings))
-    //        {
-    //            xmlReader.ReadStartElement();
-    //            ws = (WorkspaceContainer) serializer.Deserialize(xmlReader);
-
-    //            //foreach (var assemblyFile in ws.AssemblyFileReferences)
-    //            //{
-    //            //    this.Assemblies.Add(assemblyFile);
-    //            //}
-    //            //foreach (var assemblyName in ws.AssemblyNameReferences)
-    //            //{
-    //            //    this.Assemblies.Add(new AssemblyReference(new AssemblyName(assemblyName)));
-    //            //}
-
-    //            //restore file settings
-    //            RootFolder = ws.RootFolder ?? "";
-    //            Filter = ws.Filter ?? "";
-
-    //            //var es = xmlReader.ReadElementContentAsString();
-    //            if (loadShellLayout)
-    //            {
-    //                var shell = IoC.Get<IShell>();
-    //                if (shell != null)
-    //                    shell.LoadLayout(xmlReader);
-
-    //            }
-    //        }
-    //        return true;
-    //    }
-
-    //    [Browsable(false)]
-    //    [XmlRootAttribute("Workspace", IsNullable = false)]
-    //    public class WorkspaceContainer
-    //    {
-    //        private Collection<string> assemblyFileReferences = new Collection<string>();
-    //        [XmlArrayItem("File")]
-    //        public Collection<string> AssemblyFileReferences
-    //        {
-    //            get { return assemblyFileReferences; }
-    //        }
-
-    //        private Collection<string> assemblyNameReferences = new Collection<string>();
-    //        [XmlArrayItem("AssemblyName")]
-    //        public Collection<string> AssemblyNameReferences
-    //        {
-    //            get { return assemblyNameReferences; }
-    //        }
-
-    //        public string RootFolder { get; set; }
-    //        public string Filter { get; set; }
-    //    }
-
-       
-    //}//end class Workspace
+    }//end class Workspace
 
 }

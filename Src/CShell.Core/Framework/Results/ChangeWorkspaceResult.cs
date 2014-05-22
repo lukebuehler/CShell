@@ -47,16 +47,9 @@ namespace CShell.Framework.Results
             
             try
             {
-                if (!String.IsNullOrEmpty(workspaceDirectory))
-                {
-                    //some of this is synchronous which can mess up the UI (especially on startup), so we execute it on a seperate thread
-                    Task.Factory.StartNew(() => workspace.SetWorkspaceDirectory(workspaceDirectory))
-                        .ContinueWith(t2 => OnCompleted(t2.Exception));
-                }
-                else
-                {
-                    OnCompleted(null);
-                }
+                //some of this is synchronous which can mess up the UI (especially on startup), so we execute it on a seperate thread
+                Task.Factory.StartNew(() => workspace.SetWorkspaceDirectory(workspaceDirectory))
+                    .ContinueWith(t2 => OnCompleted(t2.Exception));
             }
             catch (Exception ex)
             {

@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.IO;
 using CShell.Framework;
 using CShell.Framework.Results;
 using CShell.Framework.Services;
@@ -78,21 +79,24 @@ namespace CShell.Modules.Workspace.ViewModels
                     NotifyOfPropertyChange(() => Tree);
                 }
 
-                tree = new TreeViewModel();
+                if (workspace.WorkspaceDirectory != null && Directory.Exists(workspace.WorkspaceDirectory))
+                {
+                    tree = new TreeViewModel();
 
-                //add the assembly references
-                var refs = new AssemblyReferencesViewModel(workspace.ReplExecutor);
-                tree.Children.Add(refs);
+                    //add the assembly references
+                    var refs = new AssemblyReferencesViewModel(workspace.ReplExecutor);
+                    tree.Children.Add(refs);
 
-                //add the file tree
-                //var files = new FileReferencesViewModel(workspace.Files, null);
-                var files = new FolderRootViewModel(workspace.WorkspaceDirectory, workspace);
-                tree.Children.Add(files);
+                    //add the file tree
+                    //var files = new FileReferencesViewModel(workspace.Files, null);
+                    var files = new FolderRootViewModel(workspace.WorkspaceDirectory, workspace);
+                    tree.Children.Add(files);
 
-                NotifyOfPropertyChange(() => Tree);
+                    NotifyOfPropertyChange(() => Tree);
 
-                Settings.Default.LastWorkspace = workspace.WorkspaceDirectory;
-                Settings.Default.Save();
+                    Settings.Default.LastWorkspace = workspace.WorkspaceDirectory;
+                    Settings.Default.Save();
+                }
             }
         }
 

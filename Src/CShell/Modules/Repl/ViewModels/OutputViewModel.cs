@@ -19,7 +19,6 @@ using System;
 using System.Linq;
 using System.ComponentModel.Composition;
 using System.Windows.Media;
-using CShell.Code;
 using CShell.Framework;
 using CShell.Framework.Services;
 using CShell.Modules.Repl.Views;
@@ -115,13 +114,6 @@ namespace CShell.Modules.Repl.ViewModels
 			_view = (IOutputView) view;
 			_view.ScrollToEnd();
 		}
-
-	    private void ScriptingEngineOnConsoleOutput(object sender, ConsoleEventArgs consoleEventArgs)
-	    {
-	        Write(consoleEventArgs.Text);
-	    }
-
-       
 
         #region Appearance from IOutput
         private string font;

@@ -14,14 +14,15 @@ namespace CShell
         event EventHandler<EventArgs> AssemblyReferencesChanged;
 
         string WorkspaceDirectory { get; }
+        ICompletion ReplCompletion { get; }
+        ICompletion DocumentCompletion { get; }
 
         string[] GetNamespaces();
         string[] GetReferencesAsPaths();
-        string[] GetReferencesAsFullPaths();
         void AddReferencesAndNotify(params Assembly[] references);
         void RemoveReferencesAndNotify(params Assembly[] references);
         void AddReferencesAndNotify(params string[] references);
         void RemoveReferencesAndNotify(params string[] references);
-
+        
     }
 }

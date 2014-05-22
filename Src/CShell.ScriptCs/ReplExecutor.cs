@@ -4,10 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Common.Logging;
+using CShell.Completion;
 using CShell.Framework.Services;
 using CShell.Util;
 using ScriptCs;
@@ -19,6 +21,8 @@ namespace CShell.ScriptCs
     {
         private readonly IRepl repl;
         private readonly IObjectSerializer serializer;
+        private readonly IPackageInstaller packageInstaller;
+        private readonly IPackageAssemblyResolver resolver;
 
         public ReplExecutor(
             IRepl repl,
@@ -26,11 +30,21 @@ namespace CShell.ScriptCs
             IFileSystem fileSystem,
             IFilePreProcessor filePreProcessor,
             IScriptEngine scriptEngine,
+            IPackageInstaller packageInstaller,
+            IPackageAssemblyResolver resolver,
             ILog logger)
             : base(fileSystem, filePreProcessor, scriptEngine, logger)
         {
             this.repl = repl;
             this.serializer = serializer;
+            this.packageInstaller = packageInstaller;
+            this.resolver = resolver;
+
+            replCompletion = new CSharpCompletion();
+            replCompletion.AddReferences(GetReferencesAsPaths());
+
+            //since it's quite expensive to initialize the "System." references we clone the REPL code completion
+            documentCompletion = replCompletion.Clone();
         }
 
         public string WorkspaceDirectory { get { return base.FileSystem.CurrentDirectory; } }
@@ -42,103 +56,157 @@ namespace CShell.ScriptCs
             if (handler != null) handler(this, EventArgs.Empty);
         }
 
+        private readonly ICompletion replCompletion;
+        private readonly ICompletion documentCompletion;
+
+        public ICompletion ReplCompletion
+        {
+            get { return replCompletion; }
+        }
+
+        public ICompletion DocumentCompletion
+        {
+            get { return documentCompletion; }
+        }
+
         public override ScriptResult Execute(string script, params string[] scriptArgs)
         {
             var result = new ScriptResult();
+            repl.EvaluateStarted(script, null);
+
             try
             {
-                repl.EvaluateStarted(script, null);
+                if (script.StartsWith(":"))
+                {
+                    var arguments = script.Split(' ');
+                    var command = arguments[0].Substring(1);
+
+                    var argsToPass = new List<object>();
+                    foreach (var argument in arguments.Skip(1))
+                    {
+                        try
+                        {
+                            var argumentResult = ScriptEngine.Execute(argument, scriptArgs, References, DefaultNamespaces, ScriptPackSession);
+                            //if Roslyn can evaluate the argument, use its value, otherwise assume the string
+                            argsToPass.Add(argumentResult.ReturnValue ?? argument);
+                        }
+                        catch (Exception)
+                        {
+                            argsToPass.Add(argument);
+                        }
+                    }
+
+                    var commandResult = HandleReplCommand(command, argsToPass.ToArray());
+                    result = new ScriptResult
+                    {
+                        ReturnValue = commandResult
+                    };
+                    return result;
+                }
+
                 var preProcessResult = FilePreProcessor.ProcessScript(script);
 
                 ImportNamespaces(preProcessResult.Namespaces.ToArray());
 
                 var referencesToAdd = preProcessResult.References.Select(reference =>
-                    {
-                        var referencePath = FileSystem.GetFullPath(Path.Combine(Constants.BinFolder, reference));
-                        return FileSystem.FileExists(referencePath) ? referencePath : reference;
-                    })
+                {
+                    var referencePath = FileSystem.GetFullPath(Path.Combine(Constants.BinFolder, reference));
+                    return FileSystem.FileExists(referencePath) ? referencePath : reference;
+                })
                     .ToArray();
-               
-                if(referencesToAdd.Length > 0)
+
+                if (referencesToAdd.Length > 0)
                     AddReferencesAndNotify(referencesToAdd);
 
-                //replControl.Foreground = Brushes.Cyan;
-
-                result = ScriptEngine.Execute(preProcessResult.Code, null, References, Namespaces, ScriptPackSession);
+                result = ScriptEngine.Execute(preProcessResult.Code, scriptArgs, References, Namespaces, ScriptPackSession);
                 if (result == null) return new ScriptResult();
-
-                if (result.CompileExceptionInfo != null)
-                {
-                    //replControl.Foreground = Brushes.Red;
-                    //replControl.WriteResultLine(result.CompileExceptionInfo.SourceException.Message);
-                }
-
-                if (result.ExecuteExceptionInfo != null)
-                {
-                    //Console.ForegroundColor = ConsoleColor.Red;
-                    //replControl.WriteResultLine(result.ExecuteExceptionInfo.SourceException.Message);
-                }
-
-                if (result.IsPendingClosingChar)
-                {
-                    return result;
-                }
-
-                if (result.ReturnValue != null)
-                {
-                    //Console.ForegroundColor = ConsoleColor.Yellow;
-
-                    //var serializedResult = serializer.Serialize(result.ReturnValue);
-                    //replControl.WriteResultLine(serializedResult);
-                }
-                else if (result.CompileExceptionInfo == null && result.ExecuteExceptionInfo == null)
-                {
-                    //replControl.WriteResultLine("");
-                }
 
                 return result;
             }
             catch (FileNotFoundException fileEx)
             {
                 RemoveReferences(fileEx.FileName);
-                //Console.ForegroundColor = ConsoleColor.Red;
-                //replControl.WriteResultLine("\r\n" + fileEx + "\r\n");
-                return new ScriptResult { CompileExceptionInfo = ExceptionDispatchInfo.Capture(fileEx) };
+                return new ScriptResult {CompileExceptionInfo = ExceptionDispatchInfo.Capture(fileEx)};
             }
             catch (Exception ex)
             {
-                //Console.ForegroundColor = ConsoleColor.Red;
-                //replControl.WriteResultLine("\r\n" + ex + "\r\n");
-                return new ScriptResult { ExecuteExceptionInfo = ExceptionDispatchInfo.Capture(ex) };
+                return new ScriptResult {ExecuteExceptionInfo = ExceptionDispatchInfo.Capture(ex)};
             }
             finally
             {
                 repl.EvaluateCompleted(result);
-                //Console.ResetColor();
             }
+        }
+
+        private object HandleReplCommand(string command, object[] args)
+        {
+            if(string.IsNullOrWhiteSpace(command))
+                return "The REPL command was empty.";
+
+            if (command.Equals("install", StringComparison.OrdinalIgnoreCase))
+            {
+                if (args == null || args.Length == 0) return null;
+
+                string version = null;
+                var allowPre = false;
+                if (args.Length >= 2)
+                {
+                    version = args[1].ToString();
+                    if (args.Length == 3)
+                    {
+                        allowPre = true;
+                    }
+                }
+
+                Logger.InfoFormat("Installing {0}", args[0]);
+
+                var packageRef = new PackageReference(args[0].ToString(), new FrameworkName(".NETFramework,Version=v4.0"), version);
+                packageInstaller.InstallPackages(new[] { packageRef }, allowPre);
+                resolver.SavePackages();
+
+                var dlls = resolver.GetAssemblyNames(FileSystem.CurrentDirectory).Except(References.PathReferences).ToArray();
+                AddReferencesAndNotify(dlls);
+
+                foreach (var dll in dlls)
+                {
+                    Logger.InfoFormat("Added reference to {0}", dll);
+                }
+
+                return null;
+            }
+
+            return "Unknown REPL command: "+command;
         }
 
         public void AddReferencesAndNotify(params Assembly[] references)
         {
             base.AddReferences(references);
+            replCompletion.AddReferences(references);
+            documentCompletion.AddReferences(references);
             OnAssemblyReferencesChanged();
         }
 
         public void RemoveReferencesAndNotify(params Assembly[] references)
         {
             base.RemoveReferences(references);
+            replCompletion.RemoveReferences(references);
+            documentCompletion.RemoveReferences(references);
             OnAssemblyReferencesChanged();
         }
 
         public void AddReferencesAndNotify(params string[] references)
         {
             base.AddReferences(references);
+            replCompletion.AddReferences(references);
+            documentCompletion.AddReferences(references);
             OnAssemblyReferencesChanged();
         }
 
         public void RemoveReferencesAndNotify(params string[] references)
         {
             base.RemoveReferences(references);
+            replCompletion.RemoveReferences(references);
+            documentCompletion.RemoveReferences(references);
             OnAssemblyReferencesChanged();
         }
 
@@ -150,36 +218,15 @@ namespace CShell.ScriptCs
             return paths.ToArray();
         }
 
-        public string[] GetReferencesAsFullPaths()
-        {
-            var paths = new List<string>();
-            foreach (var reference in References.PathReferences)
-            {
-                var fullPath = reference;
-                //look in the bin folder
-                if(!File.Exists(fullPath))
-                    fullPath = FileSystem.GetFullPath(Path.Combine(Constants.BinFolder, reference));
-                //try to resolve as relaive path
-                if (!File.Exists(fullPath))
-                    fullPath = PathHelper.ToAbsolutePath(FileSystem.CurrentDirectory, reference);
-                //try to find in GAC
-                if (!File.Exists(fullPath))
-                {
-                    var assemblyName = GlobalAssemblyCache.FindBestMatchingAssemblyName(reference);
-                    if(assemblyName != null)
-                        fullPath = GlobalAssemblyCache.FindAssemblyInNetGac(assemblyName);
-                }
-
-                if(File.Exists(fullPath))
-                    paths.Add(fullPath);
-            }
-            paths.AddRange(References.Assemblies.Select(a => a.Location));
-            return paths.ToArray();
-        }
-
         public string[] GetNamespaces()
         {
             return Namespaces.ToArray();
         }
+
+
+
+
+
+       
     }
 }

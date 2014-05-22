@@ -22,7 +22,6 @@ using System.IO;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
-using CShell.Code;
 using CShell.Framework.Services;
 using CShell.Modules.Editors.ViewModels;
 using ICSharpCode.AvalonEdit.CodeCompletion;

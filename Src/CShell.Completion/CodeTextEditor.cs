@@ -29,7 +29,7 @@ namespace CShell.Completion
             this.CommandBindings.Add(cb);
         }
 
-        public CSharpCompletion Completion { get; set; }
+        public ICompletion Completion { get; set; }
 
         #region Open & Save File
         public string FileName { get; set; }
@@ -109,7 +109,7 @@ namespace CShell.Completion
                 {
                     var offset = 0;
                     var doc = GetCompletionDocument(out offset);
-                    results = Completion.GetCompletions(doc, offset, controlSpace, GetNamespaces());
+                    results = Completion.GetCompletions(doc, offset, controlSpace, false, GetNamespaces());
                 }
                 catch (Exception exception)
                 {

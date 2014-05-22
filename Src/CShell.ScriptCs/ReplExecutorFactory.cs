@@ -15,13 +15,16 @@ namespace CShell.ScriptCs
         public IReplExecutor Create(CShell.Framework.Services.IRepl repl, string workspaceDirectory)
         {
             scriptServices.FileSystem.CurrentDirectory = workspaceDirectory;
+            scriptServices.InstallationProvider.Initialize();
 
             var replExecutor = new ReplExecutor(
                 repl, 
                 scriptServices.ObjectSerializer, 
                 scriptServices.FileSystem, 
-                scriptServices.FilePreProcessor, 
-                scriptServices.Engine, 
+                scriptServices.FilePreProcessor,
+                scriptServices.Engine,
+                scriptServices.PackageInstaller,
+                scriptServices.PackageAssemblyResolver,
                 scriptServices.Logger);
 
             var assemblies = scriptServices.AssemblyResolver.GetAssemblyPaths(scriptServices.FileSystem.CurrentDirectory);

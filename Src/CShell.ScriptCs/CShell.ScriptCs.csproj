@@ -85,6 +85,10 @@
     <Compile Include="ScriptServicesBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CShell.Completion\CShell.Completion.csproj">
+      <Project>{2adf8e19-b896-4778-8391-bc55fb100852}</Project>
+      <Name>CShell.Completion</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CShell.Core\CShell.Core.csproj">
       <Project>{5d2479ea-0d1e-4381-ad9c-998ccec2dc21}</Project>
       <Name>CShell.Core</Name>

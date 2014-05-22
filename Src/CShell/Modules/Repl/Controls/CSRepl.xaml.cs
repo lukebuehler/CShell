@@ -28,7 +28,6 @@ using System.Windows.Controls;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
 using System.Windows.Media;
-using CShell.Code;
 using CShell.Completion;
 using CShell.Framework.Services;
 using CShell.ScriptCs;
@@ -97,33 +96,10 @@ namespace CShell.Modules.Repl.Controls
         public void Initialize(IReplExecutor replExecutor)
         {
             //unhook old executor
-            if (this.replExecutor != null)
-            {
-                this.replExecutor.AssemblyReferencesChanged -= ReplExecutorOnAssemblyReferencesChanged;
-            }
             this.replExecutor = replExecutor;
-            this.replExecutor.AssemblyReferencesChanged += ReplExecutorOnAssemblyReferencesChanged;
-            this.textEditor.Completion = new CSharpCompletion();
-            ReplExecutorOnAssemblyReferencesChanged(null, null);
+            this.textEditor.Completion = replExecutor.ReplCompletion;
             Clear();
             textEditor.IsEnabled = true;
-        }
-
-        private void ReplExecutorOnAssemblyReferencesChanged(object sender, EventArgs eventArgs)
-        {
-            if (textEditor.Completion == null)
-                return;
-
-            var replRefs = replExecutor.GetReferencesAsFullPaths().ToList();
-            var completionRefs = textEditor.Completion.GetAssemblies().ToList();
-            var toAdd = replRefs.Where(r => !completionRefs.Contains(r)).ToList();
-            var toRemove = completionRefs.Where(r => !replRefs.Contains(r)).Where(r => !r.EndsWith("mscorlib.dll")).ToList();
-
-            foreach (var r in toRemove)
-                textEditor.Completion.RemoveAssembly(r);
-
-            foreach (var r in toAdd)
-                textEditor.Completion.AddAssembly(r);
         }
 
         private string currrentInput;
@@ -179,13 +155,7 @@ namespace CShell.Modules.Repl.Controls
             evaluationsRunning--;
             if (!IsEvaluating)
             {
-                if (ScriptingInteractiveBase.ClearRequested)
-                {
-                    Clear();
-                    ScriptingInteractiveBase.ClearRequested = false;
-                }
-                else
-                    WritePrompt();
+                WritePrompt();
             }
         }
 
@@ -280,7 +250,7 @@ namespace CShell.Modules.Repl.Controls
 
             if (replExecutor != null)
             {
-                WriteLine("Enter C# code to be evaluated or enter \"help\" for more information.", TextType.Repl);
+                WriteLine("Enter C# code to be evaluated or enter \":help\" for more information.", TextType.Repl);
                 WritePrompt();
             }
             else

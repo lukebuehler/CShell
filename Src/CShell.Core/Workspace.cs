@@ -68,10 +68,11 @@ namespace CShell
             replExecutor = null;
             WorkspaceDirectory = dir;
 
-            if (!String.IsNullOrEmpty(dir))
+            if (!String.IsNullOrEmpty(WorkspaceDirectory))
             {
+                WorkspaceDirectory = Path.GetFullPath(WorkspaceDirectory);
                 //create executor
-                replExecutor = replExecutorFactory.Create(repl, dir);
+                replExecutor = replExecutorFactory.Create(repl, WorkspaceDirectory);
                 //restore layout
                 LoadLayout();
 

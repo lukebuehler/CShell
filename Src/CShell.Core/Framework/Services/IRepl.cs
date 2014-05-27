@@ -32,14 +32,13 @@ namespace CShell.Framework.Services
         void EvaluateStarted(string input, string sourceFile);
         void EvaluateCompleted(ScriptResult result);
 
-        void Clear();
         bool IsEvaluating { get; }
 
-        IEnumerable<string> SuppressedWarnings { get; } 
-        void SuppressWarning(string warningCode);
-        void ShowWarning(string warningCode);
-
         bool ShowConsoleOutput { get; set; }
+        void Write(string text);
+        void WriteLine();
+        void WriteLine(string text);
+        void Clear();
 
         string Font { get; set; }
         double FontSize { get; set; }
@@ -48,5 +47,10 @@ namespace CShell.Framework.Services
         Color WarningColor { get; set; }
         Color ErrorColor { get; set; }
         Color ReplColor { get; set; }
+        void ResetColor();
+
+        IEnumerable<string> SuppressedWarnings { get; }
+        void SuppressWarning(string warningCode);
+        void ShowWarning(string warningCode);
     }
 }

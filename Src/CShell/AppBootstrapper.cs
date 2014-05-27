@@ -29,12 +29,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using Common.Logging;
 using CShell.Framework;
 using CShell.Framework.Results;
 using CShell.Framework.Services;
 using Caliburn.Micro;
 using CShell.ScriptCs;
 using Xceed.Wpf.AvalonDock;
+using LogManager = Caliburn.Micro.LogManager;
 
 namespace CShell
 {
@@ -42,12 +44,13 @@ namespace CShell
     {
         static AppBootstrapper()
         {
+
 #if DEBUG
-            //setup the logger at the earliest possible moment
-            LogManager.GetLog = type => new DebugLogger(type);
+            Common.Logging.LogManager.Adapter = new Common.Logging.Simple.TraceLoggerFactoryAdapter(LogLevel.Debug, false, false, true, "HH:mm:ss", true);
 #else
-            LogManager.GetLog = type => new NLogLogger(type);
+            Common.Logging.LogManager.Adapter = new Common.Logging.Simple.NoOpLoggerFactoryAdapter();
 #endif
+            LogManager.GetLog = type => new Logger(type);
         }
 
         private const string ModulesPath = @"./Modules";

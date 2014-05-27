@@ -20,28 +20,20 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using CShell.Framework.Services;
 
 namespace CShell.Util
 {
-    public enum TextType
-    {
-        Output,
-        Warning,
-        Error,
-        Repl,
-        None,
-    }
-
     internal class GuiStream : Stream
     {
-        private readonly TextType textType;
-        readonly Action<string, TextType> callback;
+        //private readonly TextType textType;
+        //readonly Action<string, TextType> callback;
 
-        public GuiStream(TextType textType, Action<string, TextType> cb)
-        {
-            this.textType = textType;
-            callback = cb;
-        }
+        //public GuiStream(TextType textType, Action<string, TextType> cb)
+        //{
+        //    this.textType = textType;
+        //    callback = cb;
+        //}
 
         public override bool CanRead { get { return false; } }
         public override bool CanSeek { get { return false; } }
@@ -59,7 +51,7 @@ namespace CShell.Util
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            callback(Encoding.UTF8.GetString(buffer, offset, count), textType);
+            //callback(Encoding.UTF8.GetString(buffer, offset, count), textType);
         }
     }
 }

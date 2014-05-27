@@ -133,6 +133,21 @@ namespace CShell.Modules.Repl.ViewModels
             get { return internalRepl.IsEvaluating; }
         }
 
+        public void Write(string value)
+        {
+            Execute.OnUIThread(() => internalRepl.Write(value));
+        }
+
+        public void WriteLine()
+        {
+            Execute.OnUIThread(() => internalRepl.WriteLine());
+        }
+
+        public void WriteLine(string value)
+        {
+            Execute.OnUIThread(() => internalRepl.WriteLine(value));
+        }
+
         public IEnumerable<string> SuppressedWarnings
         {
             get { return internalRepl.SuppressedWarnings; }
@@ -146,6 +161,11 @@ namespace CShell.Modules.Repl.ViewModels
         public void ShowWarning(string warningCode)
         {
             internalRepl.ShowWarning(warningCode);
+        }
+
+        public void ResetColor()
+        {
+            Execute.OnUIThread(() => internalRepl.ResetColor());
         }
 
         public bool ShowConsoleOutput
@@ -198,6 +218,8 @@ namespace CShell.Modules.Repl.ViewModels
         #endregion
 
 
-       
+
+
+
     }//end class
 }

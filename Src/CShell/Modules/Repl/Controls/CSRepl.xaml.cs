@@ -40,6 +40,15 @@ using ICSharpCode.NRefactory.Editor;
 
 namespace CShell.Modules.Repl.Controls
 {
+    public enum TextType
+    {
+        Output,
+        Warning,
+        Error,
+        Repl,
+        None,
+    }
+
     /// <summary>
     /// Interaction logic for CommandLineControl.xaml
     /// </summary>
@@ -76,10 +85,7 @@ namespace CShell.Modules.Repl.Controls
             commandHistory = new CommandHistory();
 
             ShowConsoleOutput = true;
-            OutputColor = Color.FromArgb(255, 78, 78, 78);
-            WarningColor = Color.FromArgb(255, 183, 122, 0);
-            ErrorColor = Color.FromArgb(255, 138, 6, 3);
-            ReplColor = Color.FromArgb(255, 0, 127, 0);
+            ResetColor();
 
             //supress duplicate using warnings
             SuppressWarning("CS0105");
@@ -163,35 +169,6 @@ namespace CShell.Modules.Repl.Controls
         {
             get { return evaluationsRunning > 0; }
         }
-
-        public string Font
-        {
-            get { return textEditor.FontFamily.ToString(); }
-            set { textEditor.FontFamily = new FontFamily(value); }
-        }
-
-        public new double FontSize
-        {
-            get { return textEditor.FontSize; }
-            set { textEditor.FontSize = value; }
-        }
-
-        public Color BackgroundColor
-        {
-            get
-            {
-                var b = textEditor.Background as SolidColorBrush;
-                if (b != null) return b.Color;
-                else
-                    return Colors.Black;
-            }
-            set { textEditor.Background = new SolidColorBrush(value); }
-        }
-
-        public Color OutputColor { get; set; }
-        public Color WarningColor { get; set; }
-        public Color ErrorColor { get; set; }
-        public Color ReplColor { get; set; }
 
         private readonly HashSet<string> suppressedWarnings = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         public IEnumerable<string> SuppressedWarnings
@@ -527,24 +504,6 @@ namespace CShell.Modules.Repl.Controls
             Write(text + Environment.NewLine, textType);
         }
 
-        public Color GetColor(TextType textType)
-        {
-            switch (textType)
-            {
-                case TextType.Output:
-                    return OutputColor;
-                case TextType.Warning:
-                    return WarningColor;
-                case TextType.Error:
-                    return ErrorColor;
-                case TextType.Repl:
-                    return ReplColor;
-                case TextType.None:
-                default:
-                    return OutputColor;
-            }
-        }
-
         private string ToPrettyString(object o)
         {
             if (o is String)
@@ -567,9 +526,62 @@ namespace CShell.Modules.Repl.Controls
         }
         #endregion
 
+        #region IRepl interface, colors and fonts
+        public Color GetColor(TextType textType)
+        {
+            switch (textType)
+            {
+                case TextType.Warning:
+                    return WarningColor;
+                case TextType.Error:
+                    return ErrorColor;
+                case TextType.Repl:
+                    return ReplColor;
+                case TextType.Output:
+                case TextType.None:
+                default:
+                    return OutputColor;
+            }
+        }
 
-       
+        public void ResetColor()
+        {
+            OutputColor = Color.FromArgb(255, 78, 78, 78);
+            WarningColor = Color.FromArgb(255, 183, 122, 0);
+            ErrorColor = Color.FromArgb(255, 138, 6, 3);
+            ReplColor = Color.FromArgb(255, 0, 127, 0);
+            BackgroundColor = Colors.WhiteSmoke;
+        }
 
-        
+        public string Font
+        {
+            get { return textEditor.FontFamily.ToString(); }
+            set { textEditor.FontFamily = new FontFamily(value); }
+        }
+
+        public new double FontSize
+        {
+            get { return textEditor.FontSize; }
+            set { textEditor.FontSize = value; }
+        }
+
+        public Color BackgroundColor
+        {
+            get
+            {
+                var b = textEditor.Background as SolidColorBrush;
+                if (b != null) return b.Color;
+                else
+                    return Colors.Black;
+            }
+            set { textEditor.Background = new SolidColorBrush(value); }
+        }
+
+        public Color OutputColor { get; set; }
+        public Color WarningColor { get; set; }
+        public Color ErrorColor { get; set; }
+        public Color ReplColor { get; set; }
+        #endregion
+
     }//end class
 }

@@ -117,7 +117,6 @@ namespace CShell.ScriptCs
 
                 if (referencesToAdd.Length > 0)
                     AddReferencesAndNotify(referencesToAdd);
-
                 result = ScriptEngine.Execute(preProcessResult.Code, scriptArgs, References, Namespaces, ScriptPackSession);
                 if (result == null) return new ScriptResult();
 

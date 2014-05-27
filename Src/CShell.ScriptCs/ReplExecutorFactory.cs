@@ -5,15 +5,21 @@ namespace CShell.ScriptCs
 {
     public class ReplExecutorFactory : IReplExecutorFactory
     {
-        private readonly ScriptServices scriptServices;
+        private readonly ScriptServicesBuilder builder;
+        private ScriptServices scriptServices;
 
         public ReplExecutorFactory(ScriptServicesBuilder builder)
         {
-            scriptServices = builder.Build();
+            this.builder = builder;
         }
 
         public IReplExecutor Create(CShell.Framework.Services.IRepl repl, string workspaceDirectory)
         {
+            if (scriptServices == null)
+            {
+                scriptServices = builder.Build(repl);
+            }
+
             scriptServices.FileSystem.CurrentDirectory = workspaceDirectory;
             scriptServices.InstallationProvider.Initialize();
 

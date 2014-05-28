@@ -81,7 +81,7 @@
                     <Controls:EditableTextBlock Text="{Binding DisplayName, Mode=TwoWay}" IsInEditMode="{Binding IsInEditMode, Mode=TwoWay}" IsEditable="{Binding IsEditable, Mode=TwoWay}" Margin="3,2,3,3" />
                     <StackPanel.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Copy Reference Here..." cal:Message.Attach="CopyReference" />
+                            <MenuItem Header="Copy References Here..." cal:Message.Attach="CopyReferences" />
                             <Separator />
                             <MenuItem Header="Delete" cal:Message.Attach="Delete" />
                             <MenuItem Header="Rename" cal:Message.Attach="Rename" />
@@ -146,6 +146,10 @@
                         <ContextMenu>
                             <MenuItem Header="Add References from Files..." cal:Message.Attach="AddFileReferences" />
                             <MenuItem Header="Add References from GAC..." cal:Message.Attach="AddGacReferences" />
+                            <Separator />
+                            <MenuItem Header="Copy References to Bin..." cal:Message.Attach="CopyReferences" />
+                            <Separator />
+                            <MenuItem Header="Manage NuGet Packages..." cal:Message.Attach="MangePackages" />
                         </ContextMenu>
                     </StackPanel.ContextMenu>
                 </StackPanel>

@@ -198,6 +198,7 @@
     </Compile>
     <Compile Include="Modules\Workspace\Results\AddFilesResult.cs" />
     <Compile Include="Modules\Workspace\Results\AddFolderResult.cs" />
+    <Compile Include="Modules\Workspace\Results\CopyReferencesResult.cs" />
     <Compile Include="Modules\Workspace\Results\AddReferencesResult.cs" />
     <Compile Include="Modules\Workspace\ViewModels\AssemblyGacViewModel.cs" />
     <Compile Include="Modules\Workspace\ViewModels\AssemblyPackagesViewModel.cs" />

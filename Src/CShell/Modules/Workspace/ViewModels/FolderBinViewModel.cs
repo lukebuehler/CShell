@@ -32,12 +32,16 @@ namespace CShell.Modules.Workspace.ViewModels
             }
         }
 
-        public IEnumerable<IResult> CopyReference()
+        public IEnumerable<IResult> CopyReferences()
         {
             var dialog = new OpenFileDialog();
             dialog.Filter = CShell.Constants.AssemblyFileFilter;
             dialog.Multiselect = true;
             yield return Show.Dialog(dialog);
+            if (dialog.FileNames != null && dialog.FileNames.Length > 0)
+            {
+                yield return new CopyReferencesResult(dialog.FileNames);
+            }
         }
     }
 }

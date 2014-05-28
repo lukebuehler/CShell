@@ -256,6 +256,15 @@ namespace CShell.Completion
             //try to find in GAC
             if (!File.Exists(fullPath))
             {
+                try
+                {
+                    var assemblyName = new AssemblyName(reference);
+                    fullPath = GlobalAssemblyCache.FindAssemblyInNetGac(assemblyName);
+                }
+                catch { }
+            }
+            if (!File.Exists(fullPath))
+            {
                 var assemblyName = GlobalAssemblyCache.FindBestMatchingAssemblyName(reference);
                 if (assemblyName != null)
                     fullPath = GlobalAssemblyCache.FindAssemblyInNetGac(assemblyName);

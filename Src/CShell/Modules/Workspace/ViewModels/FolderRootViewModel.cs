@@ -107,6 +107,25 @@ namespace CShell.Modules.Workspace.ViewModels
             }
         }
 
+        protected override BindableCollection<TreeViewModel> LoadChildren()
+        {
+            var children = base.LoadChildren();
+            //see if there's a bin folder
+            var binVm = children.FirstOrDefault(vm => (vm is FolderViewModel) && vm.DisplayName.Equals(Constants.BinFolder, StringComparison.OrdinalIgnoreCase)) as FolderViewModel;
+            if (binVm != null)
+            {
+                children.Insert(children.IndexOf(binVm), new FolderBinViewModel(binVm.DirectoryInfo, binVm.Workspace));
+                children.Remove(binVm);
+            }
+            var packagesVm = children.FirstOrDefault(vm => (vm is FolderViewModel) && vm.DisplayName.Equals(Constants.PackagesFolder, StringComparison.OrdinalIgnoreCase)) as FolderViewModel;
+            if (packagesVm != null)
+            {
+                children.Insert(children.IndexOf(packagesVm), new FolderPackagesViewModel(packagesVm.DirectoryInfo, packagesVm.Workspace));
+                children.Remove(packagesVm);
+            }
+            return children;
+        }
+
         #region Edit Root Folder
         public IEnumerable<IResult> ChangeRootFolder()
         {

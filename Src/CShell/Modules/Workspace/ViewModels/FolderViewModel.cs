@@ -53,24 +53,16 @@ namespace CShell.Modules.Workspace.ViewModels
             get { return workspace; }
         }
 
+        public DirectoryInfo DirectoryInfo { get { return directoryInfo; } }
+
         public override Uri IconSource
         {
             get
             {
-                if (RelativePath.Equals("bin", StringComparison.OrdinalIgnoreCase) || RelativePath.Equals("packages", StringComparison.OrdinalIgnoreCase))
-                {
-                    if (IsExpanded)
-                        return new Uri("pack://application:,,,/CShell;component/Resources/Icons/ReferenceFolder.Open.png");
-                    else
-                        return new Uri("pack://application:,,,/CShell;component/Resources/Icons/ReferenceFolder.Closed.png");
-                }
+                if (IsExpanded)
+                    return new Uri("pack://application:,,,/CShell;component/Resources/Icons/Folder.Open.png");
                 else
-                {
-                    if (IsExpanded)
-                        return new Uri("pack://application:,,,/CShell;component/Resources/Icons/Folder.Open.png");
-                    else
-                        return new Uri("pack://application:,,,/CShell;component/Resources/Icons/Folder.Closed.png");
-                }
+                    return new Uri("pack://application:,,,/CShell;component/Resources/Icons/Folder.Closed.png");
             }
         }
 
@@ -90,7 +82,7 @@ namespace CShell.Modules.Workspace.ViewModels
             get { return children ?? (children = LoadChildren()); }
         }
 
-        protected BindableCollection<TreeViewModel> LoadChildren()
+        protected virtual BindableCollection<TreeViewModel> LoadChildren()
         {
             var filer = "";//workspace.Filter ?? "";
             var filterStrings = filer.Split().Select(WildcardToRegex).ToArray();

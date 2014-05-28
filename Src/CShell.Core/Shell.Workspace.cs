@@ -27,22 +27,22 @@ namespace CShell
 {
     public static partial class Shell
     {
-        private static Workspace workspace = null;
-        private static readonly object instanceLock = new object();
+        //private static Workspace workspace = null;
+        //private static readonly object instanceLock = new object();
 
-        /// <summary>
-        /// Gets the instance of the currently open workspace, if no workspace is open returns null.
-        /// </summary>
-        public static Workspace Workspace
-        {
-            get
-            {
-                lock (instanceLock)
-                {
-                    return workspace;
-                }
-            }
-        }
+        ///// <summary>
+        ///// Gets the instance of the currently open workspace, if no workspace is open returns null.
+        ///// </summary>
+        //public static Workspace Workspace
+        //{
+        //    get
+        //    {
+        //        lock (instanceLock)
+        //        {
+        //            return workspace;
+        //        }
+        //    }
+        //}
 
         ///// <summary>
         ///// Opens a default workspace.

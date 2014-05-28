@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows;
 using Caliburn.Micro;
+using CShell.Util;
 
 namespace CShell.Modules.Workspace.ViewModels
 {
@@ -55,7 +56,7 @@ namespace CShell.Modules.Workspace.ViewModels
         {
             get
             {
-                return filePath ;//?? (filePath = .GetGacAssemblyPath(AssemblyName));
+                return filePath ?? (filePath = GlobalAssemblyCache.FindAssemblyInNetGac(AssemblyName));
             }
         }
 
@@ -82,20 +83,20 @@ namespace CShell.Modules.Workspace.ViewModels
                 if(gacItems == null)
                 {
                     gacItems = new List<AssemblyGacItemViewModel>();
-                    //foreach (var assemblyName in AssemblyLoader.GetGacAssemblyNames())
-                    //{
-                    //    var vm = new AssemblyGacItemViewModel(assemblyName);
-                    //    vm.PropertyChanged += (sender, args) =>
-                    //    {
-                    //        if (args.PropertyName == "IsSelected")
-                    //        {
-                    //            NotifyOfPropertyChange(() => SelectedAssemblies);
-                    //            NotifyOfPropertyChange(() => SelectedAssemblyCount);
-                    //            NotifyOfPropertyChange(() => CanOk);
-                    //        }
-                    //    };
-                    //    gacItems.Add(vm);
-                    //}
+                    foreach (var assemblyName in GlobalAssemblyCache.GetAssemblyList())
+                    {
+                        var vm = new AssemblyGacItemViewModel(assemblyName);
+                        vm.PropertyChanged += (sender, args) =>
+                        {
+                            if (args.PropertyName == "IsSelected")
+                            {
+                                NotifyOfPropertyChange(() => SelectedAssemblies);
+                                NotifyOfPropertyChange(() => SelectedAssemblyCount);
+                                NotifyOfPropertyChange(() => CanOk);
+                            }
+                        };
+                        gacItems.Add(vm);
+                    }
                 }
                 return gacItems;
             }

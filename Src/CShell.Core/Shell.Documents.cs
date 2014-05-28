@@ -32,9 +32,8 @@ namespace CShell
         /// <summary>
         /// Gets all available documents including sinks.
         /// </summary>
-        public static IEnumerable<IDocument> GetDocuments()
+        public static IEnumerable<IDocument> GetDocuments(this IShell shell)
         {
-            var shell = shellLazy.Value;
             return shell.Documents.ToArray();
         }
 
@@ -42,9 +41,9 @@ namespace CShell
         /// Gets or creates specific document and opens it.
         /// </summary>
         /// <param name="uri">The URI of the document. Can be a file path URI.</param>
-        public static IDocument GetDocument(Uri uri)
+        public static IDocument GetDocument(this IShell shell, Uri uri)
         {
-            return GetDocument(uri, false);
+            return GetDocument(shell, uri, false);
         }
 
         /// <summary>
@@ -52,9 +51,9 @@ namespace CShell
         /// </summary>
         /// <param name="uri">The URI of the document. Can be a file path URI.</param>
         /// <param name="suppressOpen"><c>true</c> if the document should not be opened.</param>
-        public static IDocument GetDocument(Uri uri, bool suppressOpen)
+        public static IDocument GetDocument(this IShell shell, Uri uri, bool suppressOpen)
         {
-            var doc = GetDocuments().FirstOrDefault(s => s.Uri == uri);
+            var doc = GetDocuments(shell).FirstOrDefault(s => s.Uri == uri);
             if (doc == null)
             {
                 doc = IoC.GetAllInstances(typeof(IDocumentProvider))
@@ -64,7 +63,7 @@ namespace CShell
                     .FirstOrDefault();
 
                 if (doc != null && !suppressOpen)
-                    shellLazy.Value.ActivateDocument(doc);
+                    shell.ActivateDocument(doc);
             }
             return doc;
         }
@@ -72,9 +71,8 @@ namespace CShell
         /// <summary>
         /// Gets all available text documents.
         /// </summary>
-        public static IEnumerable<ITextDocument> GetTextDocuments()
+        public static IEnumerable<ITextDocument> GetTextDocuments(this IShell shell)
         {
-            var shell = shellLazy.Value;
             return shell.Documents.OfType<ITextDocument>().ToArray();
         }
 
@@ -82,20 +80,20 @@ namespace CShell
         /// Gets or creates specific text document and opens it.
         /// </summary>
         /// <param name="filePath">The path to the file. Can be relative to the root path of the workspace, e.g. "subfolder/file.csx"</param>
-        public static ITextDocument GetTextDocument(string filePath)
+        public static ITextDocument GetTextDocument(this IShell shell, string filePath)
         {
             if (filePath == null) throw new ArgumentNullException("filePath");
             var uri = new Uri(System.IO.Path.GetFullPath(filePath));
-            var doc = GetDocument(uri);
+            var doc = GetDocument(shell, uri);
             return doc as ITextDocument;
         }
 
         /// <summary>
         /// Gets the current text document.
         /// </summary>
-        public static ITextDocument TextDocument
+        public static ITextDocument GetTextDocument(this IShell shell)
         {
-            get { return shellLazy.Value.ActiveItem as ITextDocument; }
+            return shell.ActiveItem as ITextDocument;
         }
 
         #region Files
@@ -106,8 +104,6 @@ namespace CShell
         /// <returns><c>true</c> if the file was found, otherwise <c>false</c>.</returns>
         public static bool TryOpen(string filePath)
         {
-            if (Workspace == null)
-                return false;
             if (File.Exists(filePath))
             {
                 Open(filePath);

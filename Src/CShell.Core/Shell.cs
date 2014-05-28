@@ -32,34 +32,13 @@ namespace CShell
     /// </summary>
     public static partial class Shell
     {
-        private static readonly Lazy<IShell> shellLazy = new Lazy<IShell>(() => IoC.Get<IShell>(), true);
-
-        private static readonly Lazy<IRepl> replLazy = new Lazy<IRepl>(() => IoC.Get<IRepl>(), true);
-        /// <summary>
-        /// Gets the interface to modify the REPL window.
-        /// </summary>
-        public static IRepl Repl
-        {
-            get { return replLazy.Value; }
-        }
-
-        private static readonly Lazy<IOutput> outputLazy = new Lazy<IOutput>(()=>IoC.Get<IOutput>(), true);
-        
-        /// <summary>
-        /// Gets the interface to modify the console output window.
-        /// </summary>
-        public static IOutput Output
-        {
-            get { return outputLazy.Value; }
-        }
-
         /// <summary>
         /// Update the progress in the staus bar.
         /// </summary>
         /// <param name="progress">The progress between 0 and 100.</param>
-        public static void UpdateProgress(int progress)
+        public static void UpdateProgress(this IShell shell, int progress)
         {
-            shellLazy.Value.StatusBar.UpdateProgress(progress);
+            shell.StatusBar.UpdateProgress(progress);
         }
 
         #region Evaluate helpers

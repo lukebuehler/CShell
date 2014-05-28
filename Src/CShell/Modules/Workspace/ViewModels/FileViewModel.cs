@@ -21,8 +21,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using CShell.Framework.Results;
+using CShell.Modules.Workspace.Results;
 using CShell.Util;
 using Caliburn.Micro;
+using Microsoft.Win32;
 
 namespace CShell.Modules.Workspace.ViewModels
 {
@@ -107,6 +110,42 @@ namespace CShell.Modules.Workspace.ViewModels
                 MessageBox.Show(ex.Message.Substring(0, ex.Message.IndexOf(".") + 1), "Rename", MessageBoxButton.OK, MessageBoxImage.Warning);
                 DisplayName = fileInfo.Name;
             }
+        }
+
+       
+
+        public IEnumerable<IResult> AddFileReferences()
+        {
+            var dialog = new OpenFileDialog();
+            dialog.Filter = CShell.Constants.AssemblyFileFilter;
+            dialog.Multiselect = true;
+            yield return Show.Dialog(dialog);
+            if (dialog.FileNames != null && dialog.FileNames.Length > 0)
+            {
+                yield return new AddReferencesResult(dialog.FileNames){FilePath = fileInfo.FullName};
+            }
+        }
+
+        public IEnumerable<IResult> AddGacReferences()
+        {
+            var windowSettings = new Dictionary<string, object> { { "SizeToContent", SizeToContent.Manual }, { "Width", 500.0 }, { "Height", 500.0 } };
+            var dialog = new AssemblyGacViewModel();
+            yield return Show.Dialog(dialog, windowSettings);
+            var selectedAssemblies = dialog.SelectedAssemblies.Select(item => item.AssemblyName).ToArray();
+            if (selectedAssemblies.Length > 0)
+            {
+                yield return new AddReferencesResult(selectedAssemblies){FilePath = fileInfo.FullName};
+            }
+        }
+
+        public bool CanAddFileReferences
+        {
+            get { return fileInfo.Extension.ToLower() == ".csx"; }
+        }
+
+        public bool CanAddGacReferences
+        {
+            get { return fileInfo.Extension.ToLower() == ".csx"; }
         }
 
     }//end class

@@ -200,8 +200,11 @@
     <Compile Include="Modules\Workspace\Results\AddFolderResult.cs" />
     <Compile Include="Modules\Workspace\Results\AddReferencesResult.cs" />
     <Compile Include="Modules\Workspace\ViewModels\AssemblyGacViewModel.cs" />
+    <Compile Include="Modules\Workspace\ViewModels\AssemblyPackagesViewModel.cs" />
     <Compile Include="Modules\Workspace\ViewModels\AssemblyReferencesViewModel.cs" />
     <Compile Include="Modules\Workspace\ViewModels\AssemblyReferenceViewModel.cs" />
+    <Compile Include="Modules\Workspace\ViewModels\FolderPackagesViewModel.cs" />
+    <Compile Include="Modules\Workspace\ViewModels\FolderBinViewModel.cs" />
     <Compile Include="Modules\Workspace\ViewModels\FolderRootViewModel.cs" />
     <Compile Include="Modules\Workspace\ViewModels\FileViewModel.cs" />
     <Compile Include="Modules\Workspace\ViewModels\FolderViewModel.cs" />
@@ -218,6 +221,9 @@
     <Compile Include="Modules\Workspace\ViewModels\WorkspaceViewModel.cs" />
     <Compile Include="Modules\Workspace\Views\AssemblyGacView.xaml.cs">
       <DependentUpon>AssemblyGacView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\Workspace\Views\AssemblyPackagesView.xaml.cs">
+      <DependentUpon>AssemblyPackagesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules\Workspace\Views\RootFolderSettingsView.xaml.cs">
       <DependentUpon>RootFolderSettingsView.xaml</DependentUpon>
@@ -321,6 +327,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Modules\Workspace\Views\AssemblyGacView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Modules\Workspace\Views\AssemblyPackagesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

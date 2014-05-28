@@ -74,7 +74,37 @@
                     </StackPanel.ContextMenu>
                 </StackPanel>
             </HierarchicalDataTemplate>
-            
+
+            <HierarchicalDataTemplate DataType="{x:Type cshell:FolderBinViewModel}" ItemsSource="{Binding Children}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{Binding IconSource}" Height="16" Width="16" />
+                    <Controls:EditableTextBlock Text="{Binding DisplayName, Mode=TwoWay}" IsInEditMode="{Binding IsInEditMode, Mode=TwoWay}" IsEditable="{Binding IsEditable, Mode=TwoWay}" Margin="3,2,3,3" />
+                    <StackPanel.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Copy Reference Here..." cal:Message.Attach="CopyReference" />
+                            <Separator />
+                            <MenuItem Header="Delete" cal:Message.Attach="Delete" />
+                            <MenuItem Header="Rename" cal:Message.Attach="Rename" />
+                        </ContextMenu>
+                    </StackPanel.ContextMenu>
+                </StackPanel>
+            </HierarchicalDataTemplate>
+
+            <HierarchicalDataTemplate DataType="{x:Type cshell:FolderPackagesViewModel}" ItemsSource="{Binding Children}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{Binding IconSource}" Height="16" Width="16" />
+                    <Controls:EditableTextBlock Text="{Binding DisplayName, Mode=TwoWay}" IsInEditMode="{Binding IsInEditMode, Mode=TwoWay}" IsEditable="{Binding IsEditable, Mode=TwoWay}" Margin="3,2,3,3" />
+                    <StackPanel.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Manage NuGet Packages..." cal:Message.Attach="MangePackages" />
+                            <Separator />
+                            <MenuItem Header="Delete" cal:Message.Attach="Delete" />
+                            <MenuItem Header="Rename" cal:Message.Attach="Rename" />
+                        </ContextMenu>
+                    </StackPanel.ContextMenu>
+                </StackPanel>
+            </HierarchicalDataTemplate>
+
             <HierarchicalDataTemplate DataType="{x:Type cshell:FolderViewModel}" ItemsSource="{Binding Children}">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="{Binding IconSource}" Height="16" Width="16" />
@@ -91,12 +121,16 @@
                     </StackPanel.ContextMenu>
                 </StackPanel>
             </HierarchicalDataTemplate>
+            
             <HierarchicalDataTemplate DataType="{x:Type cshell:FileViewModel}" ItemsSource="{Binding Children}">
                 <StackPanel Orientation="Horizontal" DataContext="{Binding}" ToolTip="{Binding ToolTip}" >
                     <Image Source="{Binding IconSource}" Height="16" Width="16" />
                     <Controls:EditableTextBlock Text="{Binding DisplayName, Mode=TwoWay}" IsInEditMode="{Binding IsInEditMode, Mode=TwoWay}" IsEditable="{Binding IsEditable, Mode=TwoWay}" Margin="3,2,3,3" />
                     <StackPanel.ContextMenu>
                         <ContextMenu>
+                            <MenuItem Header="Add References from Files..." cal:Message.Attach="AddFileReferences" />
+                            <MenuItem Header="Add References from GAC..." cal:Message.Attach="AddGacReferences" />
+                            <Separator />
                             <MenuItem Header="Delete" cal:Message.Attach="Delete" />
                             <MenuItem Header="Rename" cal:Message.Attach="Rename" />
                         </ContextMenu>
@@ -110,8 +144,8 @@
                     <TextBlock Text="{Binding DisplayName}" Margin="3,2,3,3" />
                     <StackPanel.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Add Reference from File..." cal:Message.Attach="AddReferenceFromFile" />
-                            <MenuItem Header="Add Reference from GAC..." cal:Message.Attach="AddReferenceFromGac" />
+                            <MenuItem Header="Add References from Files..." cal:Message.Attach="AddFileReferences" />
+                            <MenuItem Header="Add References from GAC..." cal:Message.Attach="AddGacReferences" />
                         </ContextMenu>
                     </StackPanel.ContextMenu>
                 </StackPanel>

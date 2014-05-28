@@ -58,7 +58,7 @@ namespace CShell.Framework.Results
 			var doc = document ??
 				(uri == null
 					? (IDocument)IoC.GetInstance(documentType, null)
-					: Shell.GetDocument(uri));
+					: shell.GetDocument(uri));
 
             if (doc == null)
 			{

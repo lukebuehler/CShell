@@ -21,6 +21,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms.DataVisualization.Charting;
+using Caliburn.Micro;
+using CShell.Framework.Services;
 using CShell.Sinks;
 
 namespace CShell.Sinks
@@ -30,6 +32,7 @@ namespace CShell.Sinks
     /// </summary>
     public static class Plotting
     {
+        private static Lazy<IShell> shellLazy = new Lazy<IShell>(()=>IoC.Get<IShell>()); 
         /// <summary>
         /// Gets a plot sink.
         /// If the plot exists or can be created the plot is opened.
@@ -48,7 +51,7 @@ namespace CShell.Sinks
         public static IPlotSink GetPlotSink(string sinkName, bool suppressOpen)
         {
             var uri = new Uri(Constants.SinkPlot + sinkName);
-            return Shell.GetSink(uri, suppressOpen) as IPlotSink;
+            return shellLazy.Value.GetSink(uri, suppressOpen) as IPlotSink;
         }
 
         /// <summary>

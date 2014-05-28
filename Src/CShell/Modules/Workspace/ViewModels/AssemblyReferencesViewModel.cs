@@ -78,45 +78,22 @@ namespace CShell.Modules.Workspace.ViewModels
 
         public IEnumerable<IResult> AddFileReferences()
         {
-            var dialog = new OpenFileDialog();
-            dialog.Filter = CShell.Constants.AssemblyFileFilter;
-            dialog.Multiselect = true;
-            yield return Show.Dialog(dialog);
-            if (dialog.FileNames != null && dialog.FileNames.Length > 0)
-            {
-                yield return new AddReferencesResult(dialog.FileNames);
-            }
+            return Module.AddFileReferences();
         }
 
         public IEnumerable<IResult> AddGacReferences()
         {
-            var windowSettings = new Dictionary<string, object> { { "SizeToContent", SizeToContent.Manual }, { "Width", 500.0 }, { "Height", 500.0 } };
-            var dialog = new AssemblyGacViewModel();
-            yield return Show.Dialog(dialog, windowSettings);
-            var selectedAssemblies = dialog.SelectedAssemblies.Select(item => item.AssemblyName).ToArray();
-            if (selectedAssemblies.Length > 0)
-            {
-                yield return new AddReferencesResult(selectedAssemblies);
-            }
+            return Module.AddGacReferences();
         }
 
         public IEnumerable<IResult> CopyReferences()
         {
-            var dialog = new OpenFileDialog();
-            dialog.Filter = CShell.Constants.AssemblyFileFilter;
-            dialog.Multiselect = true;
-            yield return Show.Dialog(dialog);
-            if (dialog.FileNames != null && dialog.FileNames.Length > 0)
-            {
-                yield return new CopyReferencesResult(dialog.FileNames);
-            }
+            return Module.CopyReferences();
         }
 
         public IEnumerable<IResult> MangePackages()
         {
-            var windowSettings = new Dictionary<string, object> { { "SizeToContent", SizeToContent.Manual }, { "Width", 500.0 }, { "Height", 500.0 } };
-            var dialog = new AssemblyPackagesViewModel();
-            yield return Show.Dialog(dialog, windowSettings);
+            return Module.MangePackages();
         }
 
     }//end class

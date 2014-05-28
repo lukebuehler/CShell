@@ -44,6 +44,11 @@ namespace CShell.Modules.Workspace.ViewModels
             IsEditable = true;
         }
 
+        public FileInfo FileInfo
+        {
+            get { return fileInfo; }
+        }
+
         public virtual string ToolTip
         {
             get { return RelativePath; }

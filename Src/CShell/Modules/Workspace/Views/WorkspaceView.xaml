@@ -121,7 +121,22 @@
                     </StackPanel.ContextMenu>
                 </StackPanel>
             </HierarchicalDataTemplate>
-            
+
+            <HierarchicalDataTemplate DataType="{x:Type cshell:FilePackagesViewModel}" ItemsSource="{Binding Children}">
+                <StackPanel Orientation="Horizontal" DataContext="{Binding}" ToolTip="{Binding ToolTip}" >
+                    <Image Source="{Binding IconSource}" Height="16" Width="16" />
+                    <Controls:EditableTextBlock Text="{Binding DisplayName, Mode=TwoWay}" IsInEditMode="{Binding IsInEditMode, Mode=TwoWay}" IsEditable="{Binding IsEditable, Mode=TwoWay}" Margin="3,2,3,3" />
+                    <StackPanel.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Manage NuGet Packages..." cal:Message.Attach="MangePackages" />
+                            <Separator />
+                            <MenuItem Header="Delete" cal:Message.Attach="Delete" />
+                            <MenuItem Header="Rename" cal:Message.Attach="Rename" />
+                        </ContextMenu>
+                    </StackPanel.ContextMenu>
+                </StackPanel>
+            </HierarchicalDataTemplate>
+
             <HierarchicalDataTemplate DataType="{x:Type cshell:FileViewModel}" ItemsSource="{Binding Children}">
                 <StackPanel Orientation="Horizontal" DataContext="{Binding}" ToolTip="{Binding ToolTip}" >
                     <Image Source="{Binding IconSource}" Height="16" Width="16" />

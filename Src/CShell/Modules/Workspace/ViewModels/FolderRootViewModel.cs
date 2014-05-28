@@ -123,6 +123,12 @@ namespace CShell.Modules.Workspace.ViewModels
                 children.Insert(children.IndexOf(packagesVm), new FolderPackagesViewModel(packagesVm.DirectoryInfo, packagesVm.Workspace));
                 children.Remove(packagesVm);
             }
+            var packagesFileVm = children.FirstOrDefault(vm => (vm is FileViewModel) && vm.DisplayName.Equals(Constants.PackagesFile, StringComparison.OrdinalIgnoreCase)) as FileViewModel;
+            if (packagesFileVm != null)
+            {
+                children.Insert(children.IndexOf(packagesFileVm), new FilePackagesViewModel(packagesFileVm.FileInfo));
+                children.Remove(packagesFileVm);
+            }
             return children;
         }
 

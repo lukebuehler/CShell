@@ -204,6 +204,7 @@
     <Compile Include="Modules\Workspace\ViewModels\AssemblyPackagesViewModel.cs" />
     <Compile Include="Modules\Workspace\ViewModels\AssemblyReferencesViewModel.cs" />
     <Compile Include="Modules\Workspace\ViewModels\AssemblyReferenceViewModel.cs" />
+    <Compile Include="Modules\Workspace\ViewModels\FilePackagesViewModel.cs" />
     <Compile Include="Modules\Workspace\ViewModels\FolderPackagesViewModel.cs" />
     <Compile Include="Modules\Workspace\ViewModels\FolderBinViewModel.cs" />
     <Compile Include="Modules\Workspace\ViewModels\FolderRootViewModel.cs" />

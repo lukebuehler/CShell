@@ -142,7 +142,20 @@ namespace CShell.ScriptCs
             if(string.IsNullOrWhiteSpace(command))
                 return "The REPL command was empty.";
 
-            if (command.Equals("install", StringComparison.OrdinalIgnoreCase))
+            command = command.ToLower();
+            if (command == "help")
+            {
+                return "Available commands are: " + Environment.NewLine +
+                       " :help                   - displays this information" + Environment.NewLine +
+                       " :clear                  - clears the REPL" + Environment.NewLine +
+                       " :install <package name> - installs a NuGet package";
+            }
+            if (command == "clear")
+            {
+                repl.Clear();
+                return null;
+            }
+            if (command == "install")
             {
                 if (args == null || args.Length == 0) return null;
 

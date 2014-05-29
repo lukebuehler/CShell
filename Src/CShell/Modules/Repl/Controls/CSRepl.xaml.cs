@@ -28,8 +28,9 @@ using System.Windows.Controls;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
 using System.Windows.Media;
-using CShell.Code;
+using CShell.Completion;
 using CShell.Framework.Services;
+using CShell.Hosting;
 using CShell.Util;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
@@ -39,6 +40,15 @@ using ICSharpCode.NRefactory.Editor;
 
 namespace CShell.Modules.Repl.Controls
 {
+    public enum TextType
+    {
+        Output,
+        Warning,
+        Error,
+        Repl,
+        None,
+    }
+
     /// <summary>
     /// Interaction logic for CommandLineControl.xaml
     /// </summary>
@@ -46,7 +56,7 @@ namespace CShell.Modules.Repl.Controls
     {
         private CSReplTextEditor textEditor;
 
-        private ScriptingEngine scriptingEngine;
+        private IReplExecutor replExecutor;
         private readonly CommandHistory commandHistory;
 
         private bool executingInternalCommand;
@@ -74,11 +84,18 @@ namespace CShell.Modules.Repl.Controls
 
             commandHistory = new CommandHistory();
 
+            var errorStream = new ConsoleStream(TextType.Error, Write);
+            var errorWriter = new StreamWriter(errorStream);
+            errorWriter.AutoFlush = true;
+            Console.SetError(errorWriter);
+
+            var stdoutStream = new ConsoleStream(TextType.Output, Write);
+            var stdoutWriter = new StreamWriter(stdoutStream);
+            stdoutWriter.AutoFlush = true;
+            Console.SetOut(stdoutWriter);
+
             ShowConsoleOutput = true;
-            OutputColor = Color.FromArgb(255, 78, 78, 78);
-            WarningColor = Color.FromArgb(255, 183, 122, 0);
-            ErrorColor = Color.FromArgb(255, 138, 6, 3);
-            ReplColor = Color.FromArgb(255, 0, 127, 0);
+            ResetColor();
 
             //supress duplicate using warnings
             SuppressWarning("CS0105");
@@ -89,30 +106,72 @@ namespace CShell.Modules.Repl.Controls
             Clear();
         }
 
-        #region IRepl Interface Implementation
-        public ScriptingEngine ScriptingEngine
-        {
-            get { return scriptingEngine; }
-            set
-            {
-                if (scriptingEngine != null)
-                {
-                    scriptingEngine.ConsoleOutput -= ScriptingEngineOnConsoleOutput;
-                    scriptingEngine.EvaluateStarted -= ScriptingEngineOnEvaluateStarted;
-                    scriptingEngine.EvaluateCompleted -= ScriptingEngineOnEvaluateCompleted;
-                    textEditor.Completion = null;
-                }
-                scriptingEngine = value;
-                if (scriptingEngine != null)
-                {
-                    scriptingEngine.ConsoleOutput += ScriptingEngineOnConsoleOutput;
-                    scriptingEngine.EvaluateStarted += ScriptingEngineOnEvaluateStarted;
-                    scriptingEngine.EvaluateCompleted += ScriptingEngineOnEvaluateCompleted;
-                    textEditor.Completion = scriptingEngine.CodeCompletion;
-                }
-                textEditor.IsEnabled = scriptingEngine != null;
+        internal IReplExecutor ReplExecutor { get { return replExecutor; } }
 
-                Clear();
+        #region IRepl Interface Implementation
+        public void Initialize(IReplExecutor replExecutor)
+        {
+            //unhook old executor
+            this.replExecutor = replExecutor;
+            this.textEditor.Completion = replExecutor.ReplCompletion;
+            Clear();
+            textEditor.IsEnabled = true;
+        }
+
+        private string currrentInput;
+        private string currentSourceFile;
+
+        public void EvaluateStarted(string input, string sourceFile)
+        {
+            currrentInput = input;
+            currentSourceFile = sourceFile;
+
+            if (!executingInternalCommand)
+            {
+                if (!IsEvaluating)
+                {
+                    ClearLine();
+                    WriteLine();
+                }
+                evaluationsRunning++;
+                var source = sourceFile != null ? System.IO.Path.GetFileName(sourceFile) : "unknown source";
+                WriteLine("[Evaluating external code (" + source + ")]", TextType.Repl);
+            }
+        }
+
+        public void EvaluateCompleted(global::ScriptCs.Contracts.ScriptResult result)
+        {
+            if (!result.IsCompleteSubmission)
+            {
+                partialCommand = currrentInput;
+                prompt = promptIncomplete;
+            }
+            else
+            {
+                partialCommand = "";
+                prompt = promptComplete;
+            }
+
+            if (result.HasErrors())
+            {
+                WriteLine(String.Join(Environment.NewLine, result.GetMessages()), TextType.Error);
+            }
+            if (result.HasWarnings())
+            {
+                var msgs = result.GetMessages();
+                var warnings = FilterWarnings(msgs).ToList();
+                if (warnings.Any())
+                    WriteLine(String.Join(Environment.NewLine, warnings), TextType.Warning);
+            }
+
+            if (result.ReturnValue != null)
+                WriteLine(ToPrettyString(result.ReturnValue));
+
+            executingInternalCommand = false;
+            evaluationsRunning--;
+            if (!IsEvaluating)
+            {
+                WritePrompt();
             }
         }
 
@@ -120,35 +179,6 @@ namespace CShell.Modules.Repl.Controls
         {
             get { return evaluationsRunning > 0; }
         }
-
-        public string Font
-        {
-            get { return textEditor.FontFamily.ToString(); }
-            set { textEditor.FontFamily = new FontFamily(value); }
-        }
-
-        public new double FontSize
-        {
-            get { return textEditor.FontSize; }
-            set { textEditor.FontSize = value; }
-        }
-
-        public Color BackgroundColor
-        {
-            get
-            {
-                var b = textEditor.Background as SolidColorBrush;
-                if (b != null) return b.Color;
-                else
-                    return Colors.Black;
-            }
-            set { textEditor.Background = new SolidColorBrush(value); }
-        }
-
-        public Color OutputColor { get; set; }
-        public Color WarningColor { get; set; }
-        public Color ErrorColor { get; set; }
-        public Color ReplColor { get; set; }
 
         private readonly HashSet<string> suppressedWarnings = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         public IEnumerable<string> SuppressedWarnings
@@ -205,9 +235,9 @@ namespace CShell.Modules.Repl.Controls
 
             WriteLine("CShell REPL (" + Assembly.GetExecutingAssembly().GetName().Version + ")", TextType.Repl);
 
-            if (scriptingEngine != null)
+            if (replExecutor != null)
             {
-                WriteLine("Enter C# code to be evaluated or enter \"help\" for more information.", TextType.Repl);
+                WriteLine("Enter C# code to be evaluated or enter \":help\" for more information.", TextType.Repl);
                 WritePrompt();
             }
             else
@@ -223,15 +253,16 @@ namespace CShell.Modules.Repl.Controls
         {
             Debug.WriteLine("Command: " + command);
 
-            if(scriptingEngine == null)
-                throw new InvalidOperationException("Scripting engine cannot be null when entering commands.");
+            if(replExecutor == null)
+                throw new InvalidOperationException("Repl executor cannot be null when entering commands.");
             WriteLine();
             commandHistory.Add(command);
             executingInternalCommand = true;
             evaluationsRunning++;
             var input = partialCommand + Environment.NewLine + command;
             input = input.Trim();
-            scriptingEngine.EvaluateAsync(input);
+            //todo: call execute ASYNC
+            replExecutor.Execute(input);
         }
 
         private void ShowPreviousCommand()
@@ -253,96 +284,6 @@ namespace CShell.Modules.Repl.Controls
         }
         #endregion
 
-        #region ScriptingEngine Events
-        private void ScriptingEngineOnEvaluateStarted(object sender, EvaluateStartedEventArgs evaluateStartedEventArgs)
-        {
-            if (!executingInternalCommand)
-            {
-                Execute.OnUIThread(() =>
-                {
-                    if (!IsEvaluating)
-                    {
-                        ClearLine();
-                        WriteLine();
-                    }
-                    evaluationsRunning++;
-                    var source = evaluateStartedEventArgs.SourceFile != null ? System.IO.Path.GetFileName(evaluateStartedEventArgs.SourceFile): "unknown source";
-                    WriteLine("[Evaluating external code (" + source + ")]", TextType.Repl);
-                });
-            }
-        }
-
-        private void ScriptingEngineOnEvaluateCompleted(object sender, EvaluateCompletedEventArgs evaluateCompletedEventArgs)
-        {
-            Execute.OnUIThread(() =>
-            {
-                var result = evaluateCompletedEventArgs.Resuslt;
-                if (!result.InputComplete)
-                {
-                    partialCommand = result.Input;
-                    prompt = promptIncomplete;
-                }
-                else
-                {
-                    partialCommand = "";
-                    prompt = promptComplete;
-                }
-
-                if (result.HasErrors)
-                    WriteLine(String.Join(Environment.NewLine, result.Errors), TextType.Error);
-                if (result.HasWarnings)
-                {
-                    var warnings = FilterWarnings(result.Warnings).ToList();
-                    if(warnings.Any())
-                        WriteLine(String.Join(Environment.NewLine, warnings), TextType.Warning);
-                }
-
-                if (result.HasResult && result.Result != null)
-                    WriteLine(ToPrettyString(result.Result));
-
-                executingInternalCommand = false;
-                evaluationsRunning--;
-                if (!IsEvaluating)
-                {
-                    if (ScriptingInteractiveBase.ClearRequested)
-                    {
-                        Clear();
-                        ScriptingInteractiveBase.ClearRequested = false;
-                    }
-                    else
-                        WritePrompt();
-                }
-            });
-        }
-
-        private void ScriptingEngineOnConsoleOutput(object sender, ConsoleEventArgs eventArgs)
-        {
-            if(ShowConsoleOutput)
-                Execute.OnUIThread(() => Write(eventArgs.Text, TextType.Output));
-        }
-
-        private string ToPrettyString(object o)
-        {
-            if (o is String)
-                return o.ToString();
-
-            var enumerable = o as IEnumerable;
-            if(enumerable != null)
-            {
-                var items = enumerable.Cast<object>().Take(21).ToList();
-                var firstItems = items.Take(20).ToList();
-                var sb = new StringBuilder();
-                sb.Append("{");
-                sb.Append(String.Join(", ", firstItems));
-                if (items.Count > firstItems.Count)
-                    sb.Append("...");
-                sb.Append("}");
-                return sb.ToString();
-            }
-            return o.ToString();
-        }
-        #endregion
-
         #region TextEditor Events
         private void TextAreaOnPreviewKeyDown(object sender, KeyEventArgs keyEventArgs)
         {
@@ -356,7 +297,7 @@ namespace CShell.Modules.Repl.Controls
                 if (IsEvaluating)
                 {
                     WriteLine("[Interrupting]", TextType.Repl);
-                    ScriptingEngine.Interrupt();
+                    replExecutor.Terminate();//TODO: is this the right method?
                 }
                 return;
             }
@@ -437,7 +378,7 @@ namespace CShell.Modules.Repl.Controls
             var line = Doc.GetLineByOffset(Offset);
             offset = Offset - line.Offset - prompt.Length;
 
-            var vars = ScriptingEngine.GetVars();
+            var vars = ""; //ScriptingEngine.GetVars();
             var code = vars + lineText;
             offset += vars.Length;
             var doc = new ReadOnlyDocument(new ICSharpCode.NRefactory.Editor.StringTextSource(code), textEditor.FileName);
@@ -586,25 +527,84 @@ namespace CShell.Modules.Repl.Controls
             Write(text + Environment.NewLine, textType);
         }
 
+        private string ToPrettyString(object o)
+        {
+            if (o is String)
+                return o.ToString();
+
+            var enumerable = o as IEnumerable;
+            if (enumerable != null)
+            {
+                var items = enumerable.Cast<object>().Take(21).ToList();
+                var firstItems = items.Take(20).ToList();
+                var sb = new StringBuilder();
+                sb.Append("{");
+                sb.Append(String.Join(", ", firstItems));
+                if (items.Count > firstItems.Count)
+                    sb.Append("...");
+                sb.Append("}");
+                return sb.ToString();
+            }
+            return o.ToString();
+        }
+        #endregion
+
+        #region IRepl interface, colors and fonts
         public Color GetColor(TextType textType)
         {
             switch (textType)
             {
-                case TextType.Output:
-                    return OutputColor;
                 case TextType.Warning:
                     return WarningColor;
                 case TextType.Error:
                     return ErrorColor;
                 case TextType.Repl:
                     return ReplColor;
+                case TextType.Output:
                 case TextType.None:
                 default:
                     return OutputColor;
             }
         }
+
+        public void ResetColor()
+        {
+            OutputColor = Color.FromArgb(255, 78, 78, 78);
+            WarningColor = Color.FromArgb(255, 183, 122, 0);
+            ErrorColor = Color.FromArgb(255, 138, 6, 3);
+            ReplColor = Color.FromArgb(255, 0, 127, 0);
+            BackgroundColor = Colors.WhiteSmoke;
+        }
+
+        public string Font
+        {
+            get { return textEditor.FontFamily.ToString(); }
+            set { textEditor.FontFamily = new FontFamily(value); }
+        }
+
+        public new double FontSize
+        {
+            get { return textEditor.FontSize; }
+            set { textEditor.FontSize = value; }
+        }
+
+        public Color BackgroundColor
+        {
+            get
+            {
+                var b = textEditor.Background as SolidColorBrush;
+                if (b != null) return b.Color;
+                else
+                    return Colors.Black;
+            }
+            set { textEditor.Background = new SolidColorBrush(value); }
+        }
+
+        public Color OutputColor { get; set; }
+        public Color WarningColor { get; set; }
+        public Color ErrorColor { get; set; }
+        public Color ReplColor { get; set; }
         #endregion
 
-      
     }//end class
 }

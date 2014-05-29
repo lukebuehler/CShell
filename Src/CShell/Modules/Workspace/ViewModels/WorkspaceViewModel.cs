@@ -17,7 +17,9 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.IO;
 using CShell.Framework;
 using CShell.Framework.Results;
 using CShell.Framework.Services;
@@ -28,47 +30,27 @@ namespace CShell.Modules.Workspace.ViewModels
 {
 	[Export]
     [Export(typeof(ITool))]
-    public class WorkspaceViewModel : Tool, IHandle<WorkspaceOpenedEventArgs>, IHandle<WorkspaceClosingEventArgs>
+    public class WorkspaceViewModel : Tool
 	{
-        [ImportingConstructor]
-        public WorkspaceViewModel(IEventAggregator eventAggregator)
+	    private readonly IShell shell;
+        private readonly CShell.Workspace workspace;
+
+	    [ImportingConstructor]
+        public WorkspaceViewModel(CShell.Workspace workspace)
         {
+            this.shell = shell;
             DisplayName = "Workspace Explorer";
-            eventAggregator.Subscribe(this);
-            var currentWorkspace = CShell.Shell.Workspace;
-            if (currentWorkspace != null)
-                LoadWorkspace(currentWorkspace);
-        }
-
-	    private void LoadWorkspace(CShell.Workspace workspace)
-        {
-            tree = new TreeViewModel();
-            CShellFile = new CShellFileViewModel(workspace.CShellFile);
-            tree.Children.Add(cShellFile);
-
-            //add the assembly references
-	        var refs = new AssemblyReferencesViewModel(workspace.Assemblies);
-            tree.Children.Add(refs);
-
-            //add the file tree
-            //var files = new FileReferencesViewModel(workspace.Files, null);
-            var files = new RootFolderViewModel(workspace.RootFolder, workspace);
-            tree.Children.Add(files);
-
-            NotifyOfPropertyChange(() => Tree);
-        }
-
-        private void UnloadWorkspace(CShell.Workspace workspace)
-        {
-            if(tree != null)
-            {
-                tree.Dispose();
-                tree = null;
-                NotifyOfPropertyChange(() => Tree);
-            }
+	        this.workspace = workspace;
+            this.workspace.PropertyChanged += WorkspaceOnPropertyChanged;
         }
 
 	    #region Display
+        private TreeViewModel tree;
+        public TreeViewModel Tree
+        {
+            get { return tree; }
+        }
+
 		public override PaneLocation PreferredLocation
 		{
 			get { return PaneLocation.Left; }
@@ -85,30 +67,36 @@ namespace CShell.Modules.Workspace.ViewModels
         }
         #endregion
 
-	    private CShellFileViewModel cShellFile;
-        public CShellFileViewModel CShellFile
-	    {
-	        get { return cShellFile; }
-	        set { cShellFile = value; NotifyOfPropertyChange(()=>CShellFile);}
-	    }
-
-	    private TreeViewModel tree;
-	    public TreeViewModel Tree
-	    {
-            get { return tree; }
-	    }
-
-        public void Handle(WorkspaceOpenedEventArgs message)
+        private void WorkspaceOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            LoadWorkspace(message.Workspace);
-            //save the .cshell file path
-            Settings.Default.LastWorkspace = message.Workspace.CShellFile;
-            Settings.Default.Save();
-        }
+            if (propertyChangedEventArgs.PropertyName == "WorkspaceDirectory")
+            {   //teardown the current workspace
+                if (tree != null)
+                {
+                    tree.Dispose();
+                    tree = null;
+                    NotifyOfPropertyChange(() => Tree);
+                }
 
-        public void Handle(WorkspaceClosingEventArgs message)
-        {
-            UnloadWorkspace(message.Workspace);
+                if (workspace.WorkspaceDirectory != null && Directory.Exists(workspace.WorkspaceDirectory))
+                {
+                    tree = new TreeViewModel();
+
+                    //add the assembly references
+                    var refs = new AssemblyReferencesViewModel(workspace.ReplExecutor);
+                    tree.Children.Add(refs);
+
+                    //add the file tree
+                    //var files = new FileReferencesViewModel(workspace.Files, null);
+                    var files = new FolderRootViewModel(workspace.WorkspaceDirectory, workspace);
+                    tree.Children.Add(files);
+
+                    NotifyOfPropertyChange(() => Tree);
+
+                    Settings.Default.LastWorkspace = workspace.WorkspaceDirectory;
+                    Settings.Default.Save();
+                }
+            }
         }
 
         public IEnumerable<IResult> Open(object node)
@@ -116,9 +104,6 @@ namespace CShell.Modules.Workspace.ViewModels
             var fileVM = node as FileViewModel;
             if(fileVM != null)
                 yield return Show.Document(fileVM.RelativePath);
-            var fileCShellVm = node as CShellFileViewModel;
-            if(fileCShellVm != null)
-                yield return Show.Document(fileCShellVm.RelativePath);
             yield break;
         }
 

@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -45,6 +46,7 @@ namespace CShell.Modules.Shell.ViewModels
 	[Export(typeof(IShell))]
 	public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell
 	{
+	    private bool closing = false;
 	    private IShellView shellView;
         private readonly ILog log = LogManager.GetLog(typeof(IShell));
 
@@ -154,24 +156,23 @@ namespace CShell.Modules.Shell.ViewModels
             //if a workspace was specified in the arguments open it now
             if (args != null && args.Length > 0 && !String.IsNullOrEmpty(args[0]))
             {
-                var cshellFile = args[0];
-                new OpenWorkspaceResult(cshellFile).BeginExecute(null);
+                var workspaceDir = args[0];
+                new ChangeWorkspaceResult(workspaceDir).BeginExecute(null);
             }
-            else if (Settings.Default.OpenLastWorkspace && File.Exists(Settings.Default.LastWorkspace))
+            else if (Settings.Default.OpenLastWorkspace && Directory.Exists(Settings.Default.LastWorkspace))
             {
-                var cshellFile = Settings.Default.LastWorkspace;
-                new OpenWorkspaceResult(cshellFile).BeginExecute(null);
+                var workspaceDir = Settings.Default.LastWorkspace;
+                new ChangeWorkspaceResult(workspaceDir).BeginExecute(null);
             }
-            else if(Settings.Default.IsFirstStartup)
+            else if (Settings.Default.IsFirstStartup)
             {
                 //open the default workspace if this is the first startup
                 Settings.Default.IsFirstStartup = false;
-                new OpenWorkspaceResult(Constants.CShellDefaultFilePath).BeginExecute(null);
+                new ChangeWorkspaceResult(Constants.CShellDefaultWorkspacePath).BeginExecute(null);
             }
-
         }
 
-        public void Close()
+	    public void Close()
 		{
 			Application.Current.MainWindow.Close();
 		}
@@ -195,10 +196,12 @@ namespace CShell.Modules.Shell.ViewModels
             // for the async close process to have enough time BEFORE the app closes we need to first cancel the close 
             // and then continue once the closing of the workspace is complete, and all of this in an async matter.
             // TODO: check if there are any unsaved documents and handle that properly first.
-            if (CShell.Shell.Workspace != null)
+            if (!closing)
             {
                 e.Cancel = true;
-                yield return new CloseWorkspaceResult(true);
+                closing = true;
+                yield return new ChangeWorkspaceResult(null);
+                yield return new CloseShellResult();
             }
         }
         #endregion
@@ -239,9 +242,9 @@ namespace CShell.Modules.Shell.ViewModels
                         //restore the documents and sinks
                         var uri = new Uri(contentId);
                         if(uri.Scheme == "file")
-                            e.Content = CShell.Shell.GetDocument(uri, true);
+                            e.Content = this.GetDocument(uri, true);
                         if (uri.Scheme == "sink")
-                            e.Content = CShell.Shell.GetSink(uri,  true); //do not open sink
+                            e.Content = this.GetSink(uri, true); //do not open sink
                         //make sure that the document is part of the shells items
                         var doc = e.Content as IDocument;
                         if (doc != null)
@@ -249,7 +252,7 @@ namespace CShell.Modules.Shell.ViewModels
 
                         //restore the tools
                         if (uri.Scheme == "tool")
-                            e.Content = CShell.Shell.GetTool(uri, true);
+                            e.Content = this.GetTool(uri, true);
                         var tool = e.Content as ITool;
                         if(tool != null && !_tools.Contains(tool))
                             _tools.Add(tool);
@@ -268,7 +271,20 @@ namespace CShell.Modules.Shell.ViewModels
                 });
             }
         }//end method
+
+        public CShell.Workspace.WindowLocation GetWindowLocation()
+        {
+            return shellView.GetWindowLocation();
+        }
+
+        public void RestoreWindowLocation(CShell.Workspace.WindowLocation windowLocation)
+        {
+            shellView.RestoreWindowLocation(windowLocation);
+        }
         #endregion
 
+
+
+       
     }//end class
 }

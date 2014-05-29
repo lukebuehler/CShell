@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2ADF8E19-B896-4778-8391-BC55FB100852}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CShell.Completion</RootNamespace>
+    <AssemblyName>CShell.Completion</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.AvalonEdit">
+      <HintPath>..\..\Lib\AvalonEdit.4.4.2.9744\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.NRefactory, Version=5.0.0.0, Culture=neutral, PublicKeyToken=d4bfe873e7598c49, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Lib\NRefactory\ICSharpCode.NRefactory.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.NRefactory.Cecil, Version=5.0.0.0, Culture=neutral, PublicKeyToken=d4bfe873e7598c49, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Lib\NRefactory\ICSharpCode.NRefactory.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.NRefactory.CSharp, Version=5.0.0.0, Culture=neutral, PublicKeyToken=d4bfe873e7598c49, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Lib\NRefactory\ICSharpCode.NRefactory.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CodeTextEditor.cs" />
+    <Compile Include="CSharpCompletion.cs" />
+    <Compile Include="CSharpCompletionContext.cs" />
+    <Compile Include="CSharpCompletionDataFactory.cs" />
+    <Compile Include="CSharpInsightItem.cs" />
+    <Compile Include="CSharpOverloadProvider.cs" />
+    <Compile Include="DataItems\CompletionData.cs" />
+    <Compile Include="DataItems\EntityCompletionData.cs" />
+    <Compile Include="DataItems\ImportCompletionData.cs" />
+    <Compile Include="DataItems\OverrideCompletionData.cs" />
+    <Compile Include="DataItems\VariableCompletionData.cs" />
+    <Compile Include="Images\CompletionImage.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SegmentTrackingOutputFormatter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Class.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Constructor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Delegate.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Enum.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\EnumValue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Event.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ExtensionMethod.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Field.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\FieldReadOnly.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Indexer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Interface.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Literal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Method.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\NameSpace.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Operator.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\OverlayInternal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\OverlayPrivate.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\OverlayProtected.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\OverlayProtectedInternal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\OverlayStatic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\PInvokeMethod.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Property.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\StaticClass.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Struct.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\VirtualMethod.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CShell.Core\CShell.Core.csproj">
+      <Project>{5d2479ea-0d1e-4381-ad9c-998ccec2dc21}</Project>
+      <Name>CShell.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

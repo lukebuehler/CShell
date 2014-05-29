@@ -1,4 +1,4 @@
-﻿using CShellCore.CodeCompletion;
+﻿using CShell.Completion;
 using ICSharpCode.NRefactory.Editor;
 using System;
 using System.Collections.Generic;
@@ -14,6 +14,11 @@ namespace CShell.Modules.Repl.Controls
         protected override IDocument GetCompletionDocument(out int offset)
         {
             return Repl.GetCompletionDocument(out offset);
+        }
+
+        protected override string[] GetNamespaces()
+        {
+            return Repl.ReplExecutor.GetNamespaces().ToArray();
         }
     }
 }

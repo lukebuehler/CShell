@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:cal="http://www.caliburnproject.org"
-					xmlns:controls="clr-namespace:CShell.Framework.Controls;assembly=CShellCore">
+					xmlns:controls="clr-namespace:CShell.Framework.Controls;assembly=CShell.Core">
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="Menu.xaml" />
 	</ResourceDictionary.MergedDictionaries>

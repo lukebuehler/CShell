@@ -25,6 +25,7 @@ using CShell.Framework.Services;
 using CShell.Modules.Repl.Controls;
 using CShell.Modules.Repl.Views;
 using Caliburn.Micro;
+using ScriptCs.Contracts;
 using Execute = CShell.Framework.Services.Execute;
 
 namespace CShell.Modules.Repl.ViewModels
@@ -32,7 +33,7 @@ namespace CShell.Modules.Repl.ViewModels
     [Export(typeof(ReplViewModel))]
     [Export(typeof(IRepl))]
     [Export(typeof(ITool))]
-    public class ReplViewModel : Tool, IRepl, IHandle<WorkspaceOpeningEventArgs>, IHandle<WorkspaceClosedEventArgs>
+    public class ReplViewModel : Tool, IRepl
     {
         private readonly Timer timer;
         private IRepl internalRepl;
@@ -73,6 +74,7 @@ namespace CShell.Modules.Repl.ViewModels
             internalRepl = replView.GetRepl();
 
             timer.Start();
+            base.OnViewLoaded(view);
         }
 
         protected override void OnDeactivate(bool close)
@@ -104,17 +106,23 @@ namespace CShell.Modules.Repl.ViewModels
             }
         }
 
-        public void Handle(WorkspaceOpeningEventArgs message)
-        {
-            replView.ScriptingEngine = message.Workspace.ScriptingEngine;
-        }
-
-        public void Handle(WorkspaceClosedEventArgs message)
-        {
-            replView.ScriptingEngine = null;
-        }
 
         #region IRepl wrapper implementaion
+        public void Initialize(IReplExecutor replExecutor)
+        {
+            Execute.OnUIThread(() => internalRepl.Initialize(replExecutor));
+        }
+
+        public void EvaluateStarted(string input, string sourceFile)
+        {
+            Execute.OnUIThread(() => internalRepl.EvaluateStarted(input, sourceFile));
+        }
+
+        public void EvaluateCompleted(ScriptResult result)
+        {
+            Execute.OnUIThread(() => internalRepl.EvaluateCompleted(result));
+        }
+
         public void Clear()
         {
             Execute.OnUIThread(()=>internalRepl.Clear());
@@ -123,6 +131,21 @@ namespace CShell.Modules.Repl.ViewModels
         public bool IsEvaluating
         {
             get { return internalRepl.IsEvaluating; }
+        }
+
+        public void Write(string value)
+        {
+            Execute.OnUIThread(() => internalRepl.Write(value));
+        }
+
+        public void WriteLine()
+        {
+            Execute.OnUIThread(() => internalRepl.WriteLine());
+        }
+
+        public void WriteLine(string value)
+        {
+            Execute.OnUIThread(() => internalRepl.WriteLine(value));
         }
 
         public IEnumerable<string> SuppressedWarnings
@@ -138,6 +161,11 @@ namespace CShell.Modules.Repl.ViewModels
         public void ShowWarning(string warningCode)
         {
             internalRepl.ShowWarning(warningCode);
+        }
+
+        public void ResetColor()
+        {
+            Execute.OnUIThread(() => internalRepl.ResetColor());
         }
 
         public bool ShowConsoleOutput
@@ -188,6 +216,10 @@ namespace CShell.Modules.Repl.ViewModels
             set { Execute.OnUIThread(()=>internalRepl.ReplColor = value); }
         }
         #endregion
+
+
+
+
 
     }//end class
 }

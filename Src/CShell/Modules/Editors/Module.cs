@@ -90,11 +90,9 @@ namespace CShell.Modules.Editors
             //eval code
 		    var runFile = new MenuItem("Run", ExecuteFile)
                 .WithIcon("Resources/Icons/Icons.16x16.RunAllIcon.png")
-                .WithActivator(workspaceActivator)
 		        .WithGlobalShortcut(ModifierKeys.Alt | ModifierKeys.Shift, Key.Enter);
             var runSelection = new MenuItem("Run Selection", ExecuteSelection)
                 .WithIcon("Resources/Icons/Icons.16x16.RunProgramIcon.png")
-                .WithActivator(workspaceActivator)
                 .WithGlobalShortcut(ModifierKeys.Alt, Key.Enter);
             //populate the menu
             MainMenu.First(item => item.Name == "Evaluate")

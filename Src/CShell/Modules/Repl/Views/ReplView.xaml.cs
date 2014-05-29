@@ -35,11 +35,5 @@ namespace CShell.Modules.Repl.Views
         {
             return repl;
         }
-
-        public ScriptingEngine ScriptingEngine
-        {
-            get { return repl.ScriptingEngine; }
-            set { repl.ScriptingEngine = value; }
-        }
     }
 }

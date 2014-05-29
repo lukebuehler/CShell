@@ -22,10 +22,11 @@ using System.Net;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
+using CShell.Completion;
 using CShell.Framework;
 using CShell.Framework.Services;
+using CShell.Modules.Editors.Controls;
 using CShell.Modules.Editors.Views;
-using CShellCore.CodeCompletion;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
@@ -37,12 +38,18 @@ namespace CShell.Modules.Editors.ViewModels
 {
 	public class EditorViewModel : Document, ITextDocument
 	{
-		private string originalText;
+	    private readonly CShell.Workspace workspace;
+	    private string originalText;
 		private string path;
 		private string fileName;
 		private bool isDirty;
-	    private CodeTextEditor textEditor;
+	    private CodeCompletionTextEditor textEditor;
 	    private EditorView editorView;
+
+	    public EditorViewModel(CShell.Workspace workspace)
+	    {
+	        this.workspace = workspace;
+	    }
 
 	    public string File
 	    {
@@ -121,13 +128,18 @@ namespace CShell.Modules.Editors.ViewModels
 			};
 
             //some other settings
+		    var extension = Path.GetExtension(path);
+		    extension = extension == null ? "" : extension.ToLower();
 		    textEditor.ShowLineNumbers = true;
-		    textEditor.SyntaxHighlighting = GetHighlighting(Path.GetExtension(path));
+            textEditor.SyntaxHighlighting = GetHighlighting(extension);
 
-            if (CShell.Shell.Workspace != null && CShell.Shell.Workspace.ScriptingEngine.CodeCompletion != null)
-                textEditor.Completion = CShell.Shell.Workspace.ScriptingEngine.CodeCompletion;
+		    if (workspace != null && workspace.ReplExecutor.DocumentCompletion != null && (extension == ".cs" || extension == ".csx"))
+		    {
+		        textEditor.Completion = workspace.ReplExecutor.DocumentCompletion;
+		        textEditor.ReplExecutor = workspace.ReplExecutor;
+		    }
 
-            //debug to see what commands are available in the editor
+		    //debug to see what commands are available in the editor
             //var c = textEditor.TextArea.CommandBindings;
             //foreach (System.Windows.Input.CommandBinding cmd in c)
             //{
@@ -248,7 +260,7 @@ namespace CShell.Modules.Editors.ViewModels
         public void Select(int start, int length)
         {
             start = Math.Abs(start);
-            start = Math.Abs(length);
+            length = Math.Abs(length);
             Execute.OnUIThreadEx(() =>
             {
                 if (start > textEditor.Document.TextLength)

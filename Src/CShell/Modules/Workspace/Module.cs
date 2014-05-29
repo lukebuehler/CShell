@@ -51,14 +51,12 @@ namespace CShell.Modules.Workspace
 		    //workspaceViewModel.IsVisible = false;
             Shell.ShowTool(workspaceViewModel);
 
-		    var addNewFile = new MenuItem("Add New File...", AddNewFile)
-		        .WithActivator(workspaceActivator);
-            var addFolder = new MenuItem("Add New Folder...", AddNewFolder)
-                .WithActivator(workspaceActivator);
-            var addReference = new MenuItem("Add Reference from File...", AddReferenceFromFile)
-                .WithActivator(workspaceActivator);
-            var addReferenceGac = new MenuItem("Add Reference from GAC...", AddReferenceFromGac)
-                .WithActivator(workspaceActivator);
+		    var addNewFile = new MenuItem("Add New File...", AddNewFile);
+		    var addFolder = new MenuItem("Add New Folder...", AddNewFolder);
+		    var addReference = new MenuItem("Add References from Files...", AddFileReferences);
+            var addReferenceGac = new MenuItem("Add References from GAC...", AddGacReferences);
+            var copyReference = new MenuItem("Copy References to Bin...", CopyReferences);
+            var managePackages = new MenuItem("Manage NuGet Packages...", MangePackages);
             //populate the menu
             MainMenu.First(item => item.Name == "Workspace")
                 .Add(
@@ -67,7 +65,11 @@ namespace CShell.Modules.Workspace
                     addFolder,
                     MenuItemBase.Separator,
                     addReference,
-                    addReferenceGac
+                    addReferenceGac,
+                    MenuItemBase.Separator,
+                    copyReference,
+                    MenuItemBase.Separator,
+                    managePackages
                 );
 		}
 
@@ -86,23 +88,47 @@ namespace CShell.Modules.Workspace
             return GetSelectedFolder().AddNewFolder();
         }
 
-        private IEnumerable<IResult> AddReferenceFromFile()
+        public static IEnumerable<IResult> AddFileReferences()
         {
             var dialog = new OpenFileDialog();
-            dialog.Filter = Constants.AssemblyFileFilter;
+            dialog.Filter = CShell.Constants.AssemblyFileFilter;
             dialog.Multiselect = true;
             yield return Show.Dialog(dialog);
-            yield return new AddReferencesResult(CShell.Shell.Workspace.Assemblies, dialog.FileNames);
+            if (dialog.FileNames != null && dialog.FileNames.Length > 0)
+            {
+                yield return new AddReferencesResult(dialog.FileNames);
+            }
         }
 
-        public IEnumerable<IResult> AddReferenceFromGac()
+        public static IEnumerable<IResult> AddGacReferences()
         {
             var windowSettings = new Dictionary<string, object> { { "SizeToContent", SizeToContent.Manual }, { "Width", 500.0 }, { "Height", 500.0 } };
             var dialog = new AssemblyGacViewModel();
             yield return Show.Dialog(dialog, windowSettings);
             var selectedAssemblies = dialog.SelectedAssemblies.Select(item => item.AssemblyName).ToArray();
-            if (selectedAssemblies.Length <= dialog.MaxSelectedAssemblyCount)
-                yield return new AddReferencesResult(CShell.Shell.Workspace.Assemblies, dialog.SelectedAssemblies.Select(item => item.AssemblyName));
+            if (selectedAssemblies.Length > 0)
+            {
+                yield return new AddReferencesResult(selectedAssemblies);
+            }
+        }
+
+        public static IEnumerable<IResult> CopyReferences()
+        {
+            var dialog = new OpenFileDialog();
+            dialog.Filter = CShell.Constants.AssemblyFileFilter;
+            dialog.Multiselect = true;
+            yield return Show.Dialog(dialog);
+            if (dialog.FileNames != null && dialog.FileNames.Length > 0)
+            {
+                yield return new CopyReferencesResult(dialog.FileNames);
+            }
+        }
+
+        public static IEnumerable<IResult> MangePackages()
+        {
+            var windowSettings = new Dictionary<string, object> { { "SizeToContent", SizeToContent.Manual }, { "Width", 500.0 }, { "Height", 500.0 } };
+            var dialog = new AssemblyPackagesViewModel();
+            yield return Show.Dialog(dialog, windowSettings);
         }
 
 
@@ -111,7 +137,7 @@ namespace CShell.Modules.Workspace
             var workspaceViewModel = IoC.Get<WorkspaceViewModel>();
             var fileRoot = (FolderViewModel)workspaceViewModel.Tree.Children.First(vm => vm is FolderViewModel);
             var selected = (FolderViewModel)fileRoot.GetAllChildren().FirstOrDefault(vm => vm is FolderViewModel && vm.IsSelected);
-            if (selected == null)
+            if (selected == null || selected is FolderBinViewModel || selected is FolderPackagesViewModel)
                 selected = fileRoot;
             return selected;
         }

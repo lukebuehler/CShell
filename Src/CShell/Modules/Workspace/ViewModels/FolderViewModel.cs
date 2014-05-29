@@ -47,6 +47,13 @@ namespace CShell.Modules.Workspace.ViewModels
             IsEditable = true;
         }
 
+        public CShell.Workspace Workspace
+        {
+            get { return workspace; }
+        }
+
+        public DirectoryInfo DirectoryInfo { get { return directoryInfo; } }
+
         public override Uri IconSource
         {
             get
@@ -74,9 +81,9 @@ namespace CShell.Modules.Workspace.ViewModels
             get { return children ?? (children = LoadChildren()); }
         }
 
-        protected BindableCollection<TreeViewModel> LoadChildren()
+        protected virtual BindableCollection<TreeViewModel> LoadChildren()
         {
-            var filer = workspace.Filter ?? "";
+            var filer = "";//workspace.Filter ?? "";
             var filterStrings = filer.Split().Select(WildcardToRegex).ToArray();
             var filters = filterStrings.Select(fs=> new Regex(fs, RegexOptions.IgnoreCase)).ToArray();
 

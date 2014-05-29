@@ -3,13 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
-             xmlns:codeCompletion="clr-namespace:CShellCore.CodeCompletion;assembly=CShellCore.CodeCompletion"
+             xmlns:controls="clr-namespace:CShell.Modules.Editors.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <codeCompletion:CodeTextEditor
-            Name="textEditor"
+        <controls:CodeCompletionTextEditor
+            x:Name="textEditor"
             FontFamily="Consolas"
             SyntaxHighlighting="C#"
             FontSize="10pt" 

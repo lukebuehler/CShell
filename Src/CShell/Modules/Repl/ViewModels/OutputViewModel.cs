@@ -19,7 +19,6 @@ using System;
 using System.Linq;
 using System.ComponentModel.Composition;
 using System.Windows.Media;
-using CShell.Code;
 using CShell.Framework;
 using CShell.Framework.Services;
 using CShell.Modules.Repl.Views;
@@ -31,7 +30,7 @@ namespace CShell.Modules.Repl.ViewModels
     [Export]
     [Export(typeof(IOutput))]
     [Export(typeof(ITool))]
-    public class OutputViewModel : Tool, IOutput, IHandle<WorkspaceOpenedEventArgs>, IHandle<WorkspaceClosingEventArgs>
+    public class OutputViewModel : Tool, IOutput
 	{
 		private IOutputView _view;
 
@@ -39,12 +38,6 @@ namespace CShell.Modules.Repl.ViewModels
         public OutputViewModel(IEventAggregator eventAggregator)
         {
             eventAggregator.Subscribe(this);
-            if (CShell.Shell.Workspace != null)
-            {
-                var scriptingEngine = CShell.Shell.Workspace.ScriptingEngine;
-                scriptingEngine.ConsoleOutput -= ScriptingEngineOnConsoleOutput;
-                scriptingEngine.ConsoleOutput += ScriptingEngineOnConsoleOutput;
-            }
             BufferLength = 200;
             Font = "Consolas";
             FontSize = 12;
@@ -121,24 +114,6 @@ namespace CShell.Modules.Repl.ViewModels
 			_view = (IOutputView) view;
 			_view.ScrollToEnd();
 		}
-
-	    private void ScriptingEngineOnConsoleOutput(object sender, ConsoleEventArgs consoleEventArgs)
-	    {
-	        Write(consoleEventArgs.Text);
-	    }
-
-        public void Handle(WorkspaceOpenedEventArgs message)
-        {
-            var scriptingEngine = message.Workspace.ScriptingEngine;
-            scriptingEngine.ConsoleOutput -= ScriptingEngineOnConsoleOutput;
-            scriptingEngine.ConsoleOutput += ScriptingEngineOnConsoleOutput;
-        }
-
-        public void Handle(WorkspaceClosingEventArgs message)
-        {
-            var scriptingEngine = message.Workspace.ScriptingEngine;
-            scriptingEngine.ConsoleOutput -= ScriptingEngineOnConsoleOutput;
-        }
 
         #region Appearance from IOutput
         private string font;

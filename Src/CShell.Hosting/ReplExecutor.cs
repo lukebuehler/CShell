@@ -93,10 +93,7 @@ namespace CShell.Hosting
                     }
 
                     var commandResult = HandleReplCommand(command, argsToPass.ToArray());
-                    result = new ScriptResult
-                    {
-                        ReturnValue = commandResult
-                    };
+                    result = new ScriptResult(commandResult);
                     return result;
                 }
 
@@ -121,11 +118,11 @@ namespace CShell.Hosting
             catch (FileNotFoundException fileEx)
             {
                 RemoveReferences(fileEx.FileName);
-                return new ScriptResult {CompileExceptionInfo = ExceptionDispatchInfo.Capture(fileEx)};
+                return new ScriptResult(compilationException:fileEx);
             }
             catch (Exception ex)
             {
-                return new ScriptResult {ExecuteExceptionInfo = ExceptionDispatchInfo.Capture(ex)};
+                return new ScriptResult(executionException:ex);
             }
             finally
             {

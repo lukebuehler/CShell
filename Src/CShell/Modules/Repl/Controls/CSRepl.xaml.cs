@@ -131,7 +131,7 @@ namespace CShell.Modules.Repl.Controls
 
         public void EvaluateCompleted(global::ScriptCs.Contracts.ScriptResult result)
         {
-            if (result.IsPendingClosingChar)
+            if (!result.IsCompleteSubmission)
             {
                 partialCommand = currrentInput;
                 prompt = promptIncomplete;

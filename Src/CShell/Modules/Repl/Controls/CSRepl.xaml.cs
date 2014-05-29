@@ -84,6 +84,16 @@ namespace CShell.Modules.Repl.Controls
 
             commandHistory = new CommandHistory();
 
+            var errorStream = new ConsoleStream(TextType.Error, Write);
+            var errorWriter = new StreamWriter(errorStream);
+            errorWriter.AutoFlush = true;
+            Console.SetError(errorWriter);
+
+            var stdoutStream = new ConsoleStream(TextType.Output, Write);
+            var stdoutWriter = new StreamWriter(stdoutStream);
+            stdoutWriter.AutoFlush = true;
+            Console.SetOut(stdoutWriter);
+
             ShowConsoleOutput = true;
             ResetColor();
 

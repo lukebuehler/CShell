@@ -155,6 +155,7 @@
       <DependentUpon>AboutView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules\Repl\Controls\CommandHistory.cs" />
+    <Compile Include="Modules\Repl\Controls\ConsoleStream.cs" />
     <Compile Include="Modules\Repl\Controls\CSRepl.xaml.cs">
       <DependentUpon>CSRepl.xaml</DependentUpon>
     </Compile>

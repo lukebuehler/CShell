@@ -178,7 +178,6 @@
     <Compile Include="Shell.Tools.cs" />
     <Compile Include="Util\FusionNative.cs" />
     <Compile Include="Util\GlobalAssemblyCache.cs" />
-    <Compile Include="Util\GuiStream.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Shell.cs" />
     <Compile Include="Util\ObservableKeyedCollection.cs" />

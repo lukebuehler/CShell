@@ -5,7 +5,7 @@ using System.Runtime.Versioning;
 using NuGet;
 using ScriptCs.Contracts;
 
-namespace CShell.ScriptCs.Package
+namespace CShell.Hosting.Package
 {
     internal class PackageObject : IPackageObject
     {

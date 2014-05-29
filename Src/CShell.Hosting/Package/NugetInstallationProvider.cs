@@ -7,7 +7,7 @@ using NuGet;
 using ScriptCs.Contracts;
 using IFileSystem = ScriptCs.Contracts.IFileSystem;
 
-namespace CShell.ScriptCs.Package
+namespace CShell.Hosting.Package
 {
     public class NugetInstallationProvider : IInstallationProvider
     {

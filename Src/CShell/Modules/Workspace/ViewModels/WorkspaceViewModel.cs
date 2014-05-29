@@ -25,7 +25,6 @@ using CShell.Framework.Results;
 using CShell.Framework.Services;
 using CShell.Properties;
 using Caliburn.Micro;
-using CShell.ScriptCs;
 
 namespace CShell.Modules.Workspace.ViewModels
 {

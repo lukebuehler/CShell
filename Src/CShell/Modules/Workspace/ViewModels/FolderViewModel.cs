@@ -24,7 +24,6 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using CShell.Framework.Results;
 using CShell.Modules.Workspace.Results;
-using CShell.ScriptCs;
 using CShell.Util;
 using Caliburn.Micro;
 using Microsoft.Win32;

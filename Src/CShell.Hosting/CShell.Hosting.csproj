@@ -7,8 +7,8 @@
     <ProjectGuid>{6FEE7BD7-F709-459B-9F37-153D22AB917A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CShell.ScriptCs</RootNamespace>
-    <AssemblyName>CShell.ScriptCs</AssemblyName>
+    <RootNamespace>CShell.Hosting</RootNamespace>
+    <AssemblyName>CShell.Hosting</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>

@@ -9,7 +9,7 @@ using ScriptCs.Contracts;
 using IFileSystem = ScriptCs.Contracts.IFileSystem;
 using PackageReference = ScriptCs.PackageReference;
 
-namespace CShell.ScriptCs.Package
+namespace CShell.Hosting.Package
 {
     public class PackageContainer : IPackageContainer
     {

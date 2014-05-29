@@ -5,17 +5,13 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Runtime.Versioning;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Common.Logging;
 using CShell.Completion;
 using CShell.Framework.Services;
-using CShell.Util;
 using ScriptCs;
 using ScriptCs.Contracts;
 
-namespace CShell.ScriptCs
+namespace CShell.Hosting
 {
     public class ReplExecutor : ScriptExecutor, IReplExecutor
     {

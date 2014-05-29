@@ -23,7 +23,6 @@ using System.Linq;
 using System.Text;
 using CShell.Framework.Results;
 using Caliburn.Micro;
-using CShell.ScriptCs;
 
 namespace CShell.Modules.Workspace.ViewModels
 {

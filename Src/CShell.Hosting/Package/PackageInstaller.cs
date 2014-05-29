@@ -4,7 +4,7 @@ using System.Linq;
 using Common.Logging;
 using ScriptCs.Contracts;
 
-namespace CShell.ScriptCs.Package
+namespace CShell.Hosting.Package
 {
     public class PackageInstaller : IPackageInstaller
     {

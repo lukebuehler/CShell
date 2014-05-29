@@ -30,7 +30,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using CShell.Completion;
 using CShell.Framework.Services;
-using CShell.ScriptCs;
+using CShell.Hosting;
 using CShell.Util;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;

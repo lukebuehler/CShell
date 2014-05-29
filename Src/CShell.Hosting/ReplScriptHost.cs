@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ScriptCs;
+﻿using ScriptCs;
 using ScriptCs.Contracts;
 
-namespace CShell.ScriptCs
+namespace CShell.Hosting
 {
     public class ReplScriptHost : ScriptHost
     {

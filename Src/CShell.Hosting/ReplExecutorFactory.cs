@@ -1,7 +1,6 @@
 ﻿using ScriptCs;
-using ScriptCs.Contracts;
 
-namespace CShell.ScriptCs
+namespace CShell.Hosting
 {
     public class ReplExecutorFactory : IReplExecutorFactory
     {

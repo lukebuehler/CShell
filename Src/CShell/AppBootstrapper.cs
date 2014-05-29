@@ -34,7 +34,7 @@ using CShell.Framework;
 using CShell.Framework.Results;
 using CShell.Framework.Services;
 using Caliburn.Micro;
-using CShell.ScriptCs;
+using CShell.Hosting;
 using Xceed.Wpf.AvalonDock;
 using LogManager = Caliburn.Micro.LogManager;
 

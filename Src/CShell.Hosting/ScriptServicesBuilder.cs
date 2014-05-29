@@ -1,18 +1,12 @@
-﻿using System;
-using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
-using System.Linq;
-using System.Windows.Media;
-using Common.Logging;
-using Common.Logging.Simple;
+﻿using Common.Logging;
 using CShell.Framework.Services;
-using CShell.ScriptCs.Package;
+using CShell.Hosting.Package;
 using ScriptCs;
 using ScriptCs.Contracts;
 using ScriptCs.Engine.Roslyn;
 using LogLevel = Common.Logging.LogLevel;
 
-namespace CShell.ScriptCs
+namespace CShell.Hosting
 {
     public class ScriptServicesBuilder
     {

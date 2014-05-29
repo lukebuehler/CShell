@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using NuGet;
 
-namespace CShell.ScriptCs.Package
+namespace CShell.Hosting.Package
 {
     internal class NugetMachineWideSettings : IMachineWideSettings
     {

@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using Common.Logging;
 using Common.Logging.Factory;
 using CShell.Framework.Services;
 
-namespace CShell.ScriptCs
+namespace CShell.Hosting
 {
     public class ReplLogger : AbstractLogger
     {

@@ -23,7 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CShell.Core", "CShell.Core\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CShell.Completion", "CShell.Completion\CShell.Completion.csproj", "{2ADF8E19-B896-4778-8391-BC55FB100852}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CShell.ScriptCs", "CShell.ScriptCs\CShell.ScriptCs.csproj", "{6FEE7BD7-F709-459B-9F37-153D22AB917A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CShell.Hosting", "CShell.Hosting\CShell.Hosting.csproj", "{6FEE7BD7-F709-459B-9F37-153D22AB917A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

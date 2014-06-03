@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Runtime.Versioning;
+using System.Text;
+using System.Text.RegularExpressions;
 using Common.Logging;
 using CShell.Completion;
 using CShell.Framework.Services;
@@ -111,6 +113,10 @@ namespace CShell.Hosting
                 if (referencesToAdd.Length > 0)
                     AddReferencesAndNotify(referencesToAdd);
                 result = ScriptEngine.Execute(preProcessResult.Code, scriptArgs, References, Namespaces, ScriptPackSession);
+
+                if (result != null && result.IsCompleteSubmission)
+                    PrepareVariables();
+                
                 if (result == null) return new ScriptResult();
 
                 return result;
@@ -179,6 +185,10 @@ namespace CShell.Hosting
 
                 return null;
             }
+            if (command == "vars")
+            {
+                return String.Join(Environment.NewLine, GetVariables());
+            }
 
             return "Unknown REPL command: "+command;
         }
@@ -229,9 +239,52 @@ namespace CShell.Hosting
         }
 
 
+        #region Variables
+        private string[] variables;
+        private void PrepareVariables()
+        {
+            //see: http://stackoverflow.com/questions/13056208/how-to-get-declared-variables-and-other-definitions
+            //this code has to be evaluated from within Roslyn to get the right results
+            var result = ScriptEngine.Execute("Assembly.GetExecutingAssembly().DefinedTypes", null, References, Namespaces.Concat(new[] { "System.Reflection" }), ScriptPackSession);
+            var runtimeTypes = result.ReturnValue as IEnumerable<TypeInfo>;
+            if(runtimeTypes == null)
+                return;
 
+            var variableLookup = new Dictionary<string, FieldInfo>();
+            foreach (var type in runtimeTypes.Reverse())
+            {
+                //we are only interested in actual submissions, this filters out class definitions and so on
+                if(!type.Name.StartsWith("Submission#"))
+                    continue;
 
+                foreach (var variable in type.GetFields(BindingFlags.Instance | BindingFlags.Public))
+                {
+                    //not interested in the script host variables (which are in every submission)
+                    //only keep the first occurence of a variable, since variables can be redefined
+                    if (variable.FieldType != typeof(ReplScriptHost) && !variableLookup.ContainsKey(variable.Name))
+                        variableLookup.Add(variable.Name, variable);
+                }
+            }
+            variables = variableLookup.Select(v => v.Value.ToString()).ToArray();
+            //clean anonymous types
+            //convert the variables from general .NET generics format (List`1[int]) to C# format (List<int>)
+            var anonymousRegex = new Regex(@"\<\>f__AnonymousType[0-9]*#[0-9]*");
+            var genericsRegex = new Regex(@"\`[0-9]*\[");
+            for (int i = 0; i < variables.Length; i++)
+            {
+                variables[i] = anonymousRegex.Replace(variables[i], "AnonymousType");
+                variables[i] = genericsRegex.Replace(variables[i], "<");
+                variables[i] = variables[i].Replace(']', '>');
+            }
+        }
 
-       
+        public string[] GetVariables()
+        {
+            if(variables == null)
+                return new string[0];
+            return variables;
+        }
+        #endregion
+
     }
 }

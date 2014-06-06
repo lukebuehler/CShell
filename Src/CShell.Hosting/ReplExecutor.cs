@@ -150,7 +150,8 @@ namespace CShell.Hosting
             }
             if (command == "install")
             {
-                if (args == null || args.Length == 0) return null;
+                if (args == null || args.Length == 0)
+                    return null;
 
                 string version = null;
                 var allowPre = false;

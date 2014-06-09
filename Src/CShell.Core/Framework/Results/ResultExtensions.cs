@@ -29,23 +29,23 @@ namespace CShell.Framework.Results
     /// </summary>
     public static class ResultExtensions
     {
-        public static void BeginExecute(this IEnumerable<IResult> results, ActionExecutionContext actionExecutionContext = null)
+        public static void BeginExecute(this IEnumerable<IResult> results, CoroutineExecutionContext executionContext = null)
         {
-            Coroutine.BeginExecute(results.GetEnumerator(), actionExecutionContext);
+            Coroutine.BeginExecute(results.GetEnumerator(), executionContext);
         }
 
-        public static void BeginExecute(this IResult result, ActionExecutionContext actionExecutionContext = null)
+        public static void BeginExecute(this IResult result, CoroutineExecutionContext executionContext = null)
         {
             IEnumerable<IResult> results = new[] {result};
-            results.BeginExecute(actionExecutionContext);
+            results.BeginExecute(executionContext);
         }
 
-        public static void ExecuteSynchronized(this IResult result, ActionExecutionContext actionExecutionContext = null)
+        public static void ExecuteSynchronized(this IResult result, CoroutineExecutionContext executionContext = null)
         {
             IoC.BuildUp(result);
             var reset = new ManualResetEvent(false);
             result.Completed+= (s,e)=>reset.Set();
-            result.Execute(actionExecutionContext);
+            result.Execute(executionContext);
             reset.WaitOne();
         }
     }

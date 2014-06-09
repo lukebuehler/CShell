@@ -42,7 +42,7 @@ namespace CShell.Framework.Results
             this.workspaceDirectory = workspaceDirectory;
         }
 
-        public override void Execute(ActionExecutionContext context)
+        public override void Execute(CoroutineExecutionContext context)
         {
             
             try

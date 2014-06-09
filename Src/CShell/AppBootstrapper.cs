@@ -29,18 +29,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
-using Common.Logging;
-using CShell.Framework;
 using CShell.Framework.Results;
 using CShell.Framework.Services;
 using Caliburn.Micro;
 using CShell.Hosting;
+using ScriptCs;
+using ScriptCs.Contracts;
 using Xceed.Wpf.AvalonDock;
+using IModule = CShell.Framework.IModule;
+using LogLevel = Common.Logging.LogLevel;
 using LogManager = Caliburn.Micro.LogManager;
 
 namespace CShell
 {
-    public class AppBootstrapper : Bootstrapper<IShell>
+    public class AppBootstrapper : Caliburn.Micro.BootstrapperBase
     {
         static AppBootstrapper()
         {
@@ -51,6 +53,11 @@ namespace CShell
             Common.Logging.LogManager.Adapter = new Common.Logging.Simple.NoOpLoggerFactoryAdapter();
 #endif
             LogManager.GetLog = type => new Logger(type);
+        }
+
+        public AppBootstrapper()
+        {
+            Initialize();
         }
 
         private const string ModulesPath = @"./Modules";
@@ -91,7 +98,9 @@ namespace CShell
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(IShell))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(DockingManager))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(Xceed.Wpf.AvalonDock.Themes.AeroTheme))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(Xceed.Wpf.AvalonDock.Themes.VS2010Theme)))
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(Xceed.Wpf.AvalonDock.Themes.VS2010Theme))),
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(IReplCommand))),
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(ScriptExecutor)))
                 );
 
             AssemblySource.Instance.AddRange(
@@ -121,7 +130,8 @@ namespace CShell
             //the order of the statements here is important
 
             //1. this will show the Shell UI.
-            base.OnStartup(sender, e);
+            DisplayRootViewFor<IShell>();
+            //base.OnStartup(sender, e);
 
             //2. init all basic modules, they themselves will register in the UI
             _modules = IoC.GetAllInstances(typeof(IModule)).Cast<IModule>().ToList();
@@ -137,6 +147,11 @@ namespace CShell
                 await Task.Delay(100);
                 await Caliburn.Micro.Execute.OnUIThreadAsync(() => shell.Opened(e.Args));
             });
+
+            
+
+            //test
+            var cmds = IoC.GetAll<IReplCommand>().ToList();
         }
 
 

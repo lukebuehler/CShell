@@ -53,7 +53,7 @@ namespace CShell.Framework.Results
             this.documentType = documentType;
 		}
 
-		public override void Execute(ActionExecutionContext context)
+        public override void Execute(CoroutineExecutionContext context)
 		{
 			var doc = document ??
 				(uri == null

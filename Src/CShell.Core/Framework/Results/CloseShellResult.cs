@@ -35,7 +35,7 @@ namespace CShell.Framework.Results
         public CloseShellResult()
         {}
 
-        public override void Execute(ActionExecutionContext context)
+        public override void Execute(CoroutineExecutionContext context)
         {
             try
             {

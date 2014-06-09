@@ -40,7 +40,7 @@ namespace CShell.Framework.Results
             this.newFile = newFile;
         }
 
-        public override void Execute(ActionExecutionContext context)
+        public override void Execute(CoroutineExecutionContext context)
         {
             Exception ex = null;
             try

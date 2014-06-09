@@ -25,7 +25,7 @@ namespace CShell.Framework.Results
 {
     public abstract class ResultBase : IResult
     {
-        public abstract void Execute(ActionExecutionContext context);
+        public abstract void Execute(CoroutineExecutionContext context);
 
         public event EventHandler<ResultCompletionEventArgs> Completed;
         protected virtual void OnCompleted(Exception exception)

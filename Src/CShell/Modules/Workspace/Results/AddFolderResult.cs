@@ -34,7 +34,7 @@ namespace CShell.Modules.Workspace.Results
             this.folder = folder;
         }
 
-        public override void Execute(Caliburn.Micro.ActionExecutionContext context)
+        public override void Execute(Caliburn.Micro.CoroutineExecutionContext context)
         {
             ////add the whole folder
             //if(Directory.Exists(folder))

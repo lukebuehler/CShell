@@ -39,7 +39,7 @@ namespace CShell.Modules.Workspace.Results
             this.files = files;
         }
 
-        public override void Execute(Caliburn.Micro.ActionExecutionContext context)
+        public override void Execute(Caliburn.Micro.CoroutineExecutionContext context)
         {
             foreach (var file in files)
             {

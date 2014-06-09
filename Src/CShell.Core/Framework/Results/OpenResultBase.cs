@@ -53,8 +53,8 @@ namespace CShell.Framework.Results
 				Completed(this, new ResultCompletionEventArgs { Error = exception });
 		}
 
-		public abstract void Execute(ActionExecutionContext context);
+        public abstract void Execute(CoroutineExecutionContext context);
 
 		public event EventHandler<ResultCompletionEventArgs> Completed;
-	}
+    }
 }

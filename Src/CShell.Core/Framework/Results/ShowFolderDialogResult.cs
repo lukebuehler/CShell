@@ -36,7 +36,7 @@ namespace CShell.Framework.Results
 
 	    public string SelectedFolder { get; set; }
 
-	    public void Execute(ActionExecutionContext context)
+	    public void Execute(CoroutineExecutionContext context)
 	    {
 	        var dialog = new FolderBrowserDialog();
             if(!String.IsNullOrEmpty(SelectedFolder))

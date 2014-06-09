@@ -64,7 +64,7 @@ namespace CShell.Modules.Workspace.Results
             this.assemblyNames = assemblyNames;
         }
 
-        public override void Execute(Caliburn.Micro.ActionExecutionContext context)
+        public override void Execute(Caliburn.Micro.CoroutineExecutionContext context)
         {
             Task.Run(() =>
             {

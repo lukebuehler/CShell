@@ -50,7 +50,7 @@ namespace CShell.Modules.Workspace.Results
             this.assemblyPaths = files;
         }
 
-        public override void Execute(Caliburn.Micro.ActionExecutionContext context)
+        public override void Execute(Caliburn.Micro.CoroutineExecutionContext context)
         {
             try
             {

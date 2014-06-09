@@ -43,7 +43,7 @@ namespace CShell.Framework.Results
             this.sourceFile = sourceFile;
         }
 
-        public override void Execute(ActionExecutionContext context)
+        public override void Execute(CoroutineExecutionContext context)
         {
             if(Workspace != null && Workspace.ReplExecutor != null)
             {

@@ -40,7 +40,7 @@ namespace CShell.Framework.Results
             this.dialogViewModelType = dialogViewModelType;
         }
 
-        public override void Execute(ActionExecutionContext context)
+        public override void Execute(CoroutineExecutionContext context)
         {
             var windowManager = IoC.Get<IWindowManager>();
             if(dialogViewModel == null)

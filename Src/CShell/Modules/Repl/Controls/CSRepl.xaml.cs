@@ -378,7 +378,7 @@ namespace CShell.Modules.Repl.Controls
             var line = Doc.GetLineByOffset(Offset);
             offset = Offset - line.Offset - prompt.Length;
 
-            var vars = ""; //ScriptingEngine.GetVars();
+            var vars = String.Join(Environment.NewLine, ReplExecutor.GetVariables().Select(v=>v+";"));
             var code = vars + lineText;
             offset += vars.Length;
             var doc = new ReadOnlyDocument(new ICSharpCode.NRefactory.Editor.StringTextSource(code), textEditor.FileName);

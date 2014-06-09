@@ -4,6 +4,7 @@ using CShell.Hosting.Package;
 using ScriptCs;
 using ScriptCs.Contracts;
 using ScriptCs.Engine.Roslyn;
+using ScriptCs.ReplCommands;
 using LogLevel = Common.Logging.LogLevel;
 
 namespace CShell.Hosting
@@ -40,6 +41,7 @@ namespace CShell.Hosting
                 null, //IObjectSerializer
                 logger,
                 new AssemblyResolver(fileSystem, packageAssemblyResolver, new AssemblyUtility(), logger),
+                new IReplCommand[]{new ResetCommand(), new ResetCommand(), },
                 null, //IConsole
                 installationProvider
                 );

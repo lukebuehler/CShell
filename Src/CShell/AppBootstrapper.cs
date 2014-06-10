@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.ReflectionModel;
+using System.ComponentModel.Composition.Registration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -35,6 +36,7 @@ using Caliburn.Micro;
 using CShell.Hosting;
 using ScriptCs;
 using ScriptCs.Contracts;
+using ScriptCs.ReplCommands;
 using Xceed.Wpf.AvalonDock;
 using IModule = CShell.Framework.IModule;
 using LogLevel = Common.Logging.LogLevel;
@@ -94,13 +96,14 @@ namespace CShell
             //    }
             //}
 
+            var builder = new RegistrationBuilder();
+            builder.ForTypesDerivedFrom<IReplCommand>()
+                .Export<IReplCommand>();
+
             var c = new AggregateCatalog(
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(IShell))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(DockingManager))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(Xceed.Wpf.AvalonDock.Themes.AeroTheme))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(Xceed.Wpf.AvalonDock.Themes.VS2010Theme))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(IReplCommand))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(ScriptExecutor)))
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(ScriptExecutor)),builder)
                 );
 
             AssemblySource.Instance.AddRange(
@@ -149,7 +152,6 @@ namespace CShell
             });
 
             
-
             //test
             var cmds = IoC.GetAll<IReplCommand>().ToList();
         }

@@ -17,28 +17,21 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.ReflectionModel;
 using System.ComponentModel.Composition.Registration;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using CShell.Framework;
-using CShell.Framework.Results;
 using CShell.Framework.Services;
 using Caliburn.Micro;
 using CShell.Hosting;
-using ScriptCs;
-using ScriptCs.Contracts;
-using ScriptCs.ReplCommands;
-using Xceed.Wpf.AvalonDock;
 using IModule = CShell.Framework.IModule;
 using LogLevel = Common.Logging.LogLevel;
 using LogManager = Caliburn.Micro.LogManager;
@@ -82,7 +75,7 @@ namespace CShell
             //load modules
             var moduleBuilder = new RegistrationBuilder();
             moduleBuilder.ForTypesDerivedFrom<IModule>().Export<IModule>();
-            ScriptServicesBuilder.ConfigureModuleRegistrationBuilder(moduleBuilder);
+            HostingHelpers.ConfigureModuleRegistrationBuilder(moduleBuilder);
             
             var modulesDir = Path.Combine(exeDir, Constants.CShellModulesPath);
             if (Directory.Exists(modulesDir))
@@ -105,11 +98,7 @@ namespace CShell
                     .Where(assembly => !AssemblySource.Instance.Contains(assembly)));
 
             //setup ScriptCS hosting
-            var hostingBuilder = new RegistrationBuilder();
-            ScriptServicesBuilder.ConfigureHostingRegistrationBuilder(hostingBuilder);
-            aggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(IScriptEngine).Assembly, hostingBuilder)); //ScriptCS.Contracts
-            aggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(ScriptServices).Assembly, hostingBuilder)); //ScriptCS.Core
-            aggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(ScriptServicesBuilder).Assembly, hostingBuilder)); //CShell.Hosting
+            HostingHelpers.ConfigureHostingCatalog(aggregateCatalog);
 
             //setup the container
             container = new CompositionContainer(aggregateCatalog);
@@ -117,7 +106,7 @@ namespace CShell
             var batch = new CompositionBatch();
             batch.AddExportedValue<IWindowManager>(new WindowManager());
             batch.AddExportedValue<IEventAggregator>(new EventAggregator());
-            ScriptServicesBuilder.ConfigureHostingDependencyInjection(batch);
+            batch.AddExportedValue(container);
             container.Compose(batch);
 
             //configure the modules

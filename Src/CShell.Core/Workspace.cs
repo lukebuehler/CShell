@@ -34,16 +34,14 @@ namespace CShell
     [Export]
     public sealed partial class Workspace : PropertyChangedBase
     {
-        private readonly IRepl repl;
         private readonly IShell shell;
         private readonly IReplExecutorFactory replExecutorFactory;
 
         private IReplExecutor replExecutor;
 
         [ImportingConstructor]
-        public Workspace(IShell shell, IRepl repl, IReplExecutorFactory replExecutorFactory)
+        public Workspace(IShell shell, IReplExecutorFactory replExecutorFactory)
         {
-            this.repl = repl;
             this.shell = shell;
             this.replExecutorFactory = replExecutorFactory;
         }
@@ -72,7 +70,7 @@ namespace CShell
             {
                 WorkspaceDirectory = Path.GetFullPath(WorkspaceDirectory);
                 //create executor
-                replExecutor = replExecutorFactory.Create(repl, WorkspaceDirectory);
+                replExecutor = replExecutorFactory.Create(WorkspaceDirectory);
                 //restore layout
                 LoadLayout();
 

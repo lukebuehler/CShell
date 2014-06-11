@@ -23,7 +23,11 @@ namespace CShell.Hosting
                 { Common.Logging.LogLevel.Trace, Colors.DarkMagenta },
             };
 
-        public ReplLogger(LogLevel consoleLogLevel, IRepl repl, ILog log)
+        public ReplLogger(IRepl repl)
+            :this(repl, LogLevel.Info, LogManager.GetCurrentClassLogger())
+        {}
+
+        public ReplLogger(IRepl repl, LogLevel consoleLogLevel, ILog log)
         {
             if (repl == null) throw new ArgumentNullException("repl");
             if (log == null) throw new ArgumentNullException("log");

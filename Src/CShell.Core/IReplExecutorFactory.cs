@@ -9,6 +9,6 @@ namespace CShell
 {
     public interface IReplExecutorFactory
     {
-        IReplExecutor Create(IRepl repl, string workspaceDirectory);
+        IReplExecutor Create(string workspaceDirectory);
     }
 }

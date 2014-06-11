@@ -80,6 +80,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HostingHelpers.cs" />
+    <Compile Include="ObjectSerializer.cs" />
     <Compile Include="Package\NugetInstallationProvider.cs" />
     <Compile Include="Package\NugetMachineWideSettings.cs" />
     <Compile Include="Package\PackageContainer.cs" />
@@ -91,7 +93,6 @@
     <Compile Include="ReplLogger.cs" />
     <Compile Include="ReplScriptHost.cs" />
     <Compile Include="ScriptResultExtensions.cs" />
-    <Compile Include="ScriptServicesBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CShell.Completion\CShell.Completion.csproj">

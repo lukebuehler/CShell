@@ -30,6 +30,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using CShell.Framework;
 using CShell.Framework.Results;
 using CShell.Framework.Services;
 using Caliburn.Micro;
@@ -62,70 +63,73 @@ namespace CShell
             Initialize();
         }
 
-        private const string ModulesPath = @"./Modules";
-        private static List<IModule> _modules; 
-        private CompositionContainer _container;
+        private CompositionContainer container;
+        private List<IModule> modules;
 
         /// <summary>
         /// By default, we are configured to use MEF
         /// </summary>
         protected override void Configure()
         {
-            //to start we just add the already loaded assemblies to the container & the assemblies in exe folder
-            //var directoryCatalog = new DirectoryCatalog(@"./", "CShell*");
+            var exeDir = Assembly.GetExecutingAssembly().Location;
 
-
-            ////use this code to look into loader exceptions, the code bellow is faster.
-            //try
-            //{
-            //    foreach (var part in directoryCatalog.Parts)
-            //    {
-
-            //        // load the assembly or type
-            //        var assembly = ReflectionModelServices.GetPartType(part).Value.Assembly;
-            //        if (!AssemblySource.Instance.Contains(assembly))
-            //            AssemblySource.Instance.Add(assembly);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    if (ex is System.Reflection.ReflectionTypeLoadException)
-            //    {
-            //        var typeLoadException = ex as ReflectionTypeLoadException;
-            //        var loaderExceptions = typeLoadException.LoaderExceptions;
-            //    }
-            //}
-
-            var builder = new RegistrationBuilder();
-            builder.ForTypesDerivedFrom<IReplCommand>()
-                .Export<IReplCommand>();
-
-            var c = new AggregateCatalog(
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(IShell))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(IReplCommand))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(ScriptExecutor)),builder)
+            //setup catalog with core assemblies
+            var aggregateCatalog = new AggregateCatalog(
+                new AssemblyCatalog(GetType().Assembly), //CShell
+                new AssemblyCatalog(typeof(IShell).Assembly) //CShell.Core
                 );
 
+            //load modules
+            var moduleBuilder = new RegistrationBuilder();
+            moduleBuilder.ForTypesDerivedFrom<IModule>().Export<IModule>();
+            ScriptServicesBuilder.ConfigureModuleRegistrationBuilder(moduleBuilder);
+            
+            var modulesDir = Path.Combine(exeDir, Constants.CShellModulesPath);
+            if (Directory.Exists(modulesDir))
+            {
+                var directories = Directory.GetDirectories(modulesDir).ToList();
+                directories.Add(modulesDir);
+                foreach (var dir in directories)
+                {
+                    aggregateCatalog.Catalogs.Add(new DirectoryCatalog(dir, moduleBuilder));
+                }
+            }
+
+            //make module assemblies available to caliburn.micro 
             AssemblySource.Instance.AddRange(
-                c.Parts
+                aggregateCatalog.Parts
                     .AsParallel()
                     .Select(part => ReflectionModelServices.GetPartType(part).Value.Assembly)
+                    .Distinct()
                     .ToList()
                     .Where(assembly => !AssemblySource.Instance.Contains(assembly)));
-            var catalog = new AggregateCatalog(AssemblySource.Instance.Select(x => new AssemblyCatalog(x)));
-            _container = new CompositionContainer(catalog);
 
+            //setup ScriptCS hosting
+            var hostingBuilder = new RegistrationBuilder();
+            ScriptServicesBuilder.ConfigureHostingRegistrationBuilder(hostingBuilder);
+            aggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(IScriptEngine).Assembly, hostingBuilder)); //ScriptCS.Contracts
+            aggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(ScriptServices).Assembly, hostingBuilder)); //ScriptCS.Core
+            aggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(ScriptServicesBuilder).Assembly, hostingBuilder)); //CShell.Hosting
+
+            //setup the container
+            container = new CompositionContainer(aggregateCatalog);
+            //add custom exports 
             var batch = new CompositionBatch();
             batch.AddExportedValue<IWindowManager>(new WindowManager());
-            var eventAggregator = new EventAggregator();
-            batch.AddExportedValue<IEventAggregator>(eventAggregator);
-            //batch.AddExportedValue(new AssemblyLoader(_container, eventAggregator));
-            //ScriptCS exports
-            batch.AddExportedValue<IReplExecutorFactory>(new ReplExecutorFactory(new ScriptServicesBuilder()));
+            batch.AddExportedValue<IEventAggregator>(new EventAggregator());
+            ScriptServicesBuilder.ConfigureHostingDependencyInjection(batch);
+            container.Compose(batch);
 
-            batch.AddExportedValue(_container);
-            //batch.AddExportedValue(catalog);
-            _container.Compose(batch);
+            //configure the modules
+            modules = container.GetExportedValues<IModule>().ToList();
+            foreach (var module in modules.OrderBy(m => m.Order))
+            {
+                var moduleConfiguration = new ModuleConfiguration(new CompositionBatch());
+                module.Configure(moduleConfiguration);
+                //see if we should update the DI container
+                if(moduleConfiguration.CompositionBatch.PartsToAdd.Count > 0 || moduleConfiguration.CompositionBatch.PartsToRemove.Count > 0)
+                    container.Compose(batch);
+            }
         }
 
         protected override void OnStartup(object sender, StartupEventArgs e)
@@ -137,9 +141,8 @@ namespace CShell
             //base.OnStartup(sender, e);
 
             //2. init all basic modules, they themselves will register in the UI
-            _modules = IoC.GetAllInstances(typeof(IModule)).Cast<IModule>().ToList();
-            foreach (var module in _modules.OrderBy(m => m.Order))
-                module.Initialize();
+            foreach (var module in modules.OrderBy(m => m.Order))
+                module.Start();
 
             //3. & finally forward the arguments to the shell that it can open the workspace if one was specified in the arguments.
             // this is the main reason the order matters, once the workspace is opened all modules and their dlls need to be loaded.
@@ -150,10 +153,6 @@ namespace CShell
                 await Task.Delay(100);
                 await Caliburn.Micro.Execute.OnUIThreadAsync(() => shell.Opened(e.Args));
             });
-
-            
-            //test
-            var cmds = IoC.GetAll<IReplCommand>().ToList();
         }
 
 
@@ -179,7 +178,7 @@ namespace CShell
         protected override object GetInstance(Type serviceType, string key)
         {
             string contract = string.IsNullOrEmpty(key) ? AttributedModelServices.GetContractName(serviceType) : key;
-            var exports = _container.GetExportedValues<object>(contract);
+            var exports = container.GetExportedValues<object>(contract);
 
             if (exports.Any())
                 return exports.First();
@@ -189,12 +188,12 @@ namespace CShell
 
         protected override IEnumerable<object> GetAllInstances(Type serviceType)
         {
-            return _container.GetExportedValues<object>(AttributedModelServices.GetContractName(serviceType));
+            return container.GetExportedValues<object>(AttributedModelServices.GetContractName(serviceType));
         }
 
         protected override void BuildUp(object instance)
         {
-            _container.SatisfyImportsOnce(instance);
+            container.SatisfyImportsOnce(instance);
         }
         #endregion
     }

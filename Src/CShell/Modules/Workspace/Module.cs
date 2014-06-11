@@ -39,11 +39,11 @@ namespace CShell.Modules.Workspace
             Order = 3;
         }
 
-        [Import]
-        private IWorkspaceActivator workspaceActivator;
+        public override void Configure(IModuleConfiguration configuration)
+        { }
 
-		public override void Initialize()
-		{
+        public override void Start()
+        {
 			MainMenu.All.First(x => x.Name == "View")
                 .Add(new MenuItem("Workspace Explorer", OpenWorkspaceExplorer).WithIcon("Resources/Icons/FileBrowser.png"));
 

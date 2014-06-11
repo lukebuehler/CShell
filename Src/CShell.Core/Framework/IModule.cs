@@ -16,11 +16,23 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 
+using System.Collections.Generic;
+using System.ComponentModel.Composition.Registration;
+using ScriptCs.Contracts;
+
 namespace CShell.Framework
 {
+    public interface IModuleConfiguration
+    {
+        IList<string> References { get; }
+        IList<string> Namespaces { get; } 
+    }
+
 	public interface IModule : System.IDisposable
 	{
 	    int Order { get; }
-        void Initialize();
+
+        void Configure(IModuleConfiguration configuration);
+	    void Start();
 	}
 }

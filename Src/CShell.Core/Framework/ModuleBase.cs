@@ -15,12 +15,30 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
+using System.ComponentModel.Composition.Registration;
 using CShell.Framework.Menus;
 using CShell.Framework.Services;
 
 namespace CShell.Framework
 {
+    public class ModuleConfiguration : IModuleConfiguration
+    {
+        public ModuleConfiguration(CompositionBatch compositionBatch)
+        {
+            CompositionBatch = compositionBatch;
+            References = new List<string>();
+            Namespaces = new List<string>();
+            
+        }
+        public System.Collections.Generic.IList<string> References { get; private set; }
+        public System.Collections.Generic.IList<string> Namespaces { get; private set; }
+        public CompositionBatch CompositionBatch { get; private set; }
+    }
+
 	public abstract class ModuleBase : IModule
 	{
 		[Import]
@@ -43,7 +61,8 @@ namespace CShell.Framework
 
         public int Order { get; set; }
 
-        public abstract void Initialize();
+        public abstract void Configure(IModuleConfiguration configuration);
+        public abstract void Start();
 
         public void Dispose()
         {
@@ -52,5 +71,6 @@ namespace CShell.Framework
 
         protected virtual void Dispose(bool disposing)
         {}
-    }
+
+	}
 }

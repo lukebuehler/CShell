@@ -37,7 +37,10 @@ namespace CShell.Modules.Help
             Order = 6;
         }
 
-        public override void Initialize()
+        public override void Configure(IModuleConfiguration configuration)
+        {}
+
+        public override void Start()
         {
             //populate the menu
             MainMenu.First(item => item.Name == "Help")
@@ -58,5 +61,7 @@ namespace CShell.Modules.Help
         {
             yield return Show.Dialog<AboutViewModel>();
         }
+
+       
     }
 }

@@ -1,4 +1,7 @@
-﻿using Common.Logging;
+﻿using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
+using System.ComponentModel.Composition.Registration;
+using Common.Logging;
 using CShell.Framework.Services;
 using CShell.Hosting.Package;
 using ScriptCs;
@@ -45,6 +48,22 @@ namespace CShell.Hosting
                 null, //IConsole
                 installationProvider
                 );
+        }
+
+        public static void ConfigureHostingDependencyInjection(CompositionBatch batch)
+        {
+            batch.AddExportedValue<IReplExecutorFactory>(new ReplExecutorFactory(new ScriptServicesBuilder()));
+        }
+
+        public static void ConfigureHostingRegistrationBuilder(RegistrationBuilder builder)
+        {
+            ConfigureModuleRegistrationBuilder(builder);
+        }
+
+        public static void ConfigureModuleRegistrationBuilder(RegistrationBuilder builder)
+        {
+            builder.ForTypesDerivedFrom<IReplCommand>()
+                .Export<IReplCommand>();
         }
 
     }

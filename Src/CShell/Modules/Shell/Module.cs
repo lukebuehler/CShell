@@ -32,16 +32,16 @@ namespace CShell.Modules.Shell
 	[Export(typeof(IModule))]
 	public class Module : ModuleBase
 	{
-        [Import]
-	    private IWorkspaceActivator workspaceActivator;
-	    
         public Module()
 	    {
 	        Order = 1;
 	    }
 
-		public override void Initialize()
-		{
+        public override void Configure(IModuleConfiguration configuration)
+        { }
+
+        public override void Start()
+        {
 		    var openWorkspace = new MenuItem("Open Workspace...", OpenWorkspace);
             var openFile = new MenuItem("_Open File...", OpenFile)
                 .WithIcon("/Resources/Icons/Open.png")

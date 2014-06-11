@@ -38,11 +38,11 @@ namespace CShell.Modules.Editors
             Order = 4;
         }
 
-        [Import]
-        private IWorkspaceActivator workspaceActivator;
+        public override void Configure(IModuleConfiguration configuration)
+        {}
 
-        public override void Initialize()
-		{
+        public override void Start()
+        {
             //Edit
             var undo = new MenuItem("Undo", Undo).WithIcon("Resources/Icons/Icons.16x16.UndoIcon.png")
                 .WithGlobalShortcut(ModifierKeys.Control, Key.Z);
@@ -131,7 +131,6 @@ namespace CShell.Modules.Editors
         }
         #endregion
 
-
         #region Edit
         public IEnumerable<IResult> Undo()
         {
@@ -182,5 +181,7 @@ namespace CShell.Modules.Editors
         }
 	    #endregion
 
+
+       
     }
 }

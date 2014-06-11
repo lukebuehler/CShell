@@ -35,8 +35,11 @@ namespace CShell.Modules.Repl
             Order = 2;
         }
 
-		public override void Initialize()
-		{
+        public override void Configure(IModuleConfiguration configuration)
+        { }
+
+        public override void Start()
+        {
 		    MainMenu.All.First(x => x.Name == "View")
 		        .Add(
                     new MenuItem("Output", OpenOutput).WithIcon("Resources/Icons/Output.png"),

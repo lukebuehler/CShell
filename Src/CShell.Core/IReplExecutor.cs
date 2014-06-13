@@ -16,6 +16,7 @@ namespace CShell
         string WorkspaceDirectory { get; }
         ICompletion ReplCompletion { get; }
         ICompletion DocumentCompletion { get; }
+        IEnumerable<IReplCommand> ReplCommands { get; } 
 
         string[] GetNamespaces();
         string[] GetReferencesAsPaths();

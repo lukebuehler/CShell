@@ -33,9 +33,7 @@ namespace CShell.Hosting
             }
             if (scriptResult.ExecuteExceptionInfo != null)
             {
-                var ex = scriptResult.ExecuteExceptionInfo.SourceException;
-                if (IsMessage(ex.Message, "error"))
-                    return true;
+                return true;
             }
             return false;
         }

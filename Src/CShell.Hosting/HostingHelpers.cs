@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Common.Logging;
 using CShell.Hosting.Package;
+using CShell.Hosting.ReplCommands;
 using ScriptCs;
 using ScriptCs.Contracts;
 using ScriptCs.Engine.Roslyn;
@@ -27,7 +28,8 @@ namespace CShell.Hosting
 
         public static void ConfigureHostingRegistrationBuilder(RegistrationBuilder builder)
         {
-            ConfigureModuleRegistrationBuilder(builder);
+            builder.ForTypesDerivedFrom<IReplCommandWithInfo>().Export<IReplCommand>();
+            builder.ForTypesDerivedFrom<ILineProcessor>().Export<ILineProcessor>();
 
             builder.ForType<ReplLogger>().SelectConstructor(b => b.First(c => c.GetParameters().Length == 1)).Export<ILog>();
             builder.ForType<FileSystem>().Export<IFileSystem>();

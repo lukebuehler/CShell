@@ -29,10 +29,10 @@ namespace CShell.Hosting.Package
 
         public void CreatePackageFile()
         {
-            var packagesFile = Path.Combine(_fileSystem.CurrentDirectory, global::ScriptCs.Constants.PackagesFile);
+            var packagesFile = Path.Combine(_fileSystem.CurrentDirectory, _fileSystem.PackagesFile);
             var packageReferenceFile = new PackageReferenceFile(packagesFile);
 
-            var packagesFolder = Path.Combine(_fileSystem.CurrentDirectory, global::ScriptCs.Constants.PackagesFolder);
+            var packagesFolder = Path.Combine(_fileSystem.CurrentDirectory, _fileSystem.PackagesFolder);
             var repository = new LocalPackageRepository(packagesFolder);
 
             var newestPackages = repository.GetPackages().GroupBy(p => p.Id)
@@ -44,7 +44,7 @@ namespace CShell.Hosting.Package
                 return;
             }
 
-            _logger.InfoFormat("{0} {1}...", (File.Exists(packagesFile) ? "Updating" : "Creating") , global::ScriptCs.Constants.PackagesFile);
+            _logger.InfoFormat("{0} {1}...", (File.Exists(packagesFile) ? "Updating" : "Creating"), _fileSystem.PackagesFile);
 
             foreach (var package in newestPackages)
             {
@@ -56,30 +56,28 @@ namespace CShell.Hosting.Package
 
                     if (newestFramework == null)
                     {
-                        _logger.InfoFormat("Added {0} (v{1}) to {2}", package.Id, package.Version, global::ScriptCs.Constants.PackagesFile);
+                        _logger.InfoFormat("Added {0} (v{1}) to {2}", package.Id, package.Version, _fileSystem.PackagesFile);
                     }
                     else
                     {
-                        _logger.InfoFormat("Added {0} (v{1}, .NET {2}) to {3}", package.Id, package.Version, newestFramework.Version, global::ScriptCs.Constants.PackagesFile);
+                        _logger.InfoFormat("Added {0} (v{1}, .NET {2}) to {3}", package.Id, package.Version, newestFramework.Version, _fileSystem.PackagesFile);
                     }
-  
+
                     continue;
                 }
 
                 _logger.InfoFormat("Skipped {0} because it already exists.", package.Id);
             }
 
-            _logger.InfoFormat("Successfully {0} {1}.", (File.Exists(packagesFile) ? "updated" : "created"), global::ScriptCs.Constants.PackagesFile);
+            _logger.InfoFormat("Successfully {0} {1}.", (File.Exists(packagesFile) ? "updated" : "created"), _fileSystem.PackagesFile);
         }
 
         public IPackageObject FindPackage(string path, IPackageReference packageRef)
         {
-            if (packageRef == null) throw new ArgumentNullException("packageRef");
-
             var repository = new LocalPackageRepository(path);
 
-            var package = packageRef.Version != null 
-                ? repository.FindPackage(packageRef.PackageId, new SemanticVersion(packageRef.Version, packageRef.SpecialVersion), true, true) 
+            var package = packageRef.Version != null && !(packageRef.Version.Major == 0 && packageRef.Version.Minor == 0)
+                ? repository.FindPackage(packageRef.PackageId, new SemanticVersion(packageRef.Version, packageRef.SpecialVersion), true, true)
                 : repository.FindPackage(packageRef.PackageId);
 
             return package == null ? null : new PackageObject(package, packageRef.FrameworkName);
@@ -105,7 +103,7 @@ namespace CShell.Hosting.Package
             }
 
             // No packages.config, check packages folder
-            var packagesFolder = Path.Combine(_fileSystem.GetWorkingDirectory(path), global::ScriptCs.Constants.PackagesFolder);
+            var packagesFolder = Path.Combine(_fileSystem.GetWorkingDirectory(path), _fileSystem.PackagesFolder);
             if (!_fileSystem.DirectoryExists(packagesFolder))
             {
                 yield break;
@@ -121,7 +119,7 @@ namespace CShell.Hosting.Package
 
             foreach (var arbitraryPackage in arbitraryPackages)
             {
-                var newestFramework = GetNewestSupportedFramework(arbitraryPackage) 
+                var newestFramework = GetNewestSupportedFramework(arbitraryPackage)
                     ?? VersionUtility.EmptyFramework;
 
                 yield return new PackageReference(
@@ -143,7 +141,7 @@ namespace CShell.Hosting.Package
         private static bool IsValidFramework(FrameworkName frameworkName)
         {
             return frameworkName.Identifier == DotNetFramework
-                || (frameworkName.Identifier == DotNetPortable 
+                || (frameworkName.Identifier == DotNetPortable
                     && frameworkName.Profile.Split('+').Any(IsValidProfile));
         }
 

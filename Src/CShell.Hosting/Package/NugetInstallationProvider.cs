@@ -20,14 +20,13 @@ namespace CShell.Hosting.Package
 
         public NugetInstallationProvider(IFileSystem fileSystem, ILog logger)
         {
-            if (fileSystem == null) throw new ArgumentNullException("fileSystem");
             _fileSystem = fileSystem;
             _logger = logger;
         }
 
         public void Initialize()
         {
-            var path = Path.Combine(_fileSystem.CurrentDirectory, global::ScriptCs.Constants.PackagesFolder);
+            var path = Path.Combine(_fileSystem.CurrentDirectory, _fileSystem.PackagesFolder);
             _repositoryUrls = GetRepositorySources(path);
             var remoteRepository = new AggregateRepository(PackageRepositoryFactory.Default, _repositoryUrls, true);
             _manager = new PackageManager(remoteRepository, path);
@@ -38,7 +37,7 @@ namespace CShell.Hosting.Package
             var configFileSystem = new PhysicalFileSystem(path);
 
             ISettings settings;
-            var localNuGetConfigFile = Path.Combine(_fileSystem.CurrentDirectory, global::ScriptCs.Constants.NugetFile);
+            var localNuGetConfigFile = Path.Combine(_fileSystem.CurrentDirectory, _fileSystem.NugetFile);
             if (_fileSystem.FileExists(localNuGetConfigFile))
             {
                 settings = Settings.LoadDefaultSettings(configFileSystem, localNuGetConfigFile, null);
@@ -50,7 +49,7 @@ namespace CShell.Hosting.Package
 
             if (settings == null)
             {
-                return new[] { global::ScriptCs.Constants.DefaultRepositoryUrl };
+                return new[] { Constants.DefaultRepositoryUrl };
             }
 
             var sourceProvider = new PackageSourceProvider(settings);
@@ -58,30 +57,18 @@ namespace CShell.Hosting.Package
 
             if (sources == null || !sources.Any())
             {
-                return new[] { global::ScriptCs.Constants.DefaultRepositoryUrl };
+                return new[] { Constants.DefaultRepositoryUrl };
             }
 
             return sources.Select(i => i.Source);
         }
 
-        public bool InstallPackage(IPackageReference packageId, bool allowPreRelease = false)
+        public void InstallPackage(IPackageReference packageId, bool allowPreRelease = false)
         {
-            if (packageId == null) throw new ArgumentNullException("packageId");
-
             var version = GetVersion(packageId);
             var packageName = packageId.PackageId + " " + (version == null ? string.Empty : packageId.Version.ToString());
-            try
-            {
-                _manager.InstallPackage(packageId.PackageId, version, allowPrereleaseVersions: allowPreRelease, ignoreDependencies: false);
-                _logger.Info("Installed: " + packageName);
-                return true;
-            }
-            catch (Exception e)
-            {
-                _logger.Error("Installation failed: " + packageName);
-                _logger.Error(e.Message);
-                return false;
-            }
+            _manager.InstallPackage(packageId.PackageId, version, allowPrereleaseVersions: allowPreRelease, ignoreDependencies: false);
+            _logger.Info("Installed: " + packageName);
         }
 
         private static SemanticVersion GetVersion(IPackageReference packageReference)
@@ -91,8 +78,6 @@ namespace CShell.Hosting.Package
 
         public bool IsInstalled(IPackageReference packageReference, bool allowPreRelease = false)
         {
-            if (packageReference == null) throw new ArgumentNullException("packageReference");
-
             var version = GetVersion(packageReference);
             return _manager.LocalRepository.FindPackage(packageReference.PackageId, version, allowPreRelease, allowUnlisted: false) != null;
         }

@@ -20,6 +20,9 @@ namespace CShell.Hosting.Package
             Id = package.Id;
             Version = package.Version.Version;
             TextVersion = package.Version.ToString();
+            FrameworkAssemblies = package.FrameworkAssemblies
+                .Where(x => x.SupportedFrameworks.Any(y => y == frameworkName))
+                .Select(x => x.AssemblyName);
 
             var dependencies = _package.GetCompatiblePackageDependencies(frameworkName);
             if (dependencies != null)
@@ -32,6 +35,8 @@ namespace CShell.Hosting.Package
         {
             Id = packageId;
         }
+
+        public IEnumerable<string> FrameworkAssemblies { get; private set; }
 
         public string Id { get; private set; }
 

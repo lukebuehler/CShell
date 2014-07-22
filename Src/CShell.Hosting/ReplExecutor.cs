@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -19,8 +20,7 @@ namespace CShell.Hosting
     {
         private readonly IRepl repl;
         private readonly IObjectSerializer serializer;
-        private readonly IPackageInstaller packageInstaller;
-        private readonly IPackageAssemblyResolver resolver;
+        private readonly IEnumerable<IReplCommand> replCommands;
 
         public ReplExecutor(
             IRepl repl,
@@ -28,15 +28,13 @@ namespace CShell.Hosting
             IFileSystem fileSystem,
             IFilePreProcessor filePreProcessor,
             IScriptEngine scriptEngine,
-            IPackageInstaller packageInstaller,
-            IPackageAssemblyResolver resolver,
-            ILog logger)
+            ILog logger,
+            IEnumerable<IReplCommand> replCommands)
             : base(fileSystem, filePreProcessor, scriptEngine, logger)
         {
             this.repl = repl;
             this.serializer = serializer;
-            this.packageInstaller = packageInstaller;
-            this.resolver = resolver;
+            this.replCommands = replCommands;
 
             replCompletion = new CSharpCompletion(true);
             replCompletion.AddReferences(GetReferencesAsPaths());
@@ -67,6 +65,11 @@ namespace CShell.Hosting
             get { return documentCompletion; }
         }
 
+        public IEnumerable<IReplCommand> ReplCommands
+        {
+            get { return replCommands; }
+        } 
+
         public override ScriptResult Execute(string script, params string[] scriptArgs)
         {
             var result = new ScriptResult();
@@ -76,122 +79,92 @@ namespace CShell.Hosting
             {
                 if (script.StartsWith(":"))
                 {
-                    var arguments = script.Split(' ');
-                    var command = arguments[0].Substring(1);
-
-                    var argsToPass = new List<object>();
-                    foreach (var argument in arguments.Skip(1))
+                    var tokens = script.Split(' ');
+                    if (tokens[0].Length > 1)
                     {
-                        try
+                        var command = replCommands.FirstOrDefault(x => x.CommandName == tokens[0].Substring(1));
+
+                        if (command != null)
                         {
-                            var argumentResult = ScriptEngine.Execute(argument, scriptArgs, References, DefaultNamespaces, ScriptPackSession);
-                            //if Roslyn can evaluate the argument, use its value, otherwise assume the string
-                            argsToPass.Add(argumentResult.ReturnValue ?? argument);
+                            var argsToPass = new List<object>();
+                            foreach (var argument in tokens.Skip(1))
+                            {
+                                var argumentResult = ScriptEngine.Execute(argument, scriptArgs, References, Namespaces, ScriptPackSession);
+
+                                if (argumentResult.CompileExceptionInfo != null)
+                                {
+                                    throw new Exception(
+                                        GetInvalidCommandArgumentMessage(argument),
+                                        argumentResult.CompileExceptionInfo.SourceException);
+                                }
+
+                                if (argumentResult.ExecuteExceptionInfo != null)
+                                {
+                                    throw new Exception(
+                                        GetInvalidCommandArgumentMessage(argument),
+                                        argumentResult.ExecuteExceptionInfo.SourceException);
+                                }
+
+                                if (!argumentResult.IsCompleteSubmission)
+                                {
+                                    throw new Exception(GetInvalidCommandArgumentMessage(argument));
+                                }
+
+                                argsToPass.Add(argumentResult.ReturnValue);
+                            }
+
+                            var commandResult = command.Execute(this, argsToPass.ToArray());
+                            if (commandResult is ScriptResult)
+                                result = commandResult as ScriptResult;
+                            else
+                                result = new ScriptResult(commandResult);
                         }
-                        catch (Exception)
+                        else
                         {
-                            argsToPass.Add(argument);
+                            throw new Exception("Command not found: " + tokens[0].Substring(1));
                         }
                     }
-
-                    var commandResult = HandleReplCommand(command, argsToPass.ToArray());
-                    result = new ScriptResult(commandResult);
-                    return result;
                 }
-
-                var preProcessResult = FilePreProcessor.ProcessScript(script);
-
-                ImportNamespaces(preProcessResult.Namespaces.ToArray());
-
-                var referencesToAdd = preProcessResult.References.Select(reference =>
+                else
                 {
-                    var referencePath = FileSystem.GetFullPath(Path.Combine(Constants.BinFolder, reference));
-                    return FileSystem.FileExists(referencePath) ? referencePath : reference;
-                })
-                    .ToArray();
+                    var preProcessResult = FilePreProcessor.ProcessScript(script);
 
-                if (referencesToAdd.Length > 0)
-                    AddReferencesAndNotify(referencesToAdd);
-                result = ScriptEngine.Execute(preProcessResult.Code, scriptArgs, References, Namespaces, ScriptPackSession);
+                    ImportNamespaces(preProcessResult.Namespaces.ToArray());
 
-                if (result != null && result.IsCompleteSubmission)
-                    PrepareVariables();
-                
-                if (result == null) return new ScriptResult();
+                    foreach (var reference in preProcessResult.References)
+                    {
+                        var referencePath = FileSystem.GetFullPath(Path.Combine(FileSystem.BinFolder, reference));
+                        AddReferences(FileSystem.FileExists(referencePath) ? referencePath : reference);
+                    }
 
-                return result;
+                    result = ScriptEngine.Execute(preProcessResult.Code, scriptArgs, References, Namespaces, ScriptPackSession);
+
+                    if (result != null && result.IsCompleteSubmission)
+                        PrepareVariables();
+                }
             }
             catch (FileNotFoundException fileEx)
             {
                 RemoveReferences(fileEx.FileName);
-                return new ScriptResult(compilationException:fileEx);
+                result = new ScriptResult(compilationException:fileEx);
             }
             catch (Exception ex)
             {
-                return new ScriptResult(executionException:ex);
+                result = new ScriptResult(executionException:ex);
             }
             finally
             {
                 repl.EvaluateCompleted(result);
             }
+            return result;
         }
 
-        private object HandleReplCommand(string command, object[] args)
+
+        private static string GetInvalidCommandArgumentMessage(string argument)
         {
-            if(string.IsNullOrWhiteSpace(command))
-                return "The REPL command was empty.";
-
-            command = command.ToLower();
-            if (command == "help")
-            {
-                return "Available commands are: " + Environment.NewLine +
-                       " :help                   - displays this information" + Environment.NewLine +
-                       " :clear                  - clears the REPL" + Environment.NewLine +
-                       " :install <package name> - installs a NuGet package";
-            }
-            if (command == "clear")
-            {
-                repl.Clear();
-                return null;
-            }
-            if (command == "install")
-            {
-                if (args == null || args.Length == 0) return null;
-
-                string version = null;
-                var allowPre = false;
-                if (args.Length >= 2)
-                {
-                    version = args[1].ToString();
-                    if (args.Length == 3)
-                    {
-                        allowPre = true;
-                    }
-                }
-
-                Logger.InfoFormat("Installing {0}", args[0]);
-
-                var packageRef = new PackageReference(args[0].ToString(), new FrameworkName(".NETFramework,Version=v4.0"), version);
-                packageInstaller.InstallPackages(new[] { packageRef }, allowPre);
-                resolver.SavePackages();
-
-                var dlls = resolver.GetAssemblyNames(FileSystem.CurrentDirectory).Except(References.PathReferences).ToArray();
-                AddReferencesAndNotify(dlls);
-
-                foreach (var dll in dlls)
-                {
-                    Logger.InfoFormat("Added reference to {0}", dll);
-                }
-
-                return null;
-            }
-            if (command == "vars")
-            {
-                return String.Join(Environment.NewLine, GetVariables());
-            }
-
-            return "Unknown REPL command: "+command;
+            return string.Format(CultureInfo.InvariantCulture, "Argument is not a valid expression: {0}", argument);
         }
+
 
         public void AddReferencesAndNotify(params Assembly[] references)
         {
@@ -238,6 +211,11 @@ namespace CShell.Hosting
             return Namespaces.ToArray();
         }
 
+        public override void Reset()
+        {
+            base.Reset();
+            repl.Clear();
+        }
 
         #region Variables
         private string[] variables;

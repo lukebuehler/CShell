@@ -88,6 +88,11 @@
     <Compile Include="Package\PackageInstaller.cs" />
     <Compile Include="Package\PackageObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReplCommands\ClearCommand.cs" />
+    <Compile Include="ReplCommands\HelpCommand.cs" />
+    <Compile Include="ReplCommands\InstallCommand.cs" />
+    <Compile Include="ReplCommands\IReplCommandWithInfo.cs" />
+    <Compile Include="ReplCommands\ResetCommand.cs" />
     <Compile Include="ReplExecutor.cs" />
     <Compile Include="ReplExecutorFactory.cs" />
     <Compile Include="ReplLogger.cs" />

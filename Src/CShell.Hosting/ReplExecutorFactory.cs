@@ -25,9 +25,8 @@ namespace CShell.Hosting
                 scriptServices.FileSystem, 
                 scriptServices.FilePreProcessor,
                 scriptServices.Engine,
-                scriptServices.PackageInstaller,
-                scriptServices.PackageAssemblyResolver,
-                scriptServices.Logger);
+                scriptServices.Logger,
+                scriptServices.ReplCommands);
 
             var assemblies = scriptServices.AssemblyResolver.GetAssemblyPaths(scriptServices.FileSystem.CurrentDirectory);
             var scriptPacks = scriptServices.ScriptPackResolver.GetPacks();

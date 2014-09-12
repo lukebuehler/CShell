@@ -338,12 +338,72 @@ namespace CShell.Modules.Repl.Controls
             }
             if (key == Key.End)
             {
+                if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    if (textEditor.CaretOffset >= PromptOffset)
+                    {
+                        if (textEditor.CaretOffset > textEditor.SelectionStart)
+                        {
+                            // Caret is after selection start - extend selection to end of line.
+                            textEditor.SelectionLength = Doc.TextLength - textEditor.SelectionStart;
+                        }
+                        else
+                        {
+                            // Caret is at selection start (or no selection has been made) - select
+                            // from end of current selection (if any) to end of line (if there's anything
+                            // left on the line to select).
+                            int selLen = textEditor.SelectionLength;
+                            textEditor.SelectionLength = 0;
+                            if (textEditor.SelectionStart + selLen < Doc.TextLength)
+                            { 
+                                textEditor.SelectionStart = textEditor.SelectionStart + selLen;
+                                textEditor.SelectionLength = Doc.TextLength - textEditor.SelectionStart;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // For some reason the selection isn't cleared when the whole line is selected.
+                    // It works when the selection length is less than the length of the line though...
+                    // Workaround:
+                    textEditor.SelectionLength = 0;
+                }
                 MoveCaretToEnd();
                 keyEventArgs.Handled = true;
                 return;
             }
             if (key == Key.Home)
             {
+                if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    if (textEditor.CaretOffset > PromptOffset)
+                    {
+                        if (textEditor.CaretOffset == textEditor.SelectionStart)
+                        {
+                            // Caret is at selection start (or no selection has been made) - select/extend to start of line.
+                            int selLen = textEditor.SelectionStart - PromptOffset + textEditor.SelectionLength;
+                            textEditor.SelectionStart = PromptOffset;
+                            textEditor.SelectionLength = selLen;
+                        }
+                        else
+                        {
+                            // Caret is after selection start - select from start of line to 
+                            // beginning of current selection.
+                            int selLen = textEditor.SelectionStart - PromptOffset;
+                            textEditor.SelectionStart = PromptOffset;
+                            textEditor.SelectionLength = selLen;
+                        }
+                    }
+                }
+                else
+                {
+                    // For some reason the selection isn't cleared when the whole line is selected
+                    // and the user presses the home key.
+                    // It works when the selection length is less than the length of the line though...
+                    // Workaround:
+                    textEditor.SelectionLength = 0;
+                }
                 MoveCaretToAfterPrompt();
                 keyEventArgs.Handled = true;
                 return;

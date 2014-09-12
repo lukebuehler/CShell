@@ -364,9 +364,9 @@ namespace CShell.Modules.Repl.Controls
                 }
                 else
                 {
-                    // For some reason the selection isn't cleared when the whole line is selected.
-                    // It works when the selection length is less than the length of the line though...
-                    // Workaround:
+                    // For some reason the selection isn't cleared when the user presses the end key and
+                    // the whole line is selected. It works when the selection length is less than the
+                    // length of the line though... Workaround:
                     textEditor.SelectionLength = 0;
                 }
                 MoveCaretToEnd();
@@ -398,10 +398,9 @@ namespace CShell.Modules.Repl.Controls
                 }
                 else
                 {
-                    // For some reason the selection isn't cleared when the whole line is selected
-                    // and the user presses the home key.
-                    // It works when the selection length is less than the length of the line though...
-                    // Workaround:
+                    // For some reason the selection isn't cleared when the user presses the home key and
+                    // the whole line is selected. It works when the selection length is less than the
+                    // length of the line though... Workaround:
                     textEditor.SelectionLength = 0;
                 }
                 MoveCaretToAfterPrompt();

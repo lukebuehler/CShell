@@ -11,6 +11,10 @@ If you just want to test one or two lines of C# code without creating a new cons
 
 ![Screenshot](https://raw.githubusercontent.com/lukebuehler/CShell/master/Doc/Screenshot1.png)
 
+System Requirements
+------------
+CShell needs the .NET Framework 4.5 installed. Supported Windows versions: Windows 7, 8, 8.1 and Vista SP2. Windows XP is not supported.
+
 How to Build
 ------------
 To build Visual Studio 2010 or higher is required. Open the solution and build the project or configure the build script in the /Build folder to point to the right Visual Studio 'vcvarsall' script.

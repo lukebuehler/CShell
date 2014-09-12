@@ -54,7 +54,7 @@ namespace CShell.Modules.Repl.Controls
 
         internal bool DoesNextCommandExist()
         {
-            return currentPosn < commandHistory.Count - 1;
+            return currentPosn < commandHistory.Count;
         }
 
         internal string GetPreviousCommand()
@@ -65,8 +65,16 @@ namespace CShell.Modules.Repl.Controls
 
         internal string GetNextCommand()
         {
-            lastCommand = (string)commandHistory[++currentPosn];
-            return LastCommand;
+            if (currentPosn == commandHistory.Count - 1)
+            {
+                currentPosn++;
+                return "";
+            }
+            else
+            { 
+                lastCommand = (string)commandHistory[++currentPosn];
+                return LastCommand;
+            }
         }
 
         internal string LastCommand

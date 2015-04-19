@@ -180,14 +180,22 @@ namespace CShell.Modules.Editors.ViewModels
         public string GetSelectionOrCurrentLine()
         {
             var code = textEditor.SelectedText;
-            if(string.IsNullOrEmpty(code))
+            int offsetLine;
+            var doc = textEditor.Document;
+
+            // if there is no selection, just use the current line
+            if (string.IsNullOrEmpty(code))
             {
-                var doc = textEditor.Document;
-                var offsetLine = doc.GetLocation(textEditor.CaretOffset).Line;
+                offsetLine = doc.GetLocation(textEditor.CaretOffset).Line;
                 var line = doc.GetLineByNumber(offsetLine);
                 var lineText = doc.GetText(line.Offset, line.Length);
                 code = lineText;
             }
+            else
+                offsetLine = doc.GetLocation(textEditor.SelectionStart + textEditor.SelectionLength).Line;
+
+            textEditor.TextArea.Caret.Line = offsetLine + 1;
+            textEditor.ScrollToLine(offsetLine + 1);
             return code;
         }
 

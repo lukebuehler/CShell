@@ -76,6 +76,7 @@ namespace CShell.Modules.Repl.Controls
             textEditor.FontFamily = new FontFamily("Consolas");
             var convertFrom = new FontSizeConverter().ConvertFrom("10pt");
             if (convertFrom != null) textEditor.FontSize = (double)convertFrom;
+            textEditor.PreviewKeyDown += TextEditorOnPreviewKeyDown;
             textEditor.TextArea.PreviewKeyDown += TextAreaOnPreviewKeyDown;
             textEditor.IsEnabled = false;
             textEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("C#");
@@ -435,6 +436,19 @@ namespace CShell.Modules.Repl.Controls
             }
         }
 
+        private void TextEditorOnPreviewKeyDown(object sender, KeyEventArgs keyEventArgs)
+        {
+            //If pasting text, sanitize it for REPL input.
+            if ((Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.V)) ||
+                    (Keyboard.IsKeyDown(Key.RightCtrl) && Keyboard.IsKeyDown(Key.V)))
+            {
+                var currentClipboardText = Clipboard.GetText();
+                var newClipboardText = ToREPLSanitizedString(currentClipboardText);
+                Write(newClipboardText, TextType.Repl);
+                keyEventArgs.Handled = true;
+            }
+        }
+
         internal IDocument GetCompletionDocument(out int offset)
         {
             var lineText = GetCurrentLineText();
@@ -619,6 +633,12 @@ namespace CShell.Modules.Repl.Controls
                 return sb.ToString();
             }
             return o.ToString();
+        }
+
+        private string ToREPLSanitizedString(string text)
+        {
+            text = text.Replace(Environment.NewLine, string.Empty);
+            return text;
         }
         #endregion
 

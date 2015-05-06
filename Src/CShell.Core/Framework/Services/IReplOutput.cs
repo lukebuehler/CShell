@@ -25,9 +25,9 @@ using ScriptCs.Contracts;
 
 namespace CShell.Framework.Services
 {
-    public interface IRepl
+    public interface IReplOutput : IOutput
     {
-        void Initialize(IReplExecutor replExecutor);
+        void Initialize(IReplScriptExecutor replExecutor);
 
         void EvaluateStarted(string input, string sourceFile);
         void EvaluateCompleted(ScriptResult result);
@@ -35,20 +35,12 @@ namespace CShell.Framework.Services
         bool IsEvaluating { get; }
 
         bool ShowConsoleOutput { get; set; }
-        void Write(string text);
-        void WriteLine();
-        void WriteLine(string text);
-        void Clear();
-
-        string Font { get; set; }
-        double FontSize { get; set; }
-        Color BackgroundColor { get; set; }
-        Color OutputColor { get; set; }
+        Color ResultColor { get; set; }
         Color WarningColor { get; set; }
         Color ErrorColor { get; set; }
-        Color ReplColor { get; set; }
         void ResetColor();
 
+        //TODO: move to IReplScripExecutor?
         IEnumerable<string> SuppressedWarnings { get; }
         void SuppressWarning(string warningCode);
         void ShowWarning(string warningCode);

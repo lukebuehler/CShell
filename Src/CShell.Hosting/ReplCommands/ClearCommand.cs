@@ -4,13 +4,13 @@ using ScriptCs.Contracts;
 
 namespace CShell.Hosting.ReplCommands
 {
-    public class ClearCommand : IReplCommandWithInfo
+    public class ClearCommand : IReplCommand
     {
-        private readonly IRepl repl;
+        private readonly IReplOutput replOutput;
 
-        public ClearCommand(IRepl repl)
+        public ClearCommand(IReplOutput replOutput)
         {
-            this.repl = repl;
+            this.replOutput = replOutput;
         }
 
         public string CommandName
@@ -18,14 +18,14 @@ namespace CShell.Hosting.ReplCommands
             get { return "clear"; }
         }
 
-        public string Help
+        public string Description
         {
             get { return "Clears all text from the REPL."; }
         }
 
-        public object Execute(IScriptExecutor replexecutor, object[] args)
+        public object Execute(IRepl repl, object[] args)
         {
-            repl.Clear();
+            replOutput.Clear();
             return null;
         }
     }

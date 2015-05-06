@@ -99,6 +99,21 @@ namespace CShell.Modules.Repl.ViewModels
 			Text = string.Empty;
 		}
 
+        public void Write(string text)
+        {
+            Text += text;
+        }
+
+        public void WriteLine()
+        {
+            Text += Environment.NewLine;
+        }
+
+        public void WriteLine(string text)
+        {
+            Text += text + Environment.NewLine;
+        }
+
         public void Write(string format, params object[] arg)
         {
             Text += String.Format(format, arg);
@@ -163,5 +178,7 @@ namespace CShell.Modules.Repl.ViewModels
             get { return new SolidColorBrush(BackgroundColor); }
         }
         #endregion
+
+        
     }
 }

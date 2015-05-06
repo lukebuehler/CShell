@@ -3,23 +3,23 @@ using ScriptCs;
 
 namespace CShell.Hosting
 {
-    public class ReplExecutorFactory : IReplExecutorFactory
+    public class ReplScriptExecutorFactory : IReplScriptExecutorFactory
     {
-        private readonly IRepl repl;
+        private readonly IReplOutput repl;
         private readonly ScriptServices scriptServices;
 
-        public ReplExecutorFactory(ScriptServices scriptServices, IRepl repl)
+        public ReplScriptExecutorFactory(ScriptServices scriptServices, IReplOutput repl)
         {
             this.scriptServices = scriptServices;
             this.repl = repl;
         }
 
-        public IReplExecutor Create(string workspaceDirectory)
+        public IReplScriptExecutor Create(string workspaceDirectory)
         {
             scriptServices.FileSystem.CurrentDirectory = workspaceDirectory;
             scriptServices.InstallationProvider.Initialize();
 
-            var replExecutor = new ReplExecutor(
+            var replExecutor = new ReplScriptExecutor(
                 repl, 
                 scriptServices.ObjectSerializer, 
                 scriptServices.FileSystem, 

@@ -121,33 +121,7 @@ namespace CShell.Modules.Sink.ViewModels
         {
             var itemProperties = new List<PropertyInfo>();
             var properties = itemType.GetProperties();
-            var dateTimeProperty = properties.FirstOrDefault(p => p.Name == "DateTime");
-            if (dateTimeProperty != null)
-                itemProperties.Add(dateTimeProperty);
-            var valueProperty = properties.FirstOrDefault(p => p.Name == "Value");
-            if (valueProperty != null)
-                itemProperties.Add(valueProperty);
-
-            itemProperties.AddRange(properties
-                    .Where(p =>
-                            p.Name != "DateTime" &&
-                            p.Name != "Value" &&
-                            p.Name != "UtcTimestamp" &&
-                            p.Name != "MetaData" &&
-                            p.Name != "Value" &&
-                            p.Name != "Urn" &&
-                            p.Name != "Name" &&
-                            p.Name != "ParentName" &&
-                            p.Name != "Type" &&
-                            p.Name != "Resolution" &&
-                            p.Name != "UtcOffset" &&
-                            p.Name != "Begins" &&
-                            p.Name != "BeginsOffset" &&
-                            p.Name != "Ends" &&
-                            p.Name != "EndsOffset" &&
-                            p.Name != "Count" &&
-                            p.Name != "IsReadOnly" &&
-                            p.Name != "Item"));
+            itemProperties.AddRange(properties);
             return itemProperties;
         }
 

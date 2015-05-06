@@ -45,13 +45,6 @@
     <Reference Include="Caliburn.Micro.Platform">
       <HintPath>..\..\Lib\Caliburn.Micro.2.0.0\lib\net45\Caliburn.Micro.Platform.dll</HintPath>
     </Reference>
-    <Reference Include="Common.Logging, Version=2.2.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Lib\Common.Logging.2.2.0\lib\net40\Common.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Common.Logging.Core">
-      <HintPath>..\..\Lib\Common.Logging.Core.2.2.0\lib\net40\Common.Logging.Core.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=4.4.2.9744, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Lib\AvalonEdit.4.4.2.9744\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
@@ -120,7 +113,7 @@
     <Compile Include="Framework\Services\Execute.cs" />
     <Compile Include="ICompletion.cs" />
     <Compile Include="IReplExecutorFactory.cs" />
-    <Compile Include="IReplExecutor.cs" />
+    <Compile Include="IReplScriptExecutorFactory.cs" />
     <Compile Include="Shell.Sinks.Xhtml.cs" />
     <Compile Include="Framework\Controls\AutoGreyableImage.cs" />
     <Compile Include="Framework\Controls\ToolBar.cs" />
@@ -165,7 +158,7 @@
     <Compile Include="Framework\Results\ShowToolResult.cs" />
     <Compile Include="Framework\Services\DebugLogger.cs" />
     <Compile Include="Framework\Services\IOutput.cs" />
-    <Compile Include="Framework\Services\IRepl.cs" />
+    <Compile Include="Framework\Services\IReplOutput.cs" />
     <Compile Include="Framework\Services\ISinkProvider.cs" />
     <Compile Include="Framework\Services\ExtensionMethods.cs" />
     <Compile Include="Framework\Services\IDocumentProvider.cs" />

@@ -31,7 +31,7 @@ namespace CShell.Modules.Repl.Views
             InitializeComponent();
         }
 
-        public IRepl GetRepl()
+        public IReplOutput GetReplOutput()
         {
             return repl;
         }

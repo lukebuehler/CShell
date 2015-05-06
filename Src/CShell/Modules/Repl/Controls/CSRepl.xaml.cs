@@ -52,11 +52,11 @@ namespace CShell.Modules.Repl.Controls
     /// <summary>
     /// Interaction logic for CommandLineControl.xaml
     /// </summary>
-    public partial class CSRepl : UserControl, IRepl
+    public partial class CSRepl : UserControl, IReplOutput
     {
         private CSReplTextEditor textEditor;
 
-        private IReplExecutor replExecutor;
+        private IReplScriptExecutor replExecutor;
         private readonly CommandHistory commandHistory;
 
         private bool executingInternalCommand;
@@ -106,10 +106,10 @@ namespace CShell.Modules.Repl.Controls
             Clear();
         }
 
-        internal IReplExecutor ReplExecutor { get { return replExecutor; } }
+        internal IReplScriptExecutor ReplExecutor { get { return replExecutor; } }
 
-        #region IRepl Interface Implementation
-        public void Initialize(IReplExecutor replExecutor)
+        #region IReplOutput Interface Implementation (key parts)
+        public void Initialize(IReplScriptExecutor replExecutor)
         {
             //unhook old executor
             this.replExecutor = replExecutor;
@@ -246,6 +246,9 @@ namespace CShell.Modules.Repl.Controls
             }
 
         }
+
+        //TODO: implement repl buffer!
+        public int BufferLength { get; set; }
         #endregion
 
         #region Handle REPL Input
@@ -493,6 +496,11 @@ namespace CShell.Modules.Repl.Controls
             Write(prompt, TextType.None);
         }
 
+        public void Write(string format, params object[] arg)
+        {
+            Write(String.Format(format, arg));
+        }
+
         public void Write(string text)
         {
             Write(text, TextType.Output);
@@ -515,6 +523,11 @@ namespace CShell.Modules.Repl.Controls
         public void WriteLine()
         {
             Write(Environment.NewLine, TextType.None);
+        }
+
+        public void WriteLine(string format, params object[] arg)
+        {
+            Write(String.Format(format, arg) + Environment.NewLine);
         }
 
         public void WriteLine(string text)
@@ -549,7 +562,7 @@ namespace CShell.Modules.Repl.Controls
         }
         #endregion
 
-        #region IRepl interface, colors and fonts
+        #region IReplOutput interface, colors and fonts
         public Color GetColor(TextType textType)
         {
             switch (textType)
@@ -559,20 +572,20 @@ namespace CShell.Modules.Repl.Controls
                 case TextType.Error:
                     return ErrorColor;
                 case TextType.Repl:
-                    return ReplColor;
+                    return TextColor;
                 case TextType.Output:
                 case TextType.None:
                 default:
-                    return OutputColor;
+                    return ResultColor;
             }
         }
 
         public void ResetColor()
         {
-            OutputColor = Color.FromArgb(255, 78, 78, 78);
+            ResultColor = Color.FromArgb(255, 78, 78, 78);
             WarningColor = Color.FromArgb(255, 183, 122, 0);
             ErrorColor = Color.FromArgb(255, 138, 6, 3);
-            ReplColor = Color.FromArgb(255, 0, 127, 0);
+            TextColor = Color.FromArgb(255, 0, 127, 0);
             BackgroundColor = Colors.WhiteSmoke;
         }
 
@@ -600,10 +613,10 @@ namespace CShell.Modules.Repl.Controls
             set { textEditor.Background = new SolidColorBrush(value); }
         }
 
-        public Color OutputColor { get; set; }
+        public Color ResultColor { get; set; }
         public Color WarningColor { get; set; }
         public Color ErrorColor { get; set; }
-        public Color ReplColor { get; set; }
+        public Color TextColor { get; set; }
         #endregion
 
     }//end class

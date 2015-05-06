@@ -7,8 +7,8 @@ using CShell.Framework.Services;
 
 namespace CShell
 {
-    public interface IReplExecutorFactory
+    public interface IReplScriptExecutorFactory
     {
-        IReplExecutor Create(string workspaceDirectory);
+        IReplScriptExecutor Create(string workspaceDirectory);
     }
 }

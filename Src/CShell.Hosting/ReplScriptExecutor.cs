@@ -8,22 +8,21 @@ using System.Runtime.ExceptionServices;
 using System.Runtime.Versioning;
 using System.Text;
 using System.Text.RegularExpressions;
-using Common.Logging;
 using CShell.Completion;
 using CShell.Framework.Services;
 using ScriptCs;
 using ScriptCs.Contracts;
+using ScriptCs.Logging;
 
 namespace CShell.Hosting
 {
-    public class ReplExecutor : ScriptExecutor, IReplExecutor
+    public class ReplScriptExecutor : ScriptExecutor, IReplScriptExecutor
     {
-        private readonly IRepl repl;
+        private readonly IReplOutput replOutput;
         private readonly IObjectSerializer serializer;
-        private readonly IEnumerable<IReplCommand> replCommands;
 
-        public ReplExecutor(
-            IRepl repl,
+        public ReplScriptExecutor(
+            IReplOutput replOutput,
             IObjectSerializer serializer,
             IFileSystem fileSystem,
             IFilePreProcessor filePreProcessor,
@@ -32,9 +31,13 @@ namespace CShell.Hosting
             IEnumerable<IReplCommand> replCommands)
             : base(fileSystem, filePreProcessor, scriptEngine, logger)
         {
-            this.repl = repl;
+            this.replOutput = replOutput;
             this.serializer = serializer;
-            this.replCommands = replCommands;
+            Commands = replCommands != null ? replCommands
+                .Where(x => x.GetType().Namespace.StartsWith("CShell"))
+                .Where(x => x.CommandName != null)
+                .ToDictionary(x => x.CommandName, x => x)
+                : new Dictionary<string, IReplCommand>();
 
             replCompletion = new CSharpCompletion(true);
             replCompletion.AddReferences(GetReferencesAsPaths());
@@ -65,27 +68,26 @@ namespace CShell.Hosting
             get { return documentCompletion; }
         }
 
-        public IEnumerable<IReplCommand> ReplCommands
-        {
-            get { return replCommands; }
-        } 
+
+        public string Buffer { get; private set; }
+
+        public Dictionary<string, IReplCommand> Commands { get; private set; }
 
         public override ScriptResult Execute(string script, params string[] scriptArgs)
         {
-            var result = new ScriptResult();
-            repl.EvaluateStarted(script, null);
-
+            ScriptResult result = null;
             try
             {
+                replOutput.EvaluateStarted(script, null);
+
                 if (script.StartsWith(":"))
                 {
                     var tokens = script.Split(' ');
                     if (tokens[0].Length > 1)
                     {
-                        var command = replCommands.FirstOrDefault(x => x.CommandName == tokens[0].Substring(1));
-
-                        if (command != null)
+                        if (Commands.ContainsKey(tokens[0].Substring(1)))
                         {
+                            var command = Commands[tokens[0].Substring(1)];
                             var argsToPass = new List<object>();
                             foreach (var argument in tokens.Skip(1))
                             {
@@ -137,10 +139,33 @@ namespace CShell.Hosting
                         AddReferences(FileSystem.FileExists(referencePath) ? referencePath : reference);
                     }
 
-                    result = ScriptEngine.Execute(preProcessResult.Code, scriptArgs, References, Namespaces, ScriptPackSession);
+                    InjectScriptLibraries(FileSystem.CurrentDirectory, preProcessResult, ScriptPackSession.State);
 
-                    if (result != null && result.IsCompleteSubmission)
-                        PrepareVariables();
+                    Buffer = (Buffer == null)
+                        ? preProcessResult.Code
+                        : Buffer + Environment.NewLine + preProcessResult.Code;
+
+                    var namespaces = Namespaces.Union(preProcessResult.Namespaces);
+                    var references = References.Union(preProcessResult.References);
+
+                    result = ScriptEngine.Execute(Buffer, scriptArgs, references, namespaces, ScriptPackSession);
+
+                    if (result == null)
+                    {
+                        result = ScriptResult.Empty;
+                    }
+                    else
+                    {
+                        if (result.InvalidNamespaces.Any())
+                        {
+                            RemoveNamespaces(result.InvalidNamespaces.ToArray());
+                        }
+
+                        if (result.IsCompleteSubmission)
+                        {
+                            Buffer = null;
+                        }
+                    }
                 }
             }
             catch (FileNotFoundException fileEx)
@@ -154,9 +179,9 @@ namespace CShell.Hosting
             }
             finally
             {
-                repl.EvaluateCompleted(result);
+                replOutput.EvaluateCompleted(result);
             }
-            return result;
+            return result ?? ScriptResult.Empty;
         }
 
 
@@ -201,7 +226,7 @@ namespace CShell.Hosting
         public string[] GetReferencesAsPaths()
         {
             var paths = new List<string>();
-            paths.AddRange(References.PathReferences);
+            paths.AddRange(References.Paths);
             paths.AddRange(References.Assemblies.Select(a=>a.GetName().Name));
             return paths.ToArray();
         }
@@ -214,7 +239,7 @@ namespace CShell.Hosting
         public override void Reset()
         {
             base.Reset();
-            repl.Clear();
+            replOutput.Clear();
         }
 
         #region Variables
@@ -264,5 +289,7 @@ namespace CShell.Hosting
         }
         #endregion
 
+
+        
     }
 }

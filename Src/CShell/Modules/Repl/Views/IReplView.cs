@@ -22,6 +22,6 @@ namespace CShell.Modules.Repl.Views
 {
     public interface IReplView
     {
-        IRepl GetRepl();
+        IReplOutput GetReplOutput();
     }
 }

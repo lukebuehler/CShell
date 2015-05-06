@@ -31,12 +31,12 @@ using Execute = CShell.Framework.Services.Execute;
 namespace CShell.Modules.Repl.ViewModels
 {
     [Export(typeof(ReplViewModel))]
-    [Export(typeof(IRepl))]
+    [Export(typeof(IReplOutput))]
     [Export(typeof(ITool))]
-    public class ReplViewModel : Tool, IRepl
+    public class ReplViewModel : Tool, IReplOutput
     {
         private readonly Timer timer;
-        private IRepl internalRepl;
+        private IReplOutput internalReplOutput;
         private IReplView replView;
 
         [Import] private IShell shell;
@@ -71,7 +71,7 @@ namespace CShell.Modules.Repl.ViewModels
         protected override void OnViewLoaded(object view)
         {
             replView = (IReplView) view;
-            internalRepl = replView.GetRepl();
+            internalReplOutput = replView.GetReplOutput();
 
             timer.Start();
             base.OnViewLoaded(view);
@@ -86,7 +86,7 @@ namespace CShell.Modules.Repl.ViewModels
         private DateTime lastTimeNoEvaluations;
         private void TimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
         {
-            if(!internalRepl.IsEvaluating)
+            if(!internalReplOutput.IsEvaluating)
             {
                 lastTimeNoEvaluations = DateTime.Now;
                 if(shell.StatusBar.Message != "Ready")
@@ -108,118 +108,130 @@ namespace CShell.Modules.Repl.ViewModels
 
 
         #region IRepl wrapper implementaion
-        public void Initialize(IReplExecutor replExecutor)
+        public void Initialize(IReplScriptExecutor replExecutor)
         {
-            Execute.OnUIThread(() => internalRepl.Initialize(replExecutor));
+            Execute.OnUIThread(() => internalReplOutput.Initialize(replExecutor));
         }
 
         public void EvaluateStarted(string input, string sourceFile)
         {
-            Execute.OnUIThread(() => internalRepl.EvaluateStarted(input, sourceFile));
+            Execute.OnUIThread(() => internalReplOutput.EvaluateStarted(input, sourceFile));
         }
 
         public void EvaluateCompleted(ScriptResult result)
         {
-            Execute.OnUIThread(() => internalRepl.EvaluateCompleted(result));
+            Execute.OnUIThread(() => internalReplOutput.EvaluateCompleted(result));
         }
 
         public void Clear()
         {
-            Execute.OnUIThread(()=>internalRepl.Clear());
+            Execute.OnUIThread(()=>internalReplOutput.Clear());
         }
 
         public bool IsEvaluating
         {
-            get { return internalRepl.IsEvaluating; }
+            get { return internalReplOutput.IsEvaluating; }
         }
 
         public void Write(string value)
         {
-            Execute.OnUIThread(() => internalRepl.Write(value));
+            Execute.OnUIThread(() => internalReplOutput.Write(value));
         }
 
         public void WriteLine()
         {
-            Execute.OnUIThread(() => internalRepl.WriteLine());
+            Execute.OnUIThread(() => internalReplOutput.WriteLine());
         }
 
         public void WriteLine(string value)
         {
-            Execute.OnUIThread(() => internalRepl.WriteLine(value));
+            Execute.OnUIThread(() => internalReplOutput.WriteLine(value));
+        }
+
+        public void Write(string format, params object[] arg)
+        {
+            Execute.OnUIThread(() => internalReplOutput.Write(format, arg));
+        }
+
+        public void WriteLine(string format, params object[] arg)
+        {
+            Execute.OnUIThread(() => internalReplOutput.WriteLine(format, arg));
+        }
+
+        public int BufferLength
+        {
+            get { return internalReplOutput.BufferLength; }
+            set { Execute.OnUIThread(() => internalReplOutput.BufferLength = value); }
         }
 
         public IEnumerable<string> SuppressedWarnings
         {
-            get { return internalRepl.SuppressedWarnings; }
+            get { return internalReplOutput.SuppressedWarnings; }
         }
 
         public void SuppressWarning(string warningCode)
         {
-            internalRepl.SuppressWarning(warningCode);
+            internalReplOutput.SuppressWarning(warningCode);
         }
 
         public void ShowWarning(string warningCode)
         {
-            internalRepl.ShowWarning(warningCode);
+            internalReplOutput.ShowWarning(warningCode);
         }
 
         public void ResetColor()
         {
-            Execute.OnUIThread(() => internalRepl.ResetColor());
+            Execute.OnUIThread(() => internalReplOutput.ResetColor());
         }
 
         public bool ShowConsoleOutput
         {
-            get { return internalRepl.ShowConsoleOutput; }
-            set { Execute.OnUIThread(()=>internalRepl.ShowConsoleOutput = value); }
+            get { return internalReplOutput.ShowConsoleOutput; }
+            set { Execute.OnUIThread(()=>internalReplOutput.ShowConsoleOutput = value); }
         }
 
         public string Font
         {
-            get { return internalRepl.Font; }
-            set { Execute.OnUIThread(()=>internalRepl.Font = value); }
+            get { return internalReplOutput.Font; }
+            set { Execute.OnUIThread(()=>internalReplOutput.Font = value); }
         }
 
         public double FontSize
         {
-            get { return internalRepl.FontSize; }
-            set { Execute.OnUIThread(()=>internalRepl.FontSize = value); }
+            get { return internalReplOutput.FontSize; }
+            set { Execute.OnUIThread(()=>internalReplOutput.FontSize = value); }
         }
 
         public System.Windows.Media.Color BackgroundColor
         {
-            get { return internalRepl.BackgroundColor; }
-            set { Execute.OnUIThread(()=>internalRepl.BackgroundColor = value); }
+            get { return internalReplOutput.BackgroundColor; }
+            set { Execute.OnUIThread(()=>internalReplOutput.BackgroundColor = value); }
         }
 
-        public System.Windows.Media.Color OutputColor
+        public System.Windows.Media.Color ResultColor
         {
-            get { return internalRepl.OutputColor; }
-            set { Execute.OnUIThread(()=>internalRepl.OutputColor = value); }
+            get { return internalReplOutput.ResultColor; }
+            set { Execute.OnUIThread(()=>internalReplOutput.ResultColor = value); }
         }
 
         public System.Windows.Media.Color WarningColor
         {
-            get { return internalRepl.WarningColor; }
-            set { Execute.OnUIThread(()=>internalRepl.WarningColor = value); }
+            get { return internalReplOutput.WarningColor; }
+            set { Execute.OnUIThread(()=>internalReplOutput.WarningColor = value); }
         }
 
         public System.Windows.Media.Color ErrorColor
         {
-            get { return internalRepl.ErrorColor; }
-            set { Execute.OnUIThread(()=>internalRepl.ErrorColor = value); }
+            get { return internalReplOutput.ErrorColor; }
+            set { Execute.OnUIThread(()=>internalReplOutput.ErrorColor = value); }
         }
 
-        public System.Windows.Media.Color ReplColor
+        public System.Windows.Media.Color TextColor
         {
-            get { return internalRepl.ReplColor; }
-            set { Execute.OnUIThread(()=>internalRepl.ReplColor = value); }
+            get { return internalReplOutput.TextColor; }
+            set { Execute.OnUIThread(()=>internalReplOutput.TextColor = value); }
         }
         #endregion
-
-
-
-
-
+       
     }//end class
 }

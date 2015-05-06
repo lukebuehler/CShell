@@ -1,12 +1,12 @@
 ﻿using System.Linq;
 using System.Runtime.Versioning;
-using Common.Logging;
 using ScriptCs;
 using ScriptCs.Contracts;
+using ScriptCs.Logging;
 
 namespace CShell.Hosting.ReplCommands
 {
-    public class InstallCommand : IReplCommandWithInfo
+    public class InstallCommand : IReplCommand
     {
         private readonly IPackageInstaller _packageInstaller;
         private readonly IPackageAssemblyResolver _packageAssemblyResolver;
@@ -30,12 +30,12 @@ namespace CShell.Hosting.ReplCommands
             get { return "install"; }
         }
 
-        public string Help
+        public string Description
         {
-            get { return "Installs a NuGet pacakge. Use: ':install PackageName [version] [pre]'"; }
+            get { return "Installs a Nuget package. I.e. :install <package> <version>"; }
         }
 
-        public object Execute(IScriptExecutor repl, object[] args)
+        public object Execute(IRepl repl, object[] args)
         {
             if (args == null || args.Length == 0)
             {
@@ -62,10 +62,10 @@ namespace CShell.Hosting.ReplCommands
             _packageAssemblyResolver.SavePackages();
 
             var dlls = _packageAssemblyResolver.GetAssemblyNames(repl.FileSystem.CurrentDirectory)
-                .Except(repl.References.PathReferences).ToArray();
+                .Except(repl.References.Paths).ToArray();
 
-            if(repl is IReplExecutor)
-                ((IReplExecutor)repl).AddReferencesAndNotify(dlls);
+            if (repl is IReplScriptExecutor)
+                ((IReplScriptExecutor)repl).AddReferencesAndNotify(dlls);
             else
                 repl.AddReferences(dlls);
 

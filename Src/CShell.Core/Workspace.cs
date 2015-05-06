@@ -35,18 +35,18 @@ namespace CShell
     public sealed partial class Workspace : PropertyChangedBase
     {
         private readonly IShell shell;
-        private readonly IReplExecutorFactory replExecutorFactory;
+        private readonly IReplScriptExecutorFactory replExecutorFactory;
 
-        private IReplExecutor replExecutor;
+        private IReplScriptExecutor replExecutor;
 
         [ImportingConstructor]
-        public Workspace(IShell shell, IReplExecutorFactory replExecutorFactory)
+        public Workspace(IShell shell, IReplScriptExecutorFactory replExecutorFactory)
         {
             this.shell = shell;
             this.replExecutorFactory = replExecutorFactory;
         }
 
-        public IReplExecutor ReplExecutor
+        public IReplScriptExecutor ReplExecutor
         {
             get { return replExecutor; }
         }

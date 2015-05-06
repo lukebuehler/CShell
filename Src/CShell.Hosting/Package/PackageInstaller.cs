@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Common.Logging;
 using ScriptCs.Contracts;
+using ScriptCs.Logging;
 
 namespace CShell.Hosting.Package
 {
@@ -46,7 +46,7 @@ namespace CShell.Hosting.Package
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex.Message, ex);
+                    _logger.ErrorException(ex.Message, ex);
                     exceptions.Add(ex);
                 }
             }

@@ -32,13 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Common.Logging, Version=2.2.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Lib\Common.Logging.2.2.0\lib\net40\Common.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Common.Logging.Core">
-      <HintPath>..\..\Lib\Common.Logging.Core.2.2.0\lib\net40\Common.Logging.Core.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Web.XmlTransform, Version=2.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Lib\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
@@ -91,10 +84,9 @@
     <Compile Include="ReplCommands\ClearCommand.cs" />
     <Compile Include="ReplCommands\HelpCommand.cs" />
     <Compile Include="ReplCommands\InstallCommand.cs" />
-    <Compile Include="ReplCommands\IReplCommandWithInfo.cs" />
     <Compile Include="ReplCommands\ResetCommand.cs" />
-    <Compile Include="ReplExecutor.cs" />
-    <Compile Include="ReplExecutorFactory.cs" />
+    <Compile Include="ReplScriptExecutor.cs" />
+    <Compile Include="ReplScriptExecutorFactory.cs" />
     <Compile Include="ReplLogger.cs" />
     <Compile Include="ReplScriptHost.cs" />
     <Compile Include="ScriptResultExtensions.cs" />

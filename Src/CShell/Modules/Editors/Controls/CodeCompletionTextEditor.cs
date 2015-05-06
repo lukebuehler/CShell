@@ -11,7 +11,7 @@ namespace CShell.Modules.Editors.Controls
 {
     public class CodeCompletionTextEditor : CodeTextEditor
     {
-        public IReplExecutor ReplExecutor { get; set; }
+        public IReplScriptExecutor ReplExecutor { get; set; }
 
         protected override string[] GetNamespaces()
         {

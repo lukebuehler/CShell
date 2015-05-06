@@ -32,8 +32,9 @@ using CShell.Framework;
 using CShell.Framework.Services;
 using Caliburn.Micro;
 using CShell.Hosting;
+using ScriptCs;
+using ScriptCs.Contracts;
 using IModule = CShell.Framework.IModule;
-using LogLevel = Common.Logging.LogLevel;
 using LogManager = Caliburn.Micro.LogManager;
 
 namespace CShell
@@ -43,11 +44,11 @@ namespace CShell
         static AppBootstrapper()
         {
 
-#if DEBUG
-            Common.Logging.LogManager.Adapter = new Common.Logging.Simple.TraceLoggerFactoryAdapter(LogLevel.Debug, false, false, true, "HH:mm:ss", true);
-#else
-            Common.Logging.LogManager.Adapter = new Common.Logging.Simple.NoOpLoggerFactoryAdapter();
-#endif
+//#if DEBUG
+//            Common.Logging.LogManager.Adapter = new Common.Logging.Simple.TraceLoggerFactoryAdapter(LogLevel.Debug, false, false, true, "HH:mm:ss", true);
+//#else
+//            Common.Logging.LogManager.Adapter = new Common.Logging.Simple.NoOpLoggerFactoryAdapter();
+//#endif
             LogManager.GetLog = type => new Logger(type);
         }
 
@@ -119,6 +120,9 @@ namespace CShell
                 if(moduleConfiguration.CompositionBatch.PartsToAdd.Count > 0 || moduleConfiguration.CompositionBatch.PartsToRemove.Count > 0)
                     container.Compose(batch);
             }
+
+            //use this to debug the IoC, can the workspace be resolved?
+            //var w1 = container.GetExportedValue<Workspace>();
         }
 
         protected override void OnStartup(object sender, StartupEventArgs e)

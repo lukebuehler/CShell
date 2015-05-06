@@ -3,39 +3,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CShell.Framework.Services;
 using ScriptCs.Contracts;
 
 namespace CShell.Hosting.ReplCommands
 {
-    public class HelpCommand : IReplCommandWithInfo
+    public class HelpCommand : IReplCommand
     {
+        private readonly IReplOutput replOutput;
+
+        public HelpCommand(IReplOutput replOutput)
+        {
+            this.replOutput = replOutput;
+        }
+
         public string CommandName
         {
             get { return "help"; }
         }
 
-        public string Help
+        public string Description
         {
             get { return "Displays this help screen."; }
         }
 
-        public object Execute(IScriptExecutor repl, object[] args)
+        public object Execute(IRepl repl, object[] args)
         {
-            var replExecutor = repl as IReplExecutor;
-            if(replExecutor == null)
-                throw new Exception("Could not find repl executor to get available commands.");
-
-            var replCommands = replExecutor.ReplCommands;
-            var commands = "Available REPL commands:" + Environment.NewLine;
-            foreach (var replCommand in replCommands)
+            replOutput.WriteLine("The following commands are available in the REPL:");
+            foreach (var command in repl.Commands.OrderBy(x => x.Key))
             {
-                var helpText = replCommand is IReplCommandWithInfo ? ((IReplCommandWithInfo) replCommand).Help : "";
-                commands += String.Format(" :{0,-15} - {1}", replCommand.CommandName, helpText);
-                commands += Environment.NewLine;
+                replOutput.WriteLine(string.Format(":{0,-15}{1,10}", command.Key, command.Value.Description));
             }
-            return commands;
+            return null;
         }
-
-        
     }
 }

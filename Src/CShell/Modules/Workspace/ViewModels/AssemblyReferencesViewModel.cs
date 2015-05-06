@@ -31,9 +31,9 @@ namespace CShell.Modules.Workspace.ViewModels
 {
     public class AssemblyReferencesViewModel : TreeViewModel
     {
-        private readonly IReplExecutor replExecutor;
+        private readonly IReplScriptExecutor replExecutor;
 
-        public AssemblyReferencesViewModel(IReplExecutor replExecutor)
+        public AssemblyReferencesViewModel(IReplScriptExecutor replExecutor)
         {
             this.replExecutor = replExecutor;
             DisplayName = "Loaded References";

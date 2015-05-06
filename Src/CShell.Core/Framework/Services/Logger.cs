@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Common.Logging;
+using ScriptCs.Logging;
 
 namespace CShell.Framework.Services
 {
@@ -29,26 +29,26 @@ namespace CShell.Framework.Services
     /// </summary>
     public class Logger : Caliburn.Micro.ILog
     {
-        private readonly ILog innerLogger;
+       // private readonly ILog innerLogger;
 
         public Logger(Type type)
         {
-            this.innerLogger = LogManager.GetLogger(type);
+            //this.innerLogger = LogManager.GetLogger(type);
         }
 
         public void Error(Exception exception)
         {
-            innerLogger.Error(exception.Message, exception);
+            //innerLogger.Error(exception.Message, exception);
         }
 
         public void Info(string format, params object[] args)
         {
-            innerLogger.InfoFormat(format, args);
+            //innerLogger.InfoFormat(format, args);
         }
 
         public void Warn(string format, params object[] args)
         {
-            innerLogger.WarnFormat(format, args);
+            //innerLogger.WarnFormat(format, args);
         }
     }
 }

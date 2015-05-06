@@ -32,18 +32,18 @@ namespace CShell
         /// <summary>
         /// Gets all available documents including sinks.
         /// </summary>
-        public static IEnumerable<IDocument> GetDocuments(this IShell shell)
+        public static IEnumerable<IDocument> GetDocs()
         {
-            return shell.Documents.ToArray();
+            return UI.Documents.ToArray();
         }
 
         /// <summary>
         /// Gets or creates specific document and opens it.
         /// </summary>
         /// <param name="uri">The URI of the document. Can be a file path URI.</param>
-        public static IDocument GetDocument(this IShell shell, Uri uri)
+        public static IDocument GetDoc(Uri uri)
         {
-            return GetDocument(shell, uri, false);
+            return GetDoc(uri, false);
         }
 
         /// <summary>
@@ -51,9 +51,9 @@ namespace CShell
         /// </summary>
         /// <param name="uri">The URI of the document. Can be a file path URI.</param>
         /// <param name="suppressOpen"><c>true</c> if the document should not be opened.</param>
-        public static IDocument GetDocument(this IShell shell, Uri uri, bool suppressOpen)
+        public static IDocument GetDoc(Uri uri, bool suppressOpen)
         {
-            var doc = GetDocuments(shell).FirstOrDefault(s => s.Uri == uri);
+            var doc = GetDocs().FirstOrDefault(s => s.Uri == uri);
             if (doc == null)
             {
                 doc = IoC.GetAllInstances(typeof(IDocumentProvider))
@@ -63,7 +63,7 @@ namespace CShell
                     .FirstOrDefault();
 
                 if (doc != null && !suppressOpen)
-                    shell.ActivateDocument(doc);
+                    UI.ActivateDocument(doc);
             }
             return doc;
         }
@@ -71,29 +71,29 @@ namespace CShell
         /// <summary>
         /// Gets all available text documents.
         /// </summary>
-        public static IEnumerable<ITextDocument> GetTextDocuments(this IShell shell)
+        public static IEnumerable<ITextDocument> GetTextDocs()
         {
-            return shell.Documents.OfType<ITextDocument>().ToArray();
+            return UI.Documents.OfType<ITextDocument>().ToArray();
         }
 
         /// <summary>
         /// Gets or creates specific text document and opens it.
         /// </summary>
         /// <param name="filePath">The path to the file. Can be relative to the root path of the workspace, e.g. "subfolder/file.csx"</param>
-        public static ITextDocument GetTextDocument(this IShell shell, string filePath)
+        public static ITextDocument GetTextDoc(string filePath)
         {
             if (filePath == null) throw new ArgumentNullException("filePath");
             var uri = new Uri(System.IO.Path.GetFullPath(filePath));
-            var doc = GetDocument(shell, uri);
+            var doc = GetDoc(uri);
             return doc as ITextDocument;
         }
 
         /// <summary>
         /// Gets the current text document.
         /// </summary>
-        public static ITextDocument GetTextDocument(this IShell shell)
+        public static ITextDocument GetTextDoc()
         {
-            return shell.ActiveItem as ITextDocument;
+            return UI.ActiveItem as ITextDocument;
         }
 
         #region Files

@@ -43,10 +43,9 @@ namespace CShell
         /// Gets all available sinks.
         /// </summary>
         /// <returns></returns>
-        public static IEnumerable<ISink> GetSinks(this IShell shell)
+        public static IEnumerable<ISink> GetSinks()
         {
-            return shell.Documents
-                .OfType<ISink>().ToArray();
+            return UI.Documents.OfType<ISink>().ToArray();
         }
 
         /// <summary>
@@ -54,9 +53,9 @@ namespace CShell
         /// If the sink URI exists or can be created the sink is opened.
         /// </summary>
         /// <param name="uri">The sink URI.</param>
-        public static ISink GetSink(this IShell shell, Uri uri)
+        public static ISink GetSink(Uri uri)
         {
-            return GetSink(shell, uri, false);
+            return GetSink(uri, false);
         }
 
         /// <summary>
@@ -65,10 +64,10 @@ namespace CShell
         /// <param name="uri">The sink URI.</param>
         /// <param name="suppressOpen">If set to <c>true</c> sink will not be opened, but just created.</param>
         /// <returns></returns>
-        public static ISink GetSink(this IShell shell, Uri uri, bool suppressOpen)
+        public static ISink GetSink(Uri uri, bool suppressOpen)
         {
             if (uri == null) throw new ArgumentNullException("uri");
-            var sinks = GetSinks(shell);
+            var sinks = GetSinks();
             var sink = sinks.FirstOrDefault(s => s.Uri == uri);
             if (sink == null)
             {
@@ -79,7 +78,7 @@ namespace CShell
                     .FirstOrDefault();
 
                 if (sink != null && !suppressOpen)
-                    shell.ActivateDocument(sink);
+                    UI.ActivateDocument(sink);
             }
             return sink;
         }
@@ -89,52 +88,52 @@ namespace CShell
         /// </summary>
         /// <param name="sinkName">Name of the sink.</param>
         /// <returns>If the sink name cannot be found returns null.</returns>
-        public static ISink GetSink(this IShell shell, string sinkName)
+        public static ISink GetSink(string sinkName)
         {
             if (sinkName == null) throw new ArgumentNullException("sinkName");
 
-            var sinks = GetSinks(shell);
+            var sinks = GetSinks();
             var sink = sinks.FirstOrDefault(s => s.DisplayName.Equals(sinkName));
             return sink;
         }
 
-        ///// <summary>
-        ///// Dumps an object to the specified sink.
-        ///// </summary>
-        ///// <param name="o">The object to dump.</param>
-        ///// <param name="sink">The sink URI. If no sink URI is specified the default sink is used.</param>
-        //public static void Dump(this object o, Uri sink = null)
-        //{
-        //    Dump(o, null, sink);
-        //}
+        /// <summary>
+        /// Dumps an object to the specified sink.
+        /// </summary>
+        /// <param name="o">The object to dump.</param>
+        /// <param name="sink">The sink URI. If no sink URI is specified the default sink is used.</param>
+        public static void Dump(this object o, Uri sink = null)
+        {
+            Dump(o, null, sink);
+        }
 
-        ///// <summary>
-        ///// Dumps an object to the specified sink.
-        ///// </summary>
-        ///// <param name="o">The object to dump.</param>
-        ///// <param name="description">A description of the object. Can be null.</param>
-        ///// <param name="sink">The sink URI. If no sink URI is specified the default sink is used.</param>
-        //public static void Dump(this object o, string description, Uri sink = null)
-        //{
-        //    if (sink == null)
-        //        sink = DefaultSinkUri;
-        //    var s = GetSink(sink);
-        //    if (s == null)
-        //        throw new NotSupportedException("The requested sink doesnt exist: " + sink + ", make sure the URI is spelled correctly and the module containing the specified sink is loaded.");
+        /// <summary>
+        /// Dumps an object to the specified sink.
+        /// </summary>
+        /// <param name="o">The object to dump.</param>
+        /// <param name="description">A description of the object. Can be null.</param>
+        /// <param name="sink">The sink URI. If no sink URI is specified the default sink is used.</param>
+        public static void Dump(this object o, string description, Uri sink = null)
+        {
+            if (sink == null)
+                sink = DefaultSinkUri;
+            var s = GetSink(sink);
+            if (s == null)
+                throw new NotSupportedException("The requested sink doesnt exist: " + sink + ", make sure the URI is spelled correctly and the module containing the specified sink is loaded.");
 
-        //    Execute.OnUIThreadEx(() =>
-        //    {
-        //        try
-        //        {
-        //            s.Dump(o, description);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            var log = LogManager.GetLog(typeof(Shell));
-        //            log.Error(ex);
-        //            throw;
-        //        }
-        //    });
-        //}
+            Execute.OnUIThreadEx(() =>
+            {
+                try
+                {
+                    s.Dump(o, description);
+                }
+                catch (Exception ex)
+                {
+                    var log = LogManager.GetLog(typeof(Shell));
+                    log.Error(ex);
+                    throw;
+                }
+            });
+        }
     }
 }

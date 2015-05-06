@@ -32,9 +32,9 @@ namespace CShell
         /// If the tool URI exists or can be created the tool is opened.
         /// </summary>
         /// <param name="uri">The tool URI.</param>
-        public static ITool GetTool(this IShell shell, Uri uri)
+        public static ITool GetTool(Uri uri)
         {
-            return GetTool(shell, uri, false);
+            return GetTool(uri, false);
         }
 
         /// <summary>
@@ -43,9 +43,9 @@ namespace CShell
         /// <param name="uri">The tool URI.</param>
         /// <param name="suppressOpen">If set to <c>true</c> tool will not be opened, but just created.</param>
         /// <returns></returns>
-        public static ITool GetTool(this IShell shell, Uri uri, bool suppressOpen)
+        public static ITool GetTool(Uri uri, bool suppressOpen)
         {
-            var tools = shell.Tools.ToArray();
+            var tools = UI.Tools.ToArray();
             var tool = tools.FirstOrDefault(t => t.Uri == uri);
             if (tool == null)
             {
@@ -54,7 +54,7 @@ namespace CShell
                     .FirstOrDefault(t=>t.Uri == uri);
 
                 if (tool != null && !suppressOpen)
-                    shell.ShowTool(tool);
+                    UI.ShowTool(tool);
             }
             return tool;
         }

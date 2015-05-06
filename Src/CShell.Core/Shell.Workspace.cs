@@ -27,94 +27,11 @@ namespace CShell
 {
     public static partial class Shell
     {
-        //private static Workspace workspace = null;
-        //private static readonly object instanceLock = new object();
+        private static readonly Lazy<Workspace> _workspaceLazy = new Lazy<Workspace>(() => IoC.Get<Workspace>());
 
-        ///// <summary>
-        ///// Gets the instance of the currently open workspace, if no workspace is open returns null.
-        ///// </summary>
-        //public static Workspace Workspace
-        //{
-        //    get
-        //    {
-        //        lock (instanceLock)
-        //        {
-        //            return workspace;
-        //        }
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Opens a default workspace.
-        ///// </summary>
-        //public static void OpenWorkspace()
-        //{
-        //    if (File.Exists(Constants.CShellDefaultFilePath))
-        //    {
-        //        OpenWorkspace(Constants.CShellDefaultFilePath);
-        //    }
-        //    else
-        //    {
-        //        throw new FileNotFoundException("Could not find default cshell file: " + Constants.CShellDefaultFilePath);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Opens a workspace based on a .cshell file.
-        ///// </summary>
-        ///// <param name="cshellFile">The file path to the .cshell file.</param>
-        ///// <returns>A task that completes once the workspace is opened.</returns>
-        //public static Task OpenWorkspace(string cshellFile)
-        //{
-        //    var eventAggregator = IoC.Get<IEventAggregator>();
-
-        //    lock (instanceLock)
-        //    {
-        //        if (!File.Exists(cshellFile))
-        //            Workspace.CreateWorkspaceFile(cshellFile);
-        //        workspace = new Workspace(cshellFile);
-        //    }
-        //    //send the opening event
-        //    if (eventAggregator != null)
-        //        eventAggregator.Publish(new WorkspaceOpeningEventArgs(Workspace));
-
-        //    return Workspace.Open()
-        //        .ContinueWith(t =>
-        //        {
-        //            //send the opened event
-        //            if (eventAggregator != null)
-        //                eventAggregator.Publish(new WorkspaceOpenedEventArgs(Workspace));
-        //        });
-        //}
-
-        ///// <summary>
-        ///// Closes the current workspace.
-        ///// </summary>
-        ///// <returns>A task that completes once the workspace is closed.</returns>
-        //public static Task CloseWorkspace()
-        //{
-        //    if (Workspace == null)
-        //    {
-        //        var t = new TaskCompletionSource<object>();
-        //        t.SetResult(null);
-        //        return t.Task;
-        //    }
-
-        //    //send the closing event
-        //    var eventAggregator = IoC.Get<IEventAggregator>();
-        //    if (eventAggregator != null)
-        //        eventAggregator.Publish(new WorkspaceClosingEventArgs(Workspace));
-
-        //    return Workspace.Close()
-        //         .ContinueWith(t =>
-        //         {
-        //             lock (instanceLock)
-        //             {
-        //                 workspace = null;
-        //             }
-        //             if (eventAggregator != null)
-        //                 eventAggregator.Publish(new WorkspaceClosedEventArgs());
-        //         });
-        //}
+        /// <summary>
+        /// Gets the instance of the currently open workspace.
+        /// </summary>
+        public static Workspace Workspace { get { return _workspaceLazy.Value; } }
     }
 }

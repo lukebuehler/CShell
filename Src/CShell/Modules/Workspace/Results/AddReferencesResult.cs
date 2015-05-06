@@ -73,7 +73,7 @@ namespace CShell.Modules.Workspace.Results
                 {
                     if (FilePath == null)
                         FilePath = Constants.ReferencesFile;
-                    Document = Shell.GetTextDocument(FilePath);
+                    Document = CShell.Shell.GetTextDoc(FilePath);
                 }
             })
             .ContinueWith(t =>

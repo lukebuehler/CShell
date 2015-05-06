@@ -26,26 +26,26 @@ namespace CShell
 {
     public partial class Shell
     {
-        ///// <summary>
-        ///// Gets a grid sink based on the sink name.
-        ///// </summary>
-        ///// <param name="sinkName">Name of the sink.</param>
-        ///// <param name="suppressOpen">If set to <c>true</c> the grid is not opened.</param>
-        //private static ISink GetGridSink(string sinkName, bool suppressOpen = false)
-        //{
-        //    var uri = new Uri(Constants.SinkGrid + sinkName);
-        //    return GetSink(uri, suppressOpen);
-        //}
+        /// <summary>
+        /// Gets a grid sink based on the sink name.
+        /// </summary>
+        /// <param name="sinkName">Name of the sink.</param>
+        /// <param name="suppressOpen">If set to <c>true</c> the grid is not opened.</param>
+        private static ISink GetGridSink(string sinkName, bool suppressOpen = false)
+        {
+            var uri = new Uri(Constants.SinkGrid + sinkName);
+            return GetSink(uri, suppressOpen);
+        }
 
-        ///// <summary>
-        ///// Dumps data to a table.
-        ///// </summary>
-        ///// <param name="data">The data.</param>
-        ///// <param name="sinkName">Name of the sink.</param>
-        //public static void DumpGrid(this IEnumerable data, string sinkName = null)
-        //{
-        //    var sink = GetGridSink(sinkName);
-        //    sink.Dump(data);
-        //}
+        /// <summary>
+        /// Dumps data to a table.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="sinkName">Name of the sink.</param>
+        public static void DumpGrid(this IEnumerable data, string sinkName = null)
+        {
+            var sink = GetGridSink(sinkName);
+            sink.Dump(data);
+        }
     }
 }

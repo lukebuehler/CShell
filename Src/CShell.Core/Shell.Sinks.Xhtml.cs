@@ -27,29 +27,29 @@ namespace CShell
 {
     public partial class Shell
     {
-        ///// <summary>
-        ///// Gets a XHTML sink.
-        ///// </summary>
-        ///// <param name="sinkName">Name of the sink.</param>
-        ///// <param name="suppressOpen">If set to <c>true</c> the sink is not opened.</param>
-        ///// <returns></returns>
-        //private static IXhtmlSink GetXhtmlSink(string sinkName, bool suppressOpen = false)
-        //{
-        //    var uri = new Uri(Constants.SinkXhtml + sinkName);
-        //    return GetSink(uri, suppressOpen) as IXhtmlSink;
-        //}
+        /// <summary>
+        /// Gets a XHTML sink.
+        /// </summary>
+        /// <param name="sinkName">Name of the sink.</param>
+        /// <param name="suppressOpen">If set to <c>true</c> the sink is not opened.</param>
+        /// <returns></returns>
+        private static IXhtmlSink GetXhtmlSink(string sinkName, bool suppressOpen = false)
+        {
+            var uri = new Uri(Constants.SinkXhtml + sinkName);
+            return GetSink(uri, suppressOpen) as IXhtmlSink;
+        }
 
-        ///// <summary>
-        ///// Dumps the object to a XHTML sink.
-        ///// </summary>
-        ///// <param name="o">The object to dump.</param>
-        ///// <param name="description">A description of the object.</param>
-        ///// <param name="depth">If it's a nested type how many sub-types should be printed.</param>
-        ///// <param name="sinkName">Name of the sink.</param>
-        //public static void DumpXhtml(this object o, string description = null, int depth = 3, string sinkName = null)
-        //{
-        //    var sink = GetXhtmlSink(sinkName);
-        //    sink.Dump(o, description, depth);
-        //}
+        /// <summary>
+        /// Dumps the object to a XHTML sink.
+        /// </summary>
+        /// <param name="o">The object to dump.</param>
+        /// <param name="description">A description of the object.</param>
+        /// <param name="depth">If it's a nested type how many sub-types should be printed.</param>
+        /// <param name="sinkName">Name of the sink.</param>
+        public static void DumpXhtml(this object o, string description = null, int depth = 3, string sinkName = null)
+        {
+            var sink = GetXhtmlSink(sinkName);
+            sink.Dump(o, description, depth);
+        }
     }
 }

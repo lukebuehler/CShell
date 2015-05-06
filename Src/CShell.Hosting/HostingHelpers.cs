@@ -43,7 +43,7 @@ namespace CShell.Hosting
             builder.ForType<FileSystem>().Export<IFileSystem>();
             builder.ForType<FileSystemMigrator>().Export<IFileSystemMigrator>();
             builder.ForType<ReplScriptHostFactory>().Export<IScriptHostFactory>();
-            builder.ForType<RoslynScriptEngine>().Export<IScriptEngine>();
+            builder.ForType<RoslynReplEngine>().Export<IScriptEngine>();
             builder.ForType<FilePreProcessor>().Export<IFilePreProcessor>();
             builder.ForType<ReplScriptExecutor>().Export<IRepl>();
 

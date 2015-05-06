@@ -42,11 +42,15 @@ namespace CShell.Hosting
         {
             //the messages have following format
             // (2,1): error (123): Bla bla bla
+            // or
+            // error (123): Bla bla bla
             var messageParts = message.Split(':');
             if (messageParts.Length >= 2)
             {
-                var type = messageParts[1].Trim();
-                return type.StartsWith(messageType, StringComparison.OrdinalIgnoreCase);
+                var type1 = messageParts[0].Trim();
+                var type2 = messageParts[1].Trim();
+                if (type1.StartsWith(messageType, StringComparison.OrdinalIgnoreCase) || type2.StartsWith(messageType, StringComparison.OrdinalIgnoreCase))
+                    return true;
             }
             return false;
         }

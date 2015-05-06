@@ -32,21 +32,24 @@ namespace CShell
     /// </summary>
     public static partial class Shell
     {
+        private static readonly Lazy<IShell> _shellLazy = new Lazy<IShell>(() => IoC.Get<IShell>());
+        private static IShell UI { get { return _shellLazy.Value; } }
+
         /// <summary>
         /// Update the progress in the staus bar.
         /// </summary>
         /// <param name="progress">The progress between 0 and 100.</param>
-        public static void UpdateProgress(this IShell shell, int progress)
+        public static void UpdateProgress(int progress)
         {
-            shell.StatusBar.UpdateProgress(progress);
+            UI.StatusBar.UpdateProgress(progress);
         }
 
         #region Evaluate helpers
-        /// <summary>
-        /// Evaluates a piece of code.
-        /// </summary>
-        /// <param name="input">The code to evaluate.</param>
-        /// <returns>The results of the evaluation.</returns>
+        ///// <summary>
+        ///// Evaluates a piece of code.
+        ///// </summary>
+        ///// <param name="input">The code to evaluate.</param>
+        ///// <returns>The results of the evaluation.</returns>
         //public static EvaluatorResult Evaluate(string input)
         //{
         //    if (Workspace == null)
@@ -54,11 +57,11 @@ namespace CShell
         //    return Workspace.ScriptingEngine.Evaluate(input);
         //}
 
-        /// <summary>
-        /// Evaluates all the code in a file.
-        /// </summary>
-        /// <param name="filePath">The path to the file. Can be relative to the root path of the workspace, e.g. "subfolder/file.csx"</param>
-        /// <returns>The results of the evaluation.</returns>
+        ///// <summary>
+        ///// Evaluates all the code in a file.
+        ///// </summary>
+        ///// <param name="filePath">The path to the file. Can be relative to the root path of the workspace, e.g. "subfolder/file.csx"</param>
+        ///// <returns>The results of the evaluation.</returns>
         //public static EvaluatorResult EvaluateFile(string filePath)
         //{
         //    if (Workspace == null)
@@ -73,21 +76,21 @@ namespace CShell
         //        throw new FileNotFoundException("filePath not found.", filePath);
         //}
 
-        /// <summary>
-        /// Evaluates all the code in a file.
-        /// </summary>
-        /// <param name="filePath">The path to the file. Can be relative to the root path of the workspace, e.g. "subfolder/file.csx"</param>
-        /// <returns><c>true</c> if the evaluation succeeded, otherwise <c>false</c>.</returns>
-        public static bool TryEvaluateFile(string filePath)
-        {
-            //if (Workspace == null)
-            //    return false;
-            //if (File.Exists(filePath))
-            //{
-            //    return !EvaluateFile(filePath).HasErrors;
-            //}
-            return false;
-        }
+        ///// <summary>
+        ///// Evaluates all the code in a file.
+        ///// </summary>
+        ///// <param name="filePath">The path to the file. Can be relative to the root path of the workspace, e.g. "subfolder/file.csx"</param>
+        ///// <returns><c>true</c> if the evaluation succeeded, otherwise <c>false</c>.</returns>
+        //public static bool TryEvaluateFile(string filePath)
+        //{
+        //    //if (Workspace == null)
+        //    //    return false;
+        //    //if (File.Exists(filePath))
+        //    //{
+        //    //    return !EvaluateFile(filePath).HasErrors;
+        //    //}
+        //    return false;
+        //}
 
         #endregion
     }

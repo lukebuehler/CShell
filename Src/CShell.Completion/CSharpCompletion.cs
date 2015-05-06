@@ -253,6 +253,20 @@ namespace CShell.Completion
             //try to resolve as relaive path
             if (!File.Exists(fullPath))
                 fullPath = PathHelper.ToAbsolutePath(Environment.CurrentDirectory, reference);
+            //exe path
+            if (!File.Exists(fullPath))
+            {
+                string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+                UriBuilder uri = new UriBuilder(codeBase);
+                string path = Uri.UnescapeDataString(uri.Path);
+                var exePath = Path.GetDirectoryName(path);
+                if (exePath != null)
+                {
+                    fullPath = Path.Combine(exePath, reference + ".dll");
+                    if(!File.Exists(fullPath))
+                        fullPath = Path.Combine(exePath, reference + ".exe");
+                }
+            }
             //try to find in GAC
             if (!File.Exists(fullPath))
             {

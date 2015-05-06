@@ -1,4 +1,5 @@
-﻿using ScriptCs;
+﻿using CShell.Framework.Services;
+using ScriptCs;
 using ScriptCs.Contracts;
 
 namespace CShell.Hosting
@@ -8,11 +9,7 @@ namespace CShell.Hosting
         public ReplScriptHost(IScriptPackManager scriptPackManager, ScriptEnvironment environment)
             : base(scriptPackManager, environment)
         {
-
         }
-
-        public static string Ha { get { return "Ha haha"; } }
-
     }
 
     public class ReplScriptHostFactory : IScriptHostFactory

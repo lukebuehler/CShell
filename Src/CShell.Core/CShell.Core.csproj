@@ -114,6 +114,7 @@
     <Compile Include="ICompletion.cs" />
     <Compile Include="IReplExecutorFactory.cs" />
     <Compile Include="IReplScriptExecutorFactory.cs" />
+    <Compile Include="Shell.Sinks.Plotting.cs" />
     <Compile Include="Shell.Sinks.Xhtml.cs" />
     <Compile Include="Framework\Controls\AutoGreyableImage.cs" />
     <Compile Include="Framework\Controls\ToolBar.cs" />
@@ -176,10 +177,8 @@
     <Compile Include="Framework\Tool.cs" />
     <Compile Include="Sinks\IPlotSink.cs" />
     <Compile Include="Shell.Sinks.Grid.cs" />
-    <Compile Include="Sinks\Plotting.cs" />
     <Compile Include="Shell.Workspace.cs" />
     <Compile Include="Sinks\IXhtmlSink.cs" />
-    <Compile Include="ScriptingEngine.cs" />
     <Compile Include="Shell.Documents.cs" />
     <Compile Include="Shell.Sinks.cs" />
     <Compile Include="Shell.Tools.cs" />

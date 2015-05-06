@@ -242,9 +242,9 @@ namespace CShell.Modules.Shell.ViewModels
                         //restore the documents and sinks
                         var uri = new Uri(contentId);
                         if(uri.Scheme == "file")
-                            e.Content = this.GetDocument(uri, true);
+                            e.Content = CShell.Shell.GetDoc(uri, true);
                         if (uri.Scheme == "sink")
-                            e.Content = this.GetSink(uri, true); //do not open sink
+                            e.Content = CShell.Shell.GetSink(uri, true); //do not open sink
                         //make sure that the document is part of the shells items
                         var doc = e.Content as IDocument;
                         if (doc != null)
@@ -252,7 +252,7 @@ namespace CShell.Modules.Shell.ViewModels
 
                         //restore the tools
                         if (uri.Scheme == "tool")
-                            e.Content = this.GetTool(uri, true);
+                            e.Content = CShell.Shell.GetTool(uri, true);
                         var tool = e.Content as ITool;
                         if(tool != null && !_tools.Contains(tool))
                             _tools.Add(tool);

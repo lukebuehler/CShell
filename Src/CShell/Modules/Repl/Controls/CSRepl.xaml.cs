@@ -23,11 +23,13 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
 using System.Windows.Media;
+using Caliburn.Micro;
 using CShell.Completion;
 using CShell.Framework.Services;
 using CShell.Hosting;
@@ -140,7 +142,7 @@ namespace CShell.Modules.Repl.Controls
             }
         }
 
-        public void EvaluateCompleted(global::ScriptCs.Contracts.ScriptResult result)
+        public void EvaluateCompleted(ScriptResult result)
         {
             if (!result.IsCompleteSubmission)
             {
@@ -266,7 +268,7 @@ namespace CShell.Modules.Repl.Controls
             var input = partialCommand + Environment.NewLine + command;
             input = input.Trim();
             //todo: call execute ASYNC
-            replExecutor.Execute(input);
+            Task.Run(()=>replExecutor.Execute(input));
         }
 
         private void ShowPreviousCommand()

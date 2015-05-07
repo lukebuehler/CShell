@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Caliburn.Micro;
 
 namespace CShell.Framework.Results
@@ -47,8 +48,8 @@ namespace CShell.Framework.Results
         {
             if(Workspace != null && Workspace.ReplExecutor != null)
             {
-                Workspace.ReplExecutor.Execute(code, sourceFile);
-                OnCompleted(null);
+                Task.Run(() => Workspace.ReplExecutor.Execute(code, sourceFile))
+                    .ContinueWith(t => OnCompleted(t.Exception));
             }
         }
     }

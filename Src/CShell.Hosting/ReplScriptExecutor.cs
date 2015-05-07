@@ -4,10 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.ExceptionServices;
-using System.Runtime.Versioning;
-using System.Text;
-using System.Text.RegularExpressions;
 using CShell.Completion;
 using CShell.Framework.Services;
 using ScriptCs;
@@ -49,13 +45,13 @@ namespace CShell.Hosting
                 .ToDictionary(x => x.CommandName, x => x)
                 : new Dictionary<string, IReplCommand>();
 
-            AddReferences(DefaultReferencesCShell);
-            ImportNamespaces(DefaultNamespacesCShell);
-
             replCompletion = new CSharpCompletion(true);
             replCompletion.AddReferences(GetReferencesAsPaths());
             //since it's quite expensive to initialize the "System." references we clone the REPL code completion
             documentCompletion = replCompletion.Clone();
+
+            AddReferences(DefaultReferencesCShell);
+            ImportNamespaces(DefaultNamespacesCShell);
         }
 
         public string WorkspaceDirectory { get { return base.FileSystem.CurrentDirectory; } }
@@ -214,8 +210,7 @@ namespace CShell.Hosting
             return string.Format(CultureInfo.InvariantCulture, "Argument is not a valid expression: {0}", argument);
         }
 
-
-        public void AddReferencesAndNotify(params Assembly[] references)
+        public override void AddReferences(params Assembly[] references)
         {
             base.AddReferences(references);
             replCompletion.AddReferences(references);
@@ -223,7 +218,7 @@ namespace CShell.Hosting
             OnAssemblyReferencesChanged();
         }
 
-        public void RemoveReferencesAndNotify(params Assembly[] references)
+        public override void RemoveReferences(params Assembly[] references)
         {
             base.RemoveReferences(references);
             replCompletion.RemoveReferences(references);
@@ -231,7 +226,7 @@ namespace CShell.Hosting
             OnAssemblyReferencesChanged();
         }
 
-        public void AddReferencesAndNotify(params string[] references)
+        public override void AddReferences(params string[] references)
         {
             base.AddReferences(references);
             replCompletion.AddReferences(references);
@@ -239,7 +234,7 @@ namespace CShell.Hosting
             OnAssemblyReferencesChanged();
         }
 
-        public void RemoveReferencesAndNotify(params string[] references)
+        public override void RemoveReferences(params string[] references)
         {
             base.RemoveReferences(references);
             replCompletion.RemoveReferences(references);
@@ -308,7 +303,7 @@ namespace CShell.Hosting
                 var binFiles = Directory.EnumerateFiles(binPath, "*.*", SearchOption.AllDirectories)
                     .Where(s => s.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || s.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
                     .ToArray();
-                AddReferencesAndNotify(binFiles);
+                AddReferences(binFiles);
             }
         }
     }

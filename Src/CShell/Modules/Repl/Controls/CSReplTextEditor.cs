@@ -18,7 +18,7 @@ namespace CShell.Modules.Repl.Controls
 
         protected override string[] GetNamespaces()
         {
-            return Repl.ReplExecutor.GetNamespaces().ToArray();
+            return Repl.ReplExecutor.Namespaces.ToArray();
         }
 
         protected override IDictionary<string, string> GetAdditionalCompletions()

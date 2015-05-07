@@ -108,9 +108,9 @@ namespace CShell.Modules.Workspace.ViewModels
         public void Remove()
         {
             if(assembly != null)
-                replExecutor.RemoveReferencesAndNotify(assembly);
+                replExecutor.RemoveReferences(assembly);
             else
-                replExecutor.RemoveReferencesAndNotify(filePath);
+                replExecutor.RemoveReferences(filePath);
         }
     }
 }

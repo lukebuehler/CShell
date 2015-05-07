@@ -69,7 +69,7 @@ namespace CShell.Modules.Workspace.Results
                 }
 
                 //make sure they are available for code completion
-                Workspace.ReplExecutor.AddReferencesAndNotify(copiedReferences.ToArray());
+                Workspace.ReplExecutor.AddReferences(copiedReferences.ToArray());
 
                 OnCompleted(null);
             }

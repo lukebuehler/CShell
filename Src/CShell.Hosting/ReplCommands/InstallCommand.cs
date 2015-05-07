@@ -64,10 +64,7 @@ namespace CShell.Hosting.ReplCommands
             var dlls = _packageAssemblyResolver.GetAssemblyNames(repl.FileSystem.CurrentDirectory)
                 .Except(repl.References.Paths).ToArray();
 
-            if (repl is IReplScriptExecutor)
-                ((IReplScriptExecutor)repl).AddReferencesAndNotify(dlls);
-            else
-                repl.AddReferences(dlls);
+            repl.AddReferences(dlls);
 
             foreach (var dll in dlls)
             {

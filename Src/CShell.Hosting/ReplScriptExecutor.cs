@@ -301,6 +301,15 @@ namespace CShell.Hosting
                 var configScript = File.ReadAllText(refPath);
                 Execute(configScript);
             }
+
+            var binPath = Path.Combine(WorkspaceDirectory, CShell.Constants.BinFolder);
+            if (Directory.Exists(binPath))
+            {
+                var binFiles = Directory.EnumerateFiles(binPath, "*.*", SearchOption.AllDirectories)
+                    .Where(s => s.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || s.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+                    .ToArray();
+                AddReferencesAndNotify(binFiles);
+            }
         }
     }
 }

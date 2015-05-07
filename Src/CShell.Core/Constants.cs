@@ -37,14 +37,12 @@ namespace CShell
         public const string WorkspaceFileExtension = ".xml";
         public const string WorkspaceFilter = "*.xml *.dll *.cshell";
 
-        public const string CShellModulesPath = "Modules";
-        public const string CShellTemplatesPath = "Templates";
-        public const string CShellDefaultWorkspacePath = "Default\\";
-        public const string CShellEmptyFile = "Empty.cshell";
-        public const string CShellFileTypes = "Workspace|*.cshell|All Files|*.*";
-        public const string CShellFileExtension = ".cshell";
-        public const string LayoutFile = "layout.config";
+        public const string ModulesPath = "Modules";
+        public const string TemplatesPath = "Templates";
+        public const string DefaultWorkspacePath = "Default\\";
         public const string ReferencesFile = "references.csx";
+        public const string LayoutFile = "layout.config";
+        public const string ConfigFile = "config.csx";
 
 
         public const string SinkXhtml = "sink://cshell/xhtml/";

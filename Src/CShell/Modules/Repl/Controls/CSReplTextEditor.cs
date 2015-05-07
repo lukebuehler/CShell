@@ -20,5 +20,14 @@ namespace CShell.Modules.Repl.Controls
         {
             return Repl.ReplExecutor.GetNamespaces().ToArray();
         }
+
+        protected override IDictionary<string, string> GetAdditionalCompletions()
+        {
+            if (Repl.ReplExecutor.Commands != null && Repl.ReplExecutor.Commands.Count > 0)
+            {
+                return Repl.ReplExecutor.Commands.ToDictionary(kv => ":"+kv.Key, kv=>kv.Value.Description);
+            }
+            return null;
+        }
     }
 }

@@ -5,13 +5,13 @@ namespace CShell.Hosting
 {
     public class ReplScriptExecutorFactory : IReplScriptExecutorFactory
     {
-        private readonly IReplOutput repl;
+        private readonly IReplOutput replOutput;
         private readonly ScriptServices scriptServices;
 
-        public ReplScriptExecutorFactory(ScriptServices scriptServices, IReplOutput repl)
+        public ReplScriptExecutorFactory(ScriptServices scriptServices, IReplOutput replOutput)
         {
             this.scriptServices = scriptServices;
-            this.repl = repl;
+            this.replOutput = replOutput;
         }
 
         public IReplScriptExecutor Create(string workspaceDirectory)
@@ -20,7 +20,7 @@ namespace CShell.Hosting
             scriptServices.InstallationProvider.Initialize();
 
             var replExecutor = new ReplScriptExecutor(
-                repl, 
+                replOutput, 
                 scriptServices.ObjectSerializer, 
                 scriptServices.FileSystem, 
                 scriptServices.FilePreProcessor,
@@ -32,7 +32,7 @@ namespace CShell.Hosting
             var scriptPacks = scriptServices.ScriptPackResolver.GetPacks();
 
             replExecutor.Initialize(assemblies, scriptPacks);
-            repl.Initialize(replExecutor);
+            replOutput.Initialize(replExecutor);
 
             return replExecutor;
         }

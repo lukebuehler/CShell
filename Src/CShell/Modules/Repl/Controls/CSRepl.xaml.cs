@@ -435,7 +435,7 @@ namespace CShell.Modules.Repl.Controls
             }
         }
 
-        internal IDocument GetCompletionDocument(out int offset)
+        internal ICSharpCode.NRefactory.Editor.IDocument GetCompletionDocument(out int offset)
         {
             var lineText = GetCurrentLineText();
             var line = Doc.GetLineByOffset(Offset);

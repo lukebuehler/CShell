@@ -78,7 +78,7 @@ namespace CShell
             moduleBuilder.ForTypesDerivedFrom<IModule>().Export<IModule>();
             HostingHelpers.ConfigureModuleRegistrationBuilder(moduleBuilder);
             
-            var modulesDir = Path.Combine(exeDir, Constants.CShellModulesPath);
+            var modulesDir = Path.Combine(exeDir, Constants.ModulesPath);
             if (Directory.Exists(modulesDir))
             {
                 var directories = Directory.GetDirectories(modulesDir).ToList();

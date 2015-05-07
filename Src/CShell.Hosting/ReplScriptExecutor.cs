@@ -85,6 +85,13 @@ namespace CShell.Hosting
 
         public Dictionary<string, IReplCommand> Commands { get; private set; }
 
+        public override void Initialize(IEnumerable<string> paths, IEnumerable<IScriptPack> scriptPacks, params string[] scriptArgs)
+        {
+            base.Initialize(paths, scriptPacks, scriptArgs);
+            ExecuteReferencesScript();
+            ExecuteConfigScript();
+        }
+
         public override ScriptResult Execute(string script, params string[] scriptArgs)
         {
             ScriptResult result = null;
@@ -157,8 +164,13 @@ namespace CShell.Hosting
                         ? preProcessResult.Code
                         : Buffer + Environment.NewLine + preProcessResult.Code;
 
-                    var namespaces = Namespaces.Union(preProcessResult.Namespaces);
+                    var namespaces = Namespaces.Union(preProcessResult.Namespaces).ToList();
                     var references = References.Union(preProcessResult.References);
+
+                    if (preProcessResult.References != null && preProcessResult.References.Count > 0)
+                    {
+                        OnAssemblyReferencesChanged();
+                    }
 
                     result = ScriptEngine.Execute(Buffer, scriptArgs, references, namespaces, ScriptPackSession);
 
@@ -254,6 +266,7 @@ namespace CShell.Hosting
             AddReferences(DefaultReferencesCShell);
             ImportNamespaces(DefaultNamespacesCShell);
             replOutput.Clear();
+            ExecuteReferencesScript();
         }
 
         public string[] GetVariables()
@@ -267,6 +280,27 @@ namespace CShell.Hosting
                 return varsArray;
             }
             return new string[0];
+        }
+
+
+        public void ExecuteConfigScript()
+        {
+            var configPath = Path.Combine(WorkspaceDirectory, CShell.Constants.ConfigFile);
+            if (File.Exists(configPath))
+            {
+                var configScript = File.ReadAllText(configPath);
+                Execute(configScript);
+            }
+        }
+
+        public void ExecuteReferencesScript()
+        {
+            var refPath = Path.Combine(WorkspaceDirectory, CShell.Constants.ReferencesFile);
+            if (File.Exists(refPath))
+            {
+                var configScript = File.ReadAllText(refPath);
+                Execute(configScript);
+            }
         }
     }
 }

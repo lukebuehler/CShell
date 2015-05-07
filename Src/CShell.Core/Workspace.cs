@@ -63,6 +63,9 @@ namespace CShell
                 SaveLayout();
             }
 
+            if(replExecutor != null)
+                replExecutor.Reset();
+
             replExecutor = null;
             WorkspaceDirectory = dir;
 
@@ -91,7 +94,7 @@ namespace CShell
         {
             var extension = Path.GetExtension(filePath);
             var exeDir = AppDomain.CurrentDomain.BaseDirectory;
-            var templateFile = Path.Combine(exeDir, Constants.CShellTemplatesPath, "Empty" + extension);
+            var templateFile = Path.Combine(exeDir, Constants.TemplatesPath, "Empty" + extension);
             var emptyFileText = "";
             if (File.Exists(templateFile))
                 emptyFileText = File.ReadAllText(templateFile);

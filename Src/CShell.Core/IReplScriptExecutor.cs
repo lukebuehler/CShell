@@ -24,6 +24,8 @@ namespace CShell
         void RemoveReferencesAndNotify(params Assembly[] references);
         void AddReferencesAndNotify(params string[] references);
         void RemoveReferencesAndNotify(params string[] references);
-        
+
+        void ExecuteConfigScript();
+        void ExecuteReferencesScript();
     }
 }

@@ -168,7 +168,7 @@ namespace CShell.Modules.Shell.ViewModels
             {
                 //open the default workspace if this is the first startup
                 Settings.Default.IsFirstStartup = false;
-                new ChangeWorkspaceResult(Constants.CShellDefaultWorkspacePath).BeginExecute(null);
+                new ChangeWorkspaceResult(Constants.DefaultWorkspacePath).BeginExecute(null);
             }
         }
 

@@ -31,7 +31,7 @@ namespace CShell.Completion
     /// <summary>
     /// Output formatter that creates a dictionary from AST nodes to segments in the output text.
     /// </summary>
-    public class SegmentTrackingOutputFormatter : TextWriterOutputFormatter
+    public class SegmentTrackingOutputFormatter : TextWriterTokenWriter
     {
         Dictionary<AstNode, ICSharpCode.AvalonEdit.Document.ISegment> segments = new Dictionary<AstNode, ICSharpCode.AvalonEdit.Document.ISegment>();
         Stack<int> startOffsets = new Stack<int>();

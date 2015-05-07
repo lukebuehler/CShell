@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
+using CShell.Completion.DataItems;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.NRefactory.Editor;
@@ -136,6 +137,14 @@ namespace CShell.Completion
                     //completionWindow.EndOffset -= results.TriggerWordLength;
 
                     IList<ICompletionData> data = completionWindow.CompletionList.CompletionData;
+                    var additionalCompletions = GetAdditionalCompletions();
+                    if (additionalCompletions != null && additionalCompletions.Count > 0)
+                    {
+                        foreach (var completion in additionalCompletions)
+                        {
+                            data.Add(new CompletionData(completion.Key){Description = completion.Value,CompletionText = completion.Key.Trim(':')});
+                        }
+                    }
                     foreach (var completion in results.CompletionData.OrderBy(item => item.Text))
                     {
                         data.Add(completion);
@@ -200,6 +209,11 @@ namespace CShell.Completion
         }
 
         protected virtual string[] GetNamespaces()
+        {
+            return null;
+        }
+
+        protected virtual IDictionary<string, string> GetAdditionalCompletions()
         {
             return null;
         }

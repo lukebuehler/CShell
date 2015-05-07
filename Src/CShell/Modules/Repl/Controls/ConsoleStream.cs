@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using Caliburn.Micro;
 
 namespace CShell.Modules.Repl.Controls
 {
@@ -35,7 +36,7 @@ namespace CShell.Modules.Repl.Controls
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            callback(Encoding.UTF8.GetString(buffer, offset, count), textType);
+            Execute.OnUIThread(() => callback(Encoding.UTF8.GetString(buffer, offset, count), textType));
         }
     }
 }

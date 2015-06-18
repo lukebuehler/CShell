@@ -15,24 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms.DataVisualization.Charting;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using CShell.Modules.Sink.ViewModels;
 
-namespace CShell.Modules.Sink.Views
+namespace CShell.Sinks.Charting
 {
     /// <summary>
     /// Interaction logic for PlotSinkView.xaml
@@ -46,12 +34,12 @@ namespace CShell.Modules.Sink.Views
 
         private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            var vm = e.OldValue as PlotSinkViewModel;
+            var vm = e.OldValue as ChartSinkViewModel;
             if(vm != null)
             {
                 vm.PropertyChanged -= VmOnPropertyChanged;
             }
-            vm = e.NewValue as PlotSinkViewModel;
+            vm = e.NewValue as ChartSinkViewModel;
             if(vm != null)
             {
                 vm.PropertyChanged += VmOnPropertyChanged;
@@ -61,7 +49,7 @@ namespace CShell.Modules.Sink.Views
 
         private void VmOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            var vm = sender as PlotSinkViewModel;
+            var vm = sender as ChartSinkViewModel;
             if (vm != null)
             {
                 FormHost.Child = vm.Chart;

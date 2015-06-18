@@ -15,16 +15,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+
 using System;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using CShell.Modules.Sink.ViewModels;
 using Xceed.Wpf.Toolkit.Primitives;
 
-namespace CShell.Modules.Sink.Views
+namespace CShell.Sinks.Grid
 {
     /// <summary>
     /// Interaction logic for DataView.xaml

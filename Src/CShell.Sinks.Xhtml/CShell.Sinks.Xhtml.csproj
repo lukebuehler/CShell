@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{52F0330B-BE92-473E-A0E5-96CBF7412972}</ProjectGuid>
+    <ProjectGuid>{D79EBC7D-28E8-45A2-81CF-20D167655A69}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CShell.Sinks.Charting</RootNamespace>
-    <AssemblyName>CShell.Sinks.Charting</AssemblyName>
+    <RootNamespace>CShell.Sinks.Xhtml</RootNamespace>
+    <AssemblyName>CShell.Sinks.Xhtml</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
@@ -43,10 +43,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Forms.DataVisualization" />
-    <Reference Include="System.Windows.Forms.DataVisualization.Design" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
@@ -55,17 +52,32 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
-    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChartSink.cs" />
-    <Compile Include="ChartSinkProvider.cs" />
-    <Compile Include="ChartSinkViewModel.cs" />
-    <Compile Include="HistogramChartHelper.cs" />
-    <Compile Include="ChartSinkView.xaml.cs">
-      <DependentUpon>ChartSinkView.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="XhtmlSinkProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="XhtmlDumper\BasicXhtmlRenderer.cs" />
+    <Compile Include="XhtmlDumper\IXhtmlRenderer.cs" />
+    <Compile Include="XhtmlDumper\ObjectXhtmlRenderer.cs" />
+    <Compile Include="XhtmlDumper\XhtmlDumper.cs" />
+    <Compile Include="XhtmlSinkView.xaml.cs">
+      <DependentUpon>XhtmlSinkView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="XhtmlSinkViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="XhtmlSinkView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CShell.Core\CShell.Core.csproj">
@@ -74,13 +86,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <Content Include="Resources\StyleSheet.css" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="ChartSinkView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

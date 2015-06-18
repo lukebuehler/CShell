@@ -15,19 +15,18 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using CShell.Framework.Services;
-using CShell.Sinks;
 using Caliburn.Micro;
-using XhtmlDumper;
+using CShell.Framework.Services;
+using CShell.Sinks.Xhtml.XhtmlDumper;
 
-namespace CShell.Modules.Sink.ViewModels
+namespace CShell.Sinks.Xhtml
 {
-    public class XhtmlSinkViewModel : Framework.Sink, IXhtmlSink
+    public class XhtmlSinkViewModel : Framework.Sink
     {
         private StringBuilder stringBuilder;
         private StringWriter stringWriter;
@@ -52,12 +51,7 @@ namespace CShell.Modules.Sink.ViewModels
             get { return text; }
         }
 
-        public override void Dump(object o, string description)
-        {
-            Dump(o, description, 3);
-        }
-
-        public void Dump(object o, string description, int depth)
+        public override void Dump(object o)
         {
             if (xhtmlDumper == null)
             {
@@ -69,7 +63,7 @@ namespace CShell.Modules.Sink.ViewModels
                 xhtmlDumper = new XhtmlDumper.XhtmlDumper(stringWriter);
             }
 
-            xhtmlDumper.WriteObject(o, description, depth);
+            xhtmlDumper.WriteObject(o, null, 3);
             text = stringBuilder.ToString();
             //append the closing HTML closing tags to the string
             text += Environment.NewLine + "</body></html>";
@@ -98,5 +92,6 @@ namespace CShell.Modules.Sink.ViewModels
             var other = obj as XhtmlSinkViewModel;
             return other != null && Uri == other.Uri;
         }
+
     }
 }

@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ using System.Linq;
 using System.Reflection;
 using Caliburn.Micro;
 
-namespace CShell.Modules.Sink.ViewModels
+namespace CShell.Sinks.Grid
 {
     public class GridSinkViewModel : Framework.Sink
     {
@@ -36,7 +37,7 @@ namespace CShell.Modules.Sink.ViewModels
             data = new List<object>();
         }
 
-        public override void Dump(object o, string description)
+        public override void Dump(object o)
         {
             var enumerable = o as IEnumerable;
             if (enumerable != null)

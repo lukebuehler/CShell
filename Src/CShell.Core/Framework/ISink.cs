@@ -31,7 +31,6 @@ namespace CShell.Framework
         bool IsVisible { get; set; }
 
         void Dump(object o);
-        void Dump(object o, string description);
         void Clear();
     }
 }

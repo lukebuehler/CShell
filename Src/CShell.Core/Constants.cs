@@ -46,7 +46,7 @@ namespace CShell
 
 
         public const string SinkXhtml = "sink://cshell/xhtml/";
-        public const string SinkPlot = "sink://cshell/plot/";
+        //public const string SinkPlot = "sink://cshell/plot/";
         public const string SinkGrid = "sink://cshell/grid/";
 
         public const string PackagesFile = "packages.config";

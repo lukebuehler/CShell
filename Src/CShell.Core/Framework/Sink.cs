@@ -31,12 +31,7 @@ namespace CShell.Framework
             IsVisible = true;
         }
 
-        public virtual void Dump(object o)
-        {
-            Dump(o, null);
-        }
-
-        public abstract void Dump(object o, string description);
+        public abstract void Dump(object o);
 
         public abstract void Clear();
 

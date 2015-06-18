@@ -104,17 +104,6 @@ namespace CShell
         /// <param name="sink">The sink URI. If no sink URI is specified the default sink is used.</param>
         public static void Dump(this object o, Uri sink = null)
         {
-            Dump(o, null, sink);
-        }
-
-        /// <summary>
-        /// Dumps an object to the specified sink.
-        /// </summary>
-        /// <param name="o">The object to dump.</param>
-        /// <param name="description">A description of the object. Can be null.</param>
-        /// <param name="sink">The sink URI. If no sink URI is specified the default sink is used.</param>
-        public static void Dump(this object o, string description, Uri sink = null)
-        {
             if (sink == null)
                 sink = DefaultSinkUri;
             var s = GetSink(sink);
@@ -125,11 +114,11 @@ namespace CShell
             {
                 try
                 {
-                    s.Dump(o, description);
+                    s.Dump(o);
                 }
                 catch (Exception ex)
                 {
-                    var log = LogManager.GetLog(typeof(Shell));
+                    var log = LogManager.GetLog(s.GetType());
                     log.Error(ex);
                     throw;
                 }

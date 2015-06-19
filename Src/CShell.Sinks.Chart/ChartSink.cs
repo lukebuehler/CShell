@@ -19,7 +19,7 @@ namespace CShell.Sinks.Charting
     /// </summary>
     public static class ChartSink
     {
-        public const string ChartSinkUri = "sink://cshell/plot/";
+        public const string ChartSinkUri = "sink://cshell/chart/";
         private const string SupportedTypes = "Supported types are: Double, Decimal, Single, int, long, uint, ulong, String, DateTime, short, ushort, and IEnumerable<IEnumerable> containing the previous types.";
 
         /// <summary>

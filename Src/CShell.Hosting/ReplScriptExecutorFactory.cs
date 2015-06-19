@@ -6,12 +6,14 @@ namespace CShell.Hosting
     public class ReplScriptExecutorFactory : IReplScriptExecutorFactory
     {
         private readonly IReplOutput replOutput;
+        private readonly IDefaultReferences defaultReferences;
         private readonly ScriptServices scriptServices;
 
-        public ReplScriptExecutorFactory(ScriptServices scriptServices, IReplOutput replOutput)
+        public ReplScriptExecutorFactory(ScriptServices scriptServices, IReplOutput replOutput, IDefaultReferences defaultReferences)
         {
             this.scriptServices = scriptServices;
             this.replOutput = replOutput;
+            this.defaultReferences = defaultReferences;
         }
 
         public IReplScriptExecutor Create(string workspaceDirectory)
@@ -26,7 +28,9 @@ namespace CShell.Hosting
                 scriptServices.FilePreProcessor,
                 scriptServices.Engine,
                 scriptServices.Logger,
-                scriptServices.ReplCommands);
+                scriptServices.ReplCommands,
+                defaultReferences
+                );
 
             var assemblies = scriptServices.AssemblyResolver.GetAssemblyPaths(scriptServices.FileSystem.CurrentDirectory);
             var scriptPacks = scriptServices.ScriptPackResolver.GetPacks();

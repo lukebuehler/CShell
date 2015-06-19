@@ -17,22 +17,18 @@
 #endregion
 
 using System.Collections.Generic;
+using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Registration;
+using System.Reflection;
 using ScriptCs.Contracts;
 
 namespace CShell.Framework
 {
-    public interface IModuleConfiguration
-    {
-        IList<string> References { get; }
-        IList<string> Namespaces { get; } 
-    }
-
 	public interface IModule : System.IDisposable
 	{
 	    int Order { get; }
 
-        void Configure(IModuleConfiguration configuration);
-	    void Start();
+        void Configure();
+        void Start();
 	}
 }

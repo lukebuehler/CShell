@@ -8,24 +8,15 @@ using CShell.Completion;
 using CShell.Framework.Services;
 using ScriptCs;
 using ScriptCs.Contracts;
-using ScriptCs.Logging;
+using ILog = ScriptCs.Logging.ILog;
 
 namespace CShell.Hosting
 {
     public class ReplScriptExecutor : ScriptExecutor, IReplScriptExecutor
     {
-        public static readonly string[] DefaultReferencesCShell =
-        {
-            typeof(Shell).Assembly.Location, //CShell.Core
-        };
-
-        public static readonly string[] DefaultNamespacesCShell =
-        {
-             "CShell",
-        };
-
         private readonly IReplOutput replOutput;
         private readonly IObjectSerializer serializer;
+        private readonly IDefaultReferences defaultReferences;
 
         public ReplScriptExecutor(
             IReplOutput replOutput,
@@ -34,13 +25,15 @@ namespace CShell.Hosting
             IFilePreProcessor filePreProcessor,
             IScriptEngine scriptEngine,
             ILog logger,
-            IEnumerable<IReplCommand> replCommands)
+            IEnumerable<IReplCommand> replCommands,
+            IDefaultReferences defaultReferences)
             : base(fileSystem, filePreProcessor, scriptEngine, logger)
         {
             this.replOutput = replOutput;
             this.serializer = serializer;
+            this.defaultReferences = defaultReferences;
             Commands = replCommands != null ? replCommands
-                .Where(x => x.GetType().Namespace.StartsWith("CShell")) //hack to only include CShell commands for not
+                .Where(x => x.GetType().Namespace.StartsWith("CShell")) //hack to only include CShell commands for now
                 .Where(x => x.CommandName != null)
                 .ToDictionary(x => x.CommandName, x => x)
                 : new Dictionary<string, IReplCommand>();
@@ -50,8 +43,7 @@ namespace CShell.Hosting
             //since it's quite expensive to initialize the "System." references we clone the REPL code completion
             documentCompletion = replCompletion.Clone();
 
-            AddReferences(DefaultReferencesCShell);
-            ImportNamespaces(DefaultNamespacesCShell);
+            AddDefaultReferencesAndNamespaces();
         }
 
         public string WorkspaceDirectory { get { return base.FileSystem.CurrentDirectory; } }
@@ -210,6 +202,15 @@ namespace CShell.Hosting
             return string.Format(CultureInfo.InvariantCulture, "Argument is not a valid expression: {0}", argument);
         }
 
+        private void AddDefaultReferencesAndNamespaces()
+        {
+            AddReferences(typeof(Shell).Assembly);
+            ImportNamespaces(typeof(Shell).Namespace);
+            AddReferences(this.defaultReferences.Assemblies.Distinct().ToArray());
+            AddReferences(this.defaultReferences.AssemblyPaths.Distinct().ToArray());
+            ImportNamespaces(this.defaultReferences.Namespaces.Distinct().ToArray());
+        }
+
         public override void AddReferences(params Assembly[] references)
         {
             base.AddReferences(references);
@@ -258,8 +259,7 @@ namespace CShell.Hosting
         public override void Reset()
         {
             base.Reset();
-            AddReferences(DefaultReferencesCShell);
-            ImportNamespaces(DefaultNamespacesCShell);
+            AddDefaultReferencesAndNamespaces();
             replOutput.Clear();
             ExecuteReferencesScript();
         }

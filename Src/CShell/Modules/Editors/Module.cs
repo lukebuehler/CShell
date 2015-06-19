@@ -38,9 +38,6 @@ namespace CShell.Modules.Editors
             Order = 4;
         }
 
-        public override void Configure(IModuleConfiguration configuration)
-        {}
-
         public override void Start()
         {
             //Edit

@@ -111,6 +111,7 @@
     <Compile Include="Framework\Services\Logger.cs" />
     <Compile Include="Framework\Services\Execute.cs" />
     <Compile Include="ICompletion.cs" />
+    <Compile Include="IDefaultReferences.cs" />
     <Compile Include="IReplExecutorFactory.cs" />
     <Compile Include="IReplScriptExecutor.cs" />
     <Compile Include="Framework\Controls\AutoGreyableImage.cs" />

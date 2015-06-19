@@ -20,25 +20,12 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Registration;
+using System.Reflection;
 using CShell.Framework.Menus;
 using CShell.Framework.Services;
 
 namespace CShell.Framework
 {
-    public class ModuleConfiguration : IModuleConfiguration
-    {
-        public ModuleConfiguration(CompositionBatch compositionBatch)
-        {
-            CompositionBatch = compositionBatch;
-            References = new List<string>();
-            Namespaces = new List<string>();
-            
-        }
-        public System.Collections.Generic.IList<string> References { get; private set; }
-        public System.Collections.Generic.IList<string> Namespaces { get; private set; }
-        public CompositionBatch CompositionBatch { get; private set; }
-    }
-
 	public abstract class ModuleBase : IModule
 	{
 		[Import]
@@ -61,7 +48,9 @@ namespace CShell.Framework
 
         public int Order { get; set; }
 
-        public abstract void Configure(IModuleConfiguration configuration);
+	    public virtual void Configure()
+	    {}
+
         public abstract void Start();
 
         public void Dispose()

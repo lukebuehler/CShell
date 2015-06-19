@@ -58,6 +58,7 @@ namespace CShell.Hosting
             builder.ForType<AssemblyResolver>().Export<IAssemblyResolver>();
             builder.ForType<ObjectSerializer>().Export<IObjectSerializer>();
             builder.ForType<MockConsole>().Export<IConsole>();
+            builder.ForType<DefaultReferences>().Export<IDefaultReferences>();
 
             builder.ForType<ScriptExecutor>().Export<IScriptExecutor>();
             builder.ForType<ScriptServices>().Export<ScriptServices>();

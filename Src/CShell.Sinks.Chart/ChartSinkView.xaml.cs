@@ -23,11 +23,11 @@ using System.Windows.Controls;
 namespace CShell.Sinks.Charting
 {
     /// <summary>
-    /// Interaction logic for PlotSinkView.xaml
+    /// Interaction logic for ChartSinkView.xaml
     /// </summary>
-    public partial class PlotSinkView : UserControl
+    public partial class ChartSinkView : UserControl
     {
-        public PlotSinkView()
+        public ChartSinkView()
         {
             InitializeComponent();
         }

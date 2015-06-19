@@ -44,11 +44,6 @@ namespace CShell
         public const string LayoutFile = "layout.config";
         public const string ConfigFile = "config.csx";
 
-
-        public const string SinkXhtml = "sink://cshell/xhtml/";
-        //public const string SinkPlot = "sink://cshell/plot/";
-        public const string SinkGrid = "sink://cshell/grid/";
-
         public const string PackagesFile = "packages.config";
         public const string NugetFile = "nuget.config";
         public const string PackagesFolder = "packages";

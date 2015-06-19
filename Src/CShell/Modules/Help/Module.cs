@@ -37,9 +37,6 @@ namespace CShell.Modules.Help
             Order = 6;
         }
 
-        public override void Configure(IModuleConfiguration configuration)
-        {}
-
         public override void Start()
         {
             //populate the menu

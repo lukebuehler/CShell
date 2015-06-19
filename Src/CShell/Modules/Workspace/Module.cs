@@ -39,9 +39,6 @@ namespace CShell.Modules.Workspace
             Order = 3;
         }
 
-        public override void Configure(IModuleConfiguration configuration)
-        { }
-
         public override void Start()
         {
 			MainMenu.All.First(x => x.Name == "View")
@@ -130,7 +127,6 @@ namespace CShell.Modules.Workspace
             var dialog = new AssemblyPackagesViewModel();
             yield return Show.Dialog(dialog, windowSettings);
         }
-
 
         private FolderViewModel GetSelectedFolder()
         {

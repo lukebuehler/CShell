@@ -35,9 +35,6 @@ namespace CShell.Modules.Repl
             Order = 2;
         }
 
-        public override void Configure(IModuleConfiguration configuration)
-        { }
-
         public override void Start()
         {
 		    MainMenu.All.First(x => x.Name == "View")

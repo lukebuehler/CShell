@@ -18,13 +18,9 @@ namespace CShell.Sinks.Grid
 
         /// <summary>
         /// Creates a CShell sink.
-        /// The CShell sink URI is arranged like this:
-        ///   sink://cshell/SinkType/SinkName
-        /// for example, following uri would create a XHTML window named "Hi"
-        ///   sink://cshell/xhtml/Hi
         /// </summary>
         /// <param name="uri">The URI.</param>
-        /// <returns>If the URI was correct a sink, otherwise null.</returns
+        /// <returns>If the URI was correct a sink, otherwise null.</returns>
         public Framework.ISink Create(Uri uri)
         {
             var pathParts = uri.AbsolutePath.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);

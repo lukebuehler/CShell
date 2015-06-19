@@ -29,7 +29,7 @@ namespace CShell
 {
     public static partial class Shell
     {
-        private static Uri defaultSinkUri = new Uri(Constants.SinkXhtml);
+        private static Uri defaultSinkUri = new Uri("sink://cshell/xhtml/");
         /// <summary>
         /// Gets or sets the URI of the default sink.
         /// </summary>
@@ -110,19 +110,16 @@ namespace CShell
             if (s == null)
                 throw new NotSupportedException("The requested sink doesnt exist: " + sink + ", make sure the URI is spelled correctly and the module containing the specified sink is loaded.");
 
-            Execute.OnUIThreadEx(() =>
+            try
             {
-                try
-                {
-                    s.Dump(o);
-                }
-                catch (Exception ex)
-                {
-                    var log = LogManager.GetLog(s.GetType());
-                    log.Error(ex);
-                    throw;
-                }
-            });
+                s.Dump(o);
+            }
+            catch (Exception ex)
+            {
+                var log = LogManager.GetLog(s.GetType());
+                log.Error(ex);
+                throw;
+            }
         }
     }
 }

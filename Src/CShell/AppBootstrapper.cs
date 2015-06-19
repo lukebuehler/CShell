@@ -65,19 +65,17 @@ namespace CShell
         /// </summary>
         protected override void Configure()
         {
-            var exeDir = Assembly.GetExecutingAssembly().Location;
-
-            //setup catalog with core assemblies
-            var aggregateCatalog = new AggregateCatalog(
-                new AssemblyCatalog(GetType().Assembly), //CShell
-                new AssemblyCatalog(typeof(IShell).Assembly) //CShell.Core
-                );
+            //add CShell assemblies, this .exe assembly is already added
+            AssemblySource.Instance.Add(typeof(IShell).Assembly);
 
             //load modules
+            var exeDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var moduleCatalog = new AggregateCatalog(); //we're using this catalog just to *find* the relevant modules
             var moduleBuilder = new RegistrationBuilder();
             moduleBuilder.ForTypesDerivedFrom<IModule>().Export<IModule>();
-            HostingHelpers.ConfigureModuleRegistrationBuilder(moduleBuilder);
+            HostingHelpers.ConfigureModuleRegistrationBuilder(moduleBuilder); //allow the script cs integration code to register intrefaces to search for in the assemblies.
             
+            //get module dirs
             var modulesDir = Path.Combine(exeDir, Constants.ModulesPath);
             if (Directory.Exists(modulesDir))
             {
@@ -85,18 +83,24 @@ namespace CShell
                 directories.Add(modulesDir);
                 foreach (var dir in directories)
                 {
-                    aggregateCatalog.Catalogs.Add(new DirectoryCatalog(dir, moduleBuilder));
+                    moduleCatalog.Catalogs.Add(new DirectoryCatalog(dir, moduleBuilder));
                 }
             }
 
-            //make module assemblies available to caliburn.micro 
-            AssemblySource.Instance.AddRange(
-                aggregateCatalog.Parts
-                    .AsParallel()
-                    .Select(part => ReflectionModelServices.GetPartType(part).Value.Assembly)
-                    .Distinct()
-                    .ToList()
-                    .Where(assembly => !AssemblySource.Instance.Contains(assembly)));
+            //make module assemblies available to caliburn.micro
+            var moduleAssemblies = moduleCatalog.Parts
+                .AsParallel()
+                .Select(part => ReflectionModelServices.GetPartType(part).Value.Assembly)
+                .Distinct()
+                .ToList()
+                .Where(assembly => !AssemblySource.Instance.Contains(assembly))
+                .Where(assembly => assembly.GetName().Name != "CShell.Core" && assembly.GetName().Name != "CShell") //dont know why CShell.Core references are not filtered out in the line above, we force it here
+                .ToList();
+            AssemblySource.Instance.AddRange(moduleAssemblies);
+
+
+            //Now create the final catalog only using the caliburn AssemblySource
+            var aggregateCatalog = new AggregateCatalog(AssemblySource.Instance.Select(assembly => new AssemblyCatalog(assembly)));
 
             //setup ScriptCS hosting
             HostingHelpers.ConfigureHostingCatalog(aggregateCatalog);
@@ -112,13 +116,13 @@ namespace CShell
 
             //configure the modules
             modules = container.GetExportedValues<IModule>().ToList();
-            foreach (var module in modules.OrderBy(m => m.Order))
+            //order them
+            var orderedModules = modules.Where(m => m.Order > 0).ToList();
+            var unorderedModules = modules.Where(m => m.Order < 1).ToList();
+            modules = orderedModules.OrderBy(m => m.Order).Concat(unorderedModules).ToList();
+            foreach (var module in modules)
             {
-                var moduleConfiguration = new ModuleConfiguration(new CompositionBatch());
-                module.Configure(moduleConfiguration);
-                //see if we should update the DI container
-                if(moduleConfiguration.CompositionBatch.PartsToAdd.Count > 0 || moduleConfiguration.CompositionBatch.PartsToRemove.Count > 0)
-                    container.Compose(batch);
+                module.Configure();
             }
 
             //use this to debug the IoC, can the workspace be resolved?
@@ -134,7 +138,7 @@ namespace CShell
             //base.OnStartup(sender, e);
 
             //2. init all basic modules, they themselves will register in the UI
-            foreach (var module in modules.OrderBy(m => m.Order))
+            foreach (var module in modules)
                 module.Start();
 
             //3. & finally forward the arguments to the shell that it can open the workspace if one was specified in the arguments.

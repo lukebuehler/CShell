@@ -37,9 +37,6 @@ namespace CShell.Modules.Shell
 	        Order = 1;
 	    }
 
-        public override void Configure(IModuleConfiguration configuration)
-        { }
-
         public override void Start()
         {
 		    var openWorkspace = new MenuItem("Open Workspace...", OpenWorkspace);

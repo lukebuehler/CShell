@@ -75,7 +75,7 @@ namespace CShell
                     .Cast<ISinkProvider>()
                     .Where(provider => provider.Handles(uri))
                     .Select(provider => provider.Create(uri))
-                    .FirstOrDefault();
+                    .FirstOrDefault(s => s != null);
 
                 if (sink != null && !suppressOpen)
                     UI.ActivateDocument(sink);

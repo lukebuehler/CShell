@@ -14,14 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Files", "Files", "{CE1B7BD1
 	ProjectSection(SolutionItems) = preProject
 		..\Doc\Links.txt = ..\Doc\Links.txt
 		..\readme.md = ..\readme.md
-		..\Doc\ToDo.txt = ..\Doc\ToDo.txt
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{4A604FA7-268A-4B8B-9DB6-1CD1608B77CC}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CShell.Core", "CShell.Core\CShell.Core.csproj", "{5D2479EA-0D1E-4381-AD9C-998CCEC2DC21}"

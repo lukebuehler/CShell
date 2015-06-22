@@ -19,7 +19,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
-using System.ComponentModel.Composition.Registration;
 using System.Reflection;
 using CShell.Framework.Menus;
 using CShell.Framework.Services;

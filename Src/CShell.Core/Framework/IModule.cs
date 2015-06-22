@@ -18,7 +18,6 @@
 
 using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
-using System.ComponentModel.Composition.Registration;
 using System.Reflection;
 using ScriptCs.Contracts;
 

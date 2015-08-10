@@ -40,7 +40,7 @@ namespace CShell.Hosting
             builder.ForTypesDerivedFrom<IReplCommand>().Export<IReplCommand>();
 
             builder.ForType<ReplLogger>().SelectConstructor(b => b.First(c => c.GetParameters().Length == 1)).Export<ILog>();
-            builder.ForType<FileSystem>().Export<IFileSystem>();
+            builder.ForType<CShell.Hosting.FileSystem>().Export<IFileSystem>(); //override bin and nuget locations
             builder.ForType<FileSystemMigrator>().Export<IFileSystemMigrator>();
             builder.ForType<ReplScriptHostFactory>().Export<IScriptHostFactory>();
             builder.ForType<RoslynReplEngine>().Export<IScriptEngine>();

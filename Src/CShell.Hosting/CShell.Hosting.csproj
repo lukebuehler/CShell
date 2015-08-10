@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DefaultReferences.cs" />
+    <Compile Include="FileSystem.cs" />
     <Compile Include="HostingHelpers.cs" />
     <Compile Include="ObjectSerializer.cs" />
     <Compile Include="Package\NugetInstallationProvider.cs" />

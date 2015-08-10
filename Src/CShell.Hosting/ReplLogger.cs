@@ -45,6 +45,8 @@ namespace CShell.Hosting
             if (message == null)
                 message = String.Empty;
 
+            if(formatParameters != null && formatParameters.Length > 0)
+                message = String.Format(message, formatParameters);
 
             var prefix = logLevel == LogLevel.Info
                 ? null

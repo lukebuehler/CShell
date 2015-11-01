@@ -44,7 +44,8 @@ namespace CShell.Modules.Shell
                 .WithIcon("/Resources/Icons/Open.png")
                 .WithGlobalShortcut(ModifierKeys.Control, Key.O);
             var closeFile = new MenuItem("_Close", CloseFile);
-		    var save = new MenuItem("Save", Save)
+            var closeAllFiles = new MenuItem("Close All", CloseAllFiles);
+            var save = new MenuItem("Save", Save)
 		        .WithIcon("Resources/Icons/Icons.16x16.SaveIcon.png")
 		        .WithGlobalShortcut(ModifierKeys.Control, Key.S);
 		    var saveAs = new MenuItem("Save As...", SaveAs);
@@ -60,6 +61,7 @@ namespace CShell.Modules.Shell
                     openFile,
                     MenuItemBase.Separator,
                     closeFile,
+                    closeAllFiles,
                     MenuItemBase.Separator,
                     save,
                     saveAs,
@@ -116,6 +118,20 @@ namespace CShell.Modules.Shell
         {
             if(Shell.ActiveItem != null)
                 Shell.ActiveItem.TryClose();
+            yield break;
+        }
+
+        private IEnumerable<IResult> CloseAllFiles()
+        {
+            if (Shell.Documents != null)
+            {
+                var documents = this.Shell.Documents.ToList();
+                var length = documents.Count;
+                for (var i = 0; i < length; i++)
+                {
+                    this.Shell.CloseDocument(documents[i]);
+                }
+            }
             yield break;
         }
 

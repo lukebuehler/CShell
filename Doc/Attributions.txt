@@ -6,11 +6,11 @@ Carliburn.Micro: http://caliburnmicro.codeplex.com/
 Gemini: https://github.com/tgjones/gemini
 AvalonDock: http://avalondock.codeplex.com/
 
-Code Evaluator (REPL)
+Scripting
 =============================
-The evaluator is from the mono project and part of the Mono.CSharp.dll
-Mono: http://www.mono-project.com
-For some reflection we use Mono.Cecil
+The project builds on ScriptCS for most scripting and REPL stuff
+http://scriptcs.net/
+Which uses Roslyn and/or the mono compiler under the hood.
 
 Text Editor & Code Completion
 =============================

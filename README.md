@@ -17,14 +17,13 @@ CShell needs the .NET Framework 4.5 installed. Supported Windows versions: Windo
 
 How to Build
 ------------
-To build Visual Studio 2010 or higher is required. Open the solution and build the project or configure the build script in the /Build folder to point to the right Visual Studio 'vcvarsall' script.
+To build Visual Studio 2013 or higher is required. Open the solution and build the project or configure the build script in the /Build folder to point to the right Visual Studio 'vcvarsall' script.
 
 For the first build some NuGet packages have to be downloaded make sure you have NuGet installed and package restore enabled (Tools>Options>Package Manager>Package Restore).
 
 License
 -------
-CShell is released under the GPL 3.0 license. And is maintained by Arnova Asset Management Ltd.
-See the /Doc folder for more information.
+CShell is released under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0).
 
 
 

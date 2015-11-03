@@ -1,9 +1,9 @@
-﻿using CShell.Framework.Services;
-using CShell.Hosting.ReplCommands;
-using ScriptCs.Contracts;
-
-namespace CShell.Hosting.ReplCommands
+﻿namespace CShell.Hosting.ReplCommands
 {
+    using CShell.Framework.Services;
+
+    using ScriptCs.Contracts;
+
     public class ClearCommand : IReplCommand
     {
         private readonly IReplOutput replOutput;
@@ -25,7 +25,7 @@ namespace CShell.Hosting.ReplCommands
 
         public object Execute(IRepl repl, object[] args)
         {
-            replOutput.Clear();
+            this.replOutput.Clear();
             return null;
         }
     }

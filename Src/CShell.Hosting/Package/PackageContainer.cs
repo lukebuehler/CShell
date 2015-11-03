@@ -1,38 +1,40 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Versioning;
-using NuGet;
-using ScriptCs.Contracts;
-using ScriptCs.Logging;
-using IFileSystem = ScriptCs.Contracts.IFileSystem;
-using PackageReference = ScriptCs.PackageReference;
-
 namespace CShell.Hosting.Package
 {
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Runtime.Versioning;
+
+    using NuGet;
+
+    using ScriptCs.Contracts;
+    using ScriptCs.Logging;
+
+    using IFileSystem = ScriptCs.Contracts.IFileSystem;
+    using PackageReference = ScriptCs.PackageReference;
+
     public class PackageContainer : IPackageContainer
     {
         private const string DotNetFramework = ".NETFramework";
 
         private const string DotNetPortable = ".NETPortable";
 
-        private readonly IFileSystem _fileSystem;
+        private readonly IFileSystem fileSystem;
 
-        private readonly ILog _logger;
+        private readonly ILog logger;
 
         public PackageContainer(IFileSystem fileSystem, ILog logger)
         {
-            _fileSystem = fileSystem;
-            _logger = logger;
+            this.fileSystem = fileSystem;
+            this.logger = logger;
         }
 
         public void CreatePackageFile()
         {
-            var packagesFile = Path.Combine(_fileSystem.CurrentDirectory, _fileSystem.PackagesFile);
+            var packagesFile = Path.Combine(this.fileSystem.CurrentDirectory, this.fileSystem.PackagesFile);
             var packageReferenceFile = new PackageReferenceFile(packagesFile);
 
-            var packagesFolder = Path.Combine(_fileSystem.CurrentDirectory, _fileSystem.PackagesFolder);
+            var packagesFolder = Path.Combine(this.fileSystem.CurrentDirectory, this.fileSystem.PackagesFolder);
             var repository = new LocalPackageRepository(packagesFolder);
 
             var newestPackages = repository.GetPackages().GroupBy(p => p.Id)
@@ -40,11 +42,11 @@ namespace CShell.Hosting.Package
 
             if (!newestPackages.Any())
             {
-                _logger.Info("No packages found!");
+                this.logger.Info("No packages found!");
                 return;
             }
 
-            _logger.InfoFormat("{0} {1}...", (File.Exists(packagesFile) ? "Updating" : "Creating"), _fileSystem.PackagesFile);
+            this.logger.InfoFormat("{0} {1}...", File.Exists(packagesFile) ? "Updating" : "Creating", this.fileSystem.PackagesFile);
 
             foreach (var package in newestPackages)
             {
@@ -56,20 +58,20 @@ namespace CShell.Hosting.Package
 
                     if (newestFramework == null)
                     {
-                        _logger.InfoFormat("Added {0} (v{1}) to {2}", package.Id, package.Version, _fileSystem.PackagesFile);
+                        this.logger.InfoFormat("Added {0} (v{1}) to {2}", package.Id, package.Version, this.fileSystem.PackagesFile);
                     }
                     else
                     {
-                        _logger.InfoFormat("Added {0} (v{1}, .NET {2}) to {3}", package.Id, package.Version, newestFramework.Version, _fileSystem.PackagesFile);
+                        this.logger.InfoFormat("Added {0} (v{1}, .NET {2}) to {3}", package.Id, package.Version, newestFramework.Version, this.fileSystem.PackagesFile);
                     }
 
                     continue;
                 }
 
-                _logger.InfoFormat("Skipped {0} because it already exists.", package.Id);
+                this.logger.InfoFormat("Skipped {0} because it already exists.", package.Id);
             }
 
-            _logger.InfoFormat("Successfully {0} {1}.", (File.Exists(packagesFile) ? "updated" : "created"), _fileSystem.PackagesFile);
+            this.logger.InfoFormat("Successfully {0} {1}.", File.Exists(packagesFile) ? "updated" : "created", this.fileSystem.PackagesFile);
         }
 
         public IPackageObject FindPackage(string path, IPackageReference packageRef)
@@ -103,8 +105,8 @@ namespace CShell.Hosting.Package
             }
 
             // No packages.config, check packages folder
-            var packagesFolder = Path.Combine(_fileSystem.GetWorkingDirectory(path), _fileSystem.PackagesFolder);
-            if (!_fileSystem.DirectoryExists(packagesFolder))
+            var packagesFolder = Path.Combine(this.fileSystem.GetWorkingDirectory(path), this.fileSystem.PackagesFolder);
+            if (!this.fileSystem.DirectoryExists(packagesFolder))
             {
                 yield break;
             }

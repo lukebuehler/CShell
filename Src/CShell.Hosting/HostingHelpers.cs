@@ -1,33 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
-using System.ComponentModel.Composition.Registration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CShell.Hosting.Package;
-using CShell.Hosting.ReplCommands;
-using ScriptCs;
-using ScriptCs.Contracts;
-using ScriptCs.Engine.Roslyn;
-using ScriptCs.Logging;
-
-namespace CShell.Hosting
+﻿namespace CShell.Hosting
 {
+    using System.ComponentModel.Composition.Hosting;
+    using System.ComponentModel.Composition.Registration;
+    using System.Linq;
+
+    using CShell.Hosting.Package;
+
+    using ScriptCs;
+    using ScriptCs.Contracts;
+    using ScriptCs.Engine.Roslyn;
+    using ScriptCs.Logging;
+
     public static class HostingHelpers
     {
         public static void ConfigureHostingCatalog(AggregateCatalog catalog)
         {
-            //add types from dlls
+            // add types from dlls
             var hostingBuilder = new RegistrationBuilder();
             ConfigureHostingRegistrationBuilder(hostingBuilder);
-            catalog.Catalogs.Add(new AssemblyCatalog(typeof(IScriptEngine).Assembly, hostingBuilder)); //ScriptCS.Contracts
-            catalog.Catalogs.Add(new AssemblyCatalog(typeof(ScriptServices).Assembly, hostingBuilder)); //ScriptCS.Core
-            catalog.Catalogs.Add(new AssemblyCatalog(typeof(RoslynScriptEngine).Assembly, hostingBuilder)); //CShell.Engine.Roslyn
-            catalog.Catalogs.Add(new AssemblyCatalog(typeof(HostingHelpers).Assembly, hostingBuilder)); //CShell.Hosting
+            catalog.Catalogs.Add(new AssemblyCatalog(typeof(IScriptEngine).Assembly, hostingBuilder)); // ScriptCS.Contracts
+            catalog.Catalogs.Add(new AssemblyCatalog(typeof(ScriptServices).Assembly, hostingBuilder)); // ScriptCS.Core
+            catalog.Catalogs.Add(new AssemblyCatalog(typeof(RoslynScriptEngine).Assembly, hostingBuilder)); // CShell.Engine.Roslyn
+            catalog.Catalogs.Add(new AssemblyCatalog(typeof(HostingHelpers).Assembly, hostingBuilder)); // CShell.Hosting
 
-            //add singletons
+            // add singletons
             var container = new CompositionContainer(catalog);
             var batch = new CompositionBatch();
             ConfigureHostingbatch(batch);
@@ -40,7 +36,7 @@ namespace CShell.Hosting
             builder.ForTypesDerivedFrom<IReplCommand>().Export<IReplCommand>();
 
             builder.ForType<ReplLogger>().SelectConstructor(b => b.First(c => c.GetParameters().Length == 1)).Export<ILog>();
-            builder.ForType<CShell.Hosting.FileSystem>().Export<IFileSystem>(); //override bin and nuget locations
+            builder.ForType<FileSystem>().Export<IFileSystem>(); // override bin and nuget locations
             builder.ForType<FileSystemMigrator>().Export<IFileSystemMigrator>();
             builder.ForType<ReplScriptHostFactory>().Export<IScriptHostFactory>();
             builder.ForType<RoslynReplEngine>().Export<IScriptEngine>();
@@ -68,7 +64,7 @@ namespace CShell.Hosting
 
         private static void ConfigureHostingbatch(CompositionBatch batch)
         {
-            //batch.AddExportedValue<IRepl>(null);
+            // batch.AddExportedValue<IRepl>(null);
         }
 
         public static void ConfigureModuleRegistrationBuilder(RegistrationBuilder builder)

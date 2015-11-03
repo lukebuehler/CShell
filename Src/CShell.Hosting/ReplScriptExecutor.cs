@@ -1,17 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using CShell.Completion;
-using CShell.Framework.Services;
-using ScriptCs;
-using ScriptCs.Contracts;
-using ILog = ScriptCs.Logging.ILog;
-
-namespace CShell.Hosting
+﻿namespace CShell.Hosting
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
+
+    using CShell.Completion;
+    using CShell.Framework.Services;
+
+    using ScriptCs;
+    using ScriptCs.Contracts;
+
+    using ILog = ScriptCs.Logging.ILog;
+
     public class ReplScriptExecutor : ScriptExecutor, IReplScriptExecutor
     {
         private readonly IReplOutput replOutput;
@@ -32,27 +35,37 @@ namespace CShell.Hosting
             this.replOutput = replOutput;
             this.serializer = serializer;
             this.defaultReferences = defaultReferences;
-            Commands = replCommands != null ? replCommands
-                .Where(x => x.GetType().Namespace.StartsWith("CShell")) //hack to only include CShell commands for now
+            this.Commands = replCommands != null ? replCommands
+                .Where(x => x.GetType().Namespace.StartsWith("CShell")) // hack to only include CShell commands for now
                 .Where(x => x.CommandName != null)
                 .ToDictionary(x => x.CommandName, x => x)
                 : new Dictionary<string, IReplCommand>();
 
-            replCompletion = new CSharpCompletion(true);
-            replCompletion.AddReferences(GetReferencesAsPaths());
-            //since it's quite expensive to initialize the "System." references we clone the REPL code completion
-            documentCompletion = replCompletion.Clone();
+            this.replCompletion = new CSharpCompletion(true);
+            this.replCompletion.AddReferences(this.GetReferencesAsPaths());
 
-            AddDefaultReferencesAndNamespaces();
+            // since it's quite expensive to initialize the "System." references we clone the REPL code completion
+            this.documentCompletion = this.replCompletion.Clone();
+
+            this.AddDefaultReferencesAndNamespaces();
         }
 
-        public string WorkspaceDirectory { get { return base.FileSystem.CurrentDirectory; } }
+        public string WorkspaceDirectory
+        {
+            get
+            {
+                return base.FileSystem.CurrentDirectory;
+            }
+        }
 
         public event EventHandler<EventArgs> AssemblyReferencesChanged;
         protected virtual void OnAssemblyReferencesChanged()
         {
-            EventHandler<EventArgs> handler = AssemblyReferencesChanged;
-            if (handler != null) handler(this, EventArgs.Empty);
+            var handler = this.AssemblyReferencesChanged;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
         }
 
         private readonly ICompletion replCompletion;
@@ -60,14 +73,13 @@ namespace CShell.Hosting
 
         public ICompletion ReplCompletion
         {
-            get { return replCompletion; }
+            get { return this.replCompletion; }
         }
 
         public ICompletion DocumentCompletion
         {
-            get { return documentCompletion; }
+            get { return this.documentCompletion; }
         }
-
 
         public string Buffer { get; private set; }
 
@@ -76,8 +88,8 @@ namespace CShell.Hosting
         public override void Initialize(IEnumerable<string> paths, IEnumerable<IScriptPack> scriptPacks, params string[] scriptArgs)
         {
             base.Initialize(paths, scriptPacks, scriptArgs);
-            ExecuteReferencesScript();
-            ExecuteConfigScript();
+            this.ExecuteReferencesScript();
+            this.ExecuteConfigScript();
         }
 
         public override ScriptResult Execute(string script, params string[] scriptArgs)
@@ -85,20 +97,25 @@ namespace CShell.Hosting
             ScriptResult result = null;
             try
             {
-                replOutput.EvaluateStarted(script, null);
+                this.replOutput.EvaluateStarted(script, null);
 
                 if (script.StartsWith(":"))
                 {
                     var tokens = script.Split(' ');
                     if (tokens[0].Length > 1)
                     {
-                        if (Commands.ContainsKey(tokens[0].Substring(1)))
+                        if (this.Commands.ContainsKey(tokens[0].Substring(1)))
                         {
-                            var command = Commands[tokens[0].Substring(1)];
+                            var command = this.Commands[tokens[0].Substring(1)];
                             var argsToPass = new List<object>();
                             foreach (var argument in tokens.Skip(1))
                             {
-                                var argumentResult = ScriptEngine.Execute(argument, scriptArgs, References, Namespaces, ScriptPackSession);
+                                var argumentResult = this.ScriptEngine.Execute(
+                                    argument,
+                                    scriptArgs,
+                                    this.References,
+                                    this.Namespaces,
+                                    this.ScriptPackSession);
 
                                 if (argumentResult.CompileExceptionInfo != null)
                                 {
@@ -124,9 +141,13 @@ namespace CShell.Hosting
 
                             var commandResult = command.Execute(this, argsToPass.ToArray());
                             if (commandResult is ScriptResult)
+                            {
                                 result = commandResult as ScriptResult;
+                            }
                             else
+                            {
                                 result = new ScriptResult(commandResult);
+                            }
                         }
                         else
                         {
@@ -136,31 +157,31 @@ namespace CShell.Hosting
                 }
                 else
                 {
-                    var preProcessResult = FilePreProcessor.ProcessScript(script);
+                    var preProcessResult = this.FilePreProcessor.ProcessScript(script);
 
-                    ImportNamespaces(preProcessResult.Namespaces.ToArray());
+                    this.ImportNamespaces(preProcessResult.Namespaces.ToArray());
 
                     foreach (var reference in preProcessResult.References)
                     {
-                        var referencePath = FileSystem.GetFullPath(Path.Combine(FileSystem.BinFolder, reference));
-                        AddReferences(FileSystem.FileExists(referencePath) ? referencePath : reference);
+                        var referencePath = this.FileSystem.GetFullPath(Path.Combine(this.FileSystem.BinFolder, reference));
+                        this.AddReferences(this.FileSystem.FileExists(referencePath) ? referencePath : reference);
                     }
 
-                    InjectScriptLibraries(FileSystem.CurrentDirectory, preProcessResult, ScriptPackSession.State);
+                    this.InjectScriptLibraries(this.FileSystem.CurrentDirectory, preProcessResult, this.ScriptPackSession.State);
 
-                    Buffer = (Buffer == null)
+                    this.Buffer = (this.Buffer == null)
                         ? preProcessResult.Code
-                        : Buffer + Environment.NewLine + preProcessResult.Code;
+                        : this.Buffer + Environment.NewLine + preProcessResult.Code;
 
-                    var namespaces = Namespaces.Union(preProcessResult.Namespaces).ToList();
-                    var references = References.Union(preProcessResult.References);
+                    var namespaces = this.Namespaces.Union(preProcessResult.Namespaces).ToList();
+                    var references = this.References.Union(preProcessResult.References);
 
                     if (preProcessResult.References != null && preProcessResult.References.Count > 0)
                     {
-                        OnAssemblyReferencesChanged();
+                        this.OnAssemblyReferencesChanged();
                     }
 
-                    result = ScriptEngine.Execute(Buffer, scriptArgs, references, namespaces, ScriptPackSession);
+                    result = this.ScriptEngine.Execute(this.Buffer, scriptArgs, references, namespaces, this.ScriptPackSession);
 
                     if (result == null)
                     {
@@ -170,32 +191,32 @@ namespace CShell.Hosting
                     {
                         if (result.InvalidNamespaces.Any())
                         {
-                            RemoveNamespaces(result.InvalidNamespaces.ToArray());
+                            this.RemoveNamespaces(result.InvalidNamespaces.ToArray());
                         }
 
                         if (result.IsCompleteSubmission)
                         {
-                            Buffer = null;
+                            this.Buffer = null;
                         }
                     }
                 }
             }
             catch (FileNotFoundException fileEx)
             {
-                RemoveReferences(fileEx.FileName);
-                result = new ScriptResult(compilationException:fileEx);
+                this.RemoveReferences(fileEx.FileName);
+                result = new ScriptResult(compilationException: fileEx);
             }
             catch (Exception ex)
             {
-                result = new ScriptResult(executionException:ex);
+                result = new ScriptResult(executionException: ex);
             }
             finally
             {
-                replOutput.EvaluateCompleted(result);
+                this.replOutput.EvaluateCompleted(result);
             }
+
             return result ?? ScriptResult.Empty;
         }
-
 
         private static string GetInvalidCommandArgumentMessage(string argument)
         {
@@ -204,106 +225,106 @@ namespace CShell.Hosting
 
         private void AddDefaultReferencesAndNamespaces()
         {
-            AddReferences(typeof(Shell).Assembly);
-            ImportNamespaces(typeof(Shell).Namespace);
-            AddReferences(this.defaultReferences.Assemblies.Distinct().ToArray());
-            AddReferences(this.defaultReferences.AssemblyPaths.Distinct().ToArray());
-            ImportNamespaces(this.defaultReferences.Namespaces.Distinct().ToArray());
+            this.AddReferences(typeof(Shell).Assembly);
+            this.ImportNamespaces(typeof(Shell).Namespace);
+            this.AddReferences(this.defaultReferences.Assemblies.Distinct().ToArray());
+            this.AddReferences(this.defaultReferences.AssemblyPaths.Distinct().ToArray());
+            this.ImportNamespaces(this.defaultReferences.Namespaces.Distinct().ToArray());
         }
 
         public override void AddReferences(params Assembly[] references)
         {
             base.AddReferences(references);
-            replCompletion.AddReferences(references);
-            documentCompletion.AddReferences(references);
-            OnAssemblyReferencesChanged();
+            this.replCompletion.AddReferences(references);
+            this.documentCompletion.AddReferences(references);
+            this.OnAssemblyReferencesChanged();
         }
 
         public override void RemoveReferences(params Assembly[] references)
         {
             base.RemoveReferences(references);
-            replCompletion.RemoveReferences(references);
-            documentCompletion.RemoveReferences(references);
-            OnAssemblyReferencesChanged();
+            this.replCompletion.RemoveReferences(references);
+            this.documentCompletion.RemoveReferences(references);
+            this.OnAssemblyReferencesChanged();
         }
 
         public override void AddReferences(params string[] references)
         {
             base.AddReferences(references);
-            replCompletion.AddReferences(references);
-            documentCompletion.AddReferences(references);
-            OnAssemblyReferencesChanged();
+            this.replCompletion.AddReferences(references);
+            this.documentCompletion.AddReferences(references);
+            this.OnAssemblyReferencesChanged();
         }
 
         public override void RemoveReferences(params string[] references)
         {
             base.RemoveReferences(references);
-            replCompletion.RemoveReferences(references);
-            documentCompletion.RemoveReferences(references);
-            OnAssemblyReferencesChanged();
+            this.replCompletion.RemoveReferences(references);
+            this.documentCompletion.RemoveReferences(references);
+            this.OnAssemblyReferencesChanged();
         }
 
         public string[] GetReferencesAsPaths()
         {
             var paths = new List<string>();
-            paths.AddRange(References.Paths);
-            paths.AddRange(References.Assemblies.Select(a=>a.GetName().Name));
+            paths.AddRange(this.References.Paths);
+            paths.AddRange(this.References.Assemblies.Select(a => a.GetName().Name));
             return paths.ToArray();
         }
 
         public string[] GetNamespaces()
         {
-            return Namespaces.ToArray();
+            return this.Namespaces.ToArray();
         }
 
         public override void Reset()
         {
             base.Reset();
-            AddDefaultReferencesAndNamespaces();
-            replOutput.Clear();
-            ExecuteReferencesScript();
+            this.AddDefaultReferencesAndNamespaces();
+            this.replOutput.Clear();
+            this.ExecuteReferencesScript();
         }
 
         public string[] GetVariables()
         {
-            var replEngine = ScriptEngine as IReplEngine;
+            var replEngine = this.ScriptEngine as IReplEngine;
             if (replEngine != null)
             {
-                var varsArray = replEngine.GetLocalVariables(ScriptPackSession)
+                var varsArray = replEngine.GetLocalVariables(this.ScriptPackSession)
                     .Where(x => !x.StartsWith("submission", StringComparison.OrdinalIgnoreCase))
                     .ToArray();
                 return varsArray;
             }
+
             return new string[0];
         }
 
-
         public void ExecuteConfigScript()
         {
-            var configPath = Path.Combine(WorkspaceDirectory, CShell.Constants.ConfigFile);
+            var configPath = Path.Combine(this.WorkspaceDirectory, CShell.Constants.ConfigFile);
             if (File.Exists(configPath))
             {
                 var configScript = File.ReadAllText(configPath);
-                Execute(configScript);
+                this.Execute(configScript);
             }
         }
 
         public void ExecuteReferencesScript()
         {
-            var refPath = Path.Combine(WorkspaceDirectory, CShell.Constants.ReferencesFile);
+            var refPath = Path.Combine(this.WorkspaceDirectory, CShell.Constants.ReferencesFile);
             if (File.Exists(refPath))
             {
                 var configScript = File.ReadAllText(refPath);
-                Execute(configScript);
+                this.Execute(configScript);
             }
 
-            var binPath = Path.Combine(WorkspaceDirectory, CShell.Constants.BinFolder);
+            var binPath = Path.Combine(this.WorkspaceDirectory, CShell.Constants.BinFolder);
             if (Directory.Exists(binPath))
             {
                 var binFiles = Directory.EnumerateFiles(binPath, "*.*", SearchOption.AllDirectories)
                     .Where(s => s.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || s.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
                     .ToArray();
-                AddReferences(binFiles);
+                this.AddReferences(binFiles);
             }
         }
     }

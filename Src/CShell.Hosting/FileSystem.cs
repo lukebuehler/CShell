@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CShell.Hosting
+﻿namespace CShell.Hosting
 {
     public class FileSystem : ScriptCs.FileSystem
     {
@@ -32,6 +26,5 @@ namespace CShell.Hosting
         {
             get { return Constants.NugetFile; }
         }
-
     }
 }

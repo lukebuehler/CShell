@@ -1,63 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using NuGet;
-using ScriptCs.Contracts;
-using ScriptCs.Logging;
-using IFileSystem = ScriptCs.Contracts.IFileSystem;
-
-namespace CShell.Hosting.Package
+﻿namespace CShell.Hosting.Package
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+
+    using NuGet;
+
+    using ScriptCs.Contracts;
+    using ScriptCs.Logging;
+
+    using IFileSystem = ScriptCs.Contracts.IFileSystem;
+
     public class NugetInstallationProvider : IInstallationProvider
     {
-        private readonly IFileSystem _fileSystem;
-        private readonly ILog _logger;
-        private PackageManager _manager;
-        private IEnumerable<string> _repositoryUrls;
+        private readonly IFileSystem fileSystem;
+        private readonly ILog logger;
+        private PackageManager manager;
+        private IEnumerable<string> repositoryUrls;
 
         private static readonly Version EmptyVersion = new Version();
 
         public NugetInstallationProvider(IFileSystem fileSystem, ILog logger)
         {
-            _fileSystem = fileSystem;
-            _logger = logger;
+            this.fileSystem = fileSystem;
+            this.logger = logger;
         }
 
         public void Initialize()
         {
-            var path = Path.Combine(_fileSystem.CurrentDirectory, _fileSystem.PackagesFolder);
-            _repositoryUrls = GetRepositorySources(path);
-            var remoteRepository = new AggregateRepository(PackageRepositoryFactory.Default, _repositoryUrls, true);
-            _manager = new PackageManager(remoteRepository, path);
+            var path = Path.Combine(this.fileSystem.CurrentDirectory, this.fileSystem.PackagesFolder);
+            this.repositoryUrls = this.GetRepositorySources(path);
+            var remoteRepository = new AggregateRepository(PackageRepositoryFactory.Default, this.repositoryUrls, true);
+            this.manager = new PackageManager(remoteRepository, path);
         }
 
         public IEnumerable<string> GetRepositorySources(string path)
         {
             var configFileSystem = new PhysicalFileSystem(path);
 
-            ISettings settings;
-            var localNuGetConfigFile = Path.Combine(_fileSystem.CurrentDirectory, _fileSystem.NugetFile);
-            if (_fileSystem.FileExists(localNuGetConfigFile))
-            {
-                settings = Settings.LoadDefaultSettings(configFileSystem, localNuGetConfigFile, null);
-            }
-            else
-            {
-                settings = Settings.LoadDefaultSettings(configFileSystem, null, new NugetMachineWideSettings());
-            }
+            var localNuGetConfigFile = Path.Combine(this.fileSystem.CurrentDirectory, this.fileSystem.NugetFile);
+            var settings = this.fileSystem.FileExists(localNuGetConfigFile)
+                               ? Settings.LoadDefaultSettings(configFileSystem, localNuGetConfigFile, null)
+                               : Settings.LoadDefaultSettings(configFileSystem, null, new NugetMachineWideSettings());
 
             if (settings == null)
             {
-                return new[] { Constants.DefaultRepositoryUrl };
+                return new[] { CShell.Constants.DefaultRepositoryUrl };
             }
 
             var sourceProvider = new PackageSourceProvider(settings);
-            var sources = sourceProvider.LoadPackageSources().Where(i => i.IsEnabled == true);
+            var sources = sourceProvider.LoadPackageSources().Where(i => i.IsEnabled);
 
-            if (sources == null || !sources.Any())
+            if (!sources.Any())
             {
-                return new[] { Constants.DefaultRepositoryUrl };
+                return new[] { CShell.Constants.DefaultRepositoryUrl };
             }
 
             return sources.Select(i => i.Source);
@@ -67,8 +64,8 @@ namespace CShell.Hosting.Package
         {
             var version = GetVersion(packageId);
             var packageName = packageId.PackageId + " " + (version == null ? string.Empty : packageId.Version.ToString());
-            _manager.InstallPackage(packageId.PackageId, version, allowPrereleaseVersions: allowPreRelease, ignoreDependencies: false);
-            _logger.Info("Installed: " + packageName);
+            this.manager.InstallPackage(packageId.PackageId, version, allowPrereleaseVersions: allowPreRelease, ignoreDependencies: false);
+            this.logger.Info("Installed: " + packageName);
         }
 
         private static SemanticVersion GetVersion(IPackageReference packageReference)
@@ -79,7 +76,7 @@ namespace CShell.Hosting.Package
         public bool IsInstalled(IPackageReference packageReference, bool allowPreRelease = false)
         {
             var version = GetVersion(packageReference);
-            return _manager.LocalRepository.FindPackage(packageReference.PackageId, version, allowPreRelease, allowUnlisted: false) != null;
+            return this.manager.LocalRepository.FindPackage(packageReference.PackageId, version, allowPreRelease, allowUnlisted: false) != null;
         }
     }
 }

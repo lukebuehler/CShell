@@ -1,24 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using NuGet;
-
-namespace CShell.Hosting.Package
+﻿namespace CShell.Hosting.Package
 {
+    using System;
+    using System.Collections.Generic;
+
+    using NuGet;
+
     internal class NugetMachineWideSettings : IMachineWideSettings
     {
-        private readonly Lazy<IEnumerable<Settings>> _settings;
+        private readonly Lazy<IEnumerable<Settings>> settings;
 
         public NugetMachineWideSettings()
         {
             var baseDirectory = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            _settings = new Lazy<IEnumerable<NuGet.Settings>>(() => NuGet.Settings.LoadMachineWideSettings(new PhysicalFileSystem(baseDirectory)));
+            this.settings = new Lazy<IEnumerable<Settings>>(() => NuGet.Settings.LoadMachineWideSettings(new PhysicalFileSystem(baseDirectory)));
         }
 
         public IEnumerable<Settings> Settings
         {
             get
             {
-                return _settings.Value;
+                return this.settings.Value;
             }
         }
     }

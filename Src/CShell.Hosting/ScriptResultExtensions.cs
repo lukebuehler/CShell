@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using ScriptCs.Contracts;
-
-namespace CShell.Hosting
+﻿namespace CShell.Hosting
 {
+    using System;
+    using System.Collections.Generic;
+
+    using ScriptCs.Contracts;
+
     public static class ScriptResultExtensions
     {
         public static bool HasWarnings(this ScriptResult scriptResult)
@@ -12,14 +13,20 @@ namespace CShell.Hosting
             {
                 var ex = scriptResult.CompileExceptionInfo.SourceException;
                 if (IsMessage(ex.Message, "warning"))
+                {
                     return true;
+                }
             }
+
             if (scriptResult.ExecuteExceptionInfo != null)
             {
                 var ex = scriptResult.ExecuteExceptionInfo.SourceException;
                 if (IsMessage(ex.Message, "warning"))
+                {
                     return true;
+                }
             }
+
             return false;
         }
 
@@ -29,29 +36,16 @@ namespace CShell.Hosting
             {
                 var ex = scriptResult.CompileExceptionInfo.SourceException;
                 if (IsMessage(ex.Message, "error"))
+                {
                     return true;
+                }
             }
+
             if (scriptResult.ExecuteExceptionInfo != null)
             {
                 return true;
             }
-            return false;
-        }
 
-        private static bool IsMessage(string message, string messageType)
-        {
-            //the messages have following format
-            // (2,1): error (123): Bla bla bla
-            // or
-            // error (123): Bla bla bla
-            var messageParts = message.Split(':');
-            if (messageParts.Length >= 2)
-            {
-                var type1 = messageParts[0].Trim();
-                var type2 = messageParts[1].Trim();
-                if (type1.StartsWith(messageType, StringComparison.OrdinalIgnoreCase) || type2.StartsWith(messageType, StringComparison.OrdinalIgnoreCase))
-                    return true;
-            }
             return false;
         }
 
@@ -63,12 +57,35 @@ namespace CShell.Hosting
                 var ex = scriptResult.CompileExceptionInfo.SourceException;
                 msgs.Add(ex.Message);
             }
+
             if (scriptResult.ExecuteExceptionInfo != null)
             {
                 var ex = scriptResult.ExecuteExceptionInfo.SourceException;
                 msgs.Add(ex.Message);
             }
+
             return msgs.ToArray();
+        }
+
+        private static bool IsMessage(string message, string messageType)
+        {
+            // the messages have following format
+            // (2,1): error (123): Bla bla bla
+            // or
+            // error (123): Bla bla bla
+            var messageParts = message.Split(':');
+            if (messageParts.Length >= 2)
+            {
+                var type1 = messageParts[0].Trim();
+                var type2 = messageParts[1].Trim();
+                if (type1.StartsWith(messageType, StringComparison.OrdinalIgnoreCase)
+                    || type2.StartsWith(messageType, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

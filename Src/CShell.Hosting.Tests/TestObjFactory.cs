@@ -1,14 +1,9 @@
 ﻿using Common.Logging;
 using CShell.Framework.Services;
-using CShell.Hosting;
 using NSubstitute;
 using ScriptCs.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace CShell.Tests
+namespace CShell.Hosting.Tests
 {
     public class TestObjFactory
     {

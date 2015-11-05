@@ -11,10 +11,10 @@ using System.Linq;
 using System.Runtime.Versioning;
 using System.Text;
 
-namespace CShell.Tests
+namespace CShell.Hosting.Tests
 {
     [TestFixture]
-    public class ReplExecuteTests
+    public class ReplExecutorTests
     {
         [Test]
         public void ExecuteScript_WhenAddingNamespace_ShouldBeAddedToTheNamespaceCollection()
@@ -125,7 +125,6 @@ namespace CShell.Tests
             var result = replExecutor.Execute(script);
 
             //Assert
-
             factory.PackageInstaller.DidNotReceive().InstallPackages(Arg.Any<IEnumerable<IPackageReference>>(), Arg.Any<bool>());
         }
     }

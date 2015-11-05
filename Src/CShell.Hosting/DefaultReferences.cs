@@ -1,19 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-
-namespace CShell.Hosting
+﻿namespace CShell.Hosting
 {
+    using System.Collections.Generic;
+    using System.Reflection;
+
     public class DefaultReferences : IDefaultReferences
     {
         public DefaultReferences()
         {
-            Assemblies = new List<Assembly>();
-            AssemblyPaths = new List<string>();
-            Namespaces = new List<string>();
+            this.Assemblies = new List<Assembly>();
+            this.AssemblyPaths = new List<string>();
+            this.Namespaces = new List<string>();
         }
+
         public List<Assembly> Assemblies { get; private set; }
+        
         public List<string> AssemblyPaths { get; private set; }
+        
         public List<string> Namespaces { get; private set; }
     }
 }

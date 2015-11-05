@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows.Media;
-using CShell.Framework.Services;
-using ScriptCs.Logging;
-
-namespace CShell.Hosting
+﻿namespace CShell.Hosting
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Windows.Media;
+
+    using CShell.Framework.Services;
+
+    using ScriptCs.Logging;
+
     public class ReplLogger : ILog
     {
-        private readonly LogLevel _consoleLogLevel;
-        private readonly IReplOutput _replOutput;
+        private readonly LogLevel consoleLogLevel;
+        private readonly IReplOutput replOutput;
         private readonly Dictionary<LogLevel, Color> colors =
             new Dictionary<LogLevel, Color>
             {
@@ -22,54 +24,67 @@ namespace CShell.Hosting
             };
 
         public ReplLogger(IReplOutput repl)
-            :this(repl, LogLevel.Info)
-        {}
+            : this(repl, LogLevel.Info)
+        {
+        }
 
         public ReplLogger(IReplOutput repl, LogLevel consoleLogLevel)
         {
-            if (repl == null) throw new ArgumentNullException("repl");
+            if (repl == null)
+            {
+                throw new ArgumentNullException("repl");
+            }
 
-            _consoleLogLevel = consoleLogLevel;
-            _replOutput = repl;
+            this.consoleLogLevel = consoleLogLevel;
+            this.replOutput = repl;
         }
 
 
         public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception = null, params object[] formatParameters)
         {
-            if (logLevel < _consoleLogLevel)
+            if (logLevel < this.consoleLogLevel)
+            {
                 return false;
+            }
             if (messageFunc == null)
+            {
                 return true;
+            }
 
             var message = messageFunc();
             if (message == null)
-                message = String.Empty;
+            {
+                message = string.Empty;
+            }
 
-            if(formatParameters != null && formatParameters.Length > 0)
-                message = String.Format(message, formatParameters);
+            if (formatParameters != null && formatParameters.Length > 0)
+            {
+                message = string.Format(message, formatParameters);
+            }
 
             var prefix = logLevel == LogLevel.Info
                 ? null
                 : string.Concat(logLevel.ToString().ToUpperInvariant(), ": ");
 
-            var originalOutputColor = _replOutput.ResultColor;
+            var originalOutputColor = this.replOutput.ResultColor;
             Color color;
-            if (!colors.TryGetValue(logLevel, out color))
+            if (!this.colors.TryGetValue(logLevel, out color))
             {
                 color = Colors.Black;
             }
-            _replOutput.ResultColor = color;
+
+            this.replOutput.ResultColor = color;
 
             try
             {
-                _replOutput.WriteLine(prefix + message);
+                this.replOutput.WriteLine(prefix + message);
             }
             finally
             {
-                _replOutput.ResultColor = originalOutputColor;
+                this.replOutput.ResultColor = originalOutputColor;
             }
+
             return true;
         }
-
     }
 }

@@ -1,7 +1,7 @@
-﻿using ScriptCs.Contracts;
-
-namespace CShell.Hosting.ReplCommands
+﻿namespace CShell.Hosting.ReplCommands
 {
+    using ScriptCs.Contracts;
+
     public class ResetCommand : IReplCommand
     {
         public string CommandName

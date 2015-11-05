@@ -1,9 +1,8 @@
-﻿using CShell.Framework.Services;
-using ScriptCs;
-using ScriptCs.Contracts;
-
-namespace CShell.Hosting
+﻿namespace CShell.Hosting
 {
+    using ScriptCs;
+    using ScriptCs.Contracts;
+
     public class ReplScriptHost : ScriptHost
     {
         public ReplScriptHost(IScriptPackManager scriptPackManager, ScriptEnvironment environment)

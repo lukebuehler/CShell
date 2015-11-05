@@ -1,39 +1,41 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Versioning;
-using NuGet;
-using ScriptCs.Contracts;
-
 namespace CShell.Hosting.Package
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Runtime.Versioning;
+
+    using NuGet;
+
+    using ScriptCs.Contracts;
+
     internal class PackageObject : IPackageObject
     {
         private const string Dll = ".dll";
         private const string Exe = ".exe";
-        private readonly IPackage _package;
+        private readonly IPackage package;
 
         public PackageObject(IPackage package, FrameworkName frameworkName)
         {
-            _package = package;
-            FrameworkName = frameworkName;
-            Id = package.Id;
-            Version = package.Version.Version;
-            TextVersion = package.Version.ToString();
-            FrameworkAssemblies = package.FrameworkAssemblies
+            this.package = package;
+            this.FrameworkName = frameworkName;
+            this.Id = package.Id;
+            this.Version = package.Version.Version;
+            this.TextVersion = package.Version.ToString();
+            this.FrameworkAssemblies = package.FrameworkAssemblies
                 .Where(x => x.SupportedFrameworks.Any(y => y == frameworkName))
                 .Select(x => x.AssemblyName);
 
-            var dependencies = _package.GetCompatiblePackageDependencies(frameworkName);
+            var dependencies = this.package.GetCompatiblePackageDependencies(frameworkName);
             if (dependencies != null)
             {
-                Dependencies = dependencies.Select(i => new PackageObject(i.Id) { FrameworkName = frameworkName });
+                this.Dependencies = dependencies.Select(i => new PackageObject(i.Id) { FrameworkName = frameworkName });
             }
         }
 
         public PackageObject(string packageId)
         {
-            Id = packageId;
+            this.Id = packageId;
         }
 
         public IEnumerable<string> FrameworkAssemblies { get; private set; }
@@ -50,12 +52,12 @@ namespace CShell.Hosting.Package
 
         public string FullName
         {
-            get { return Id + "." + TextVersion; }
+            get { return this.Id + "." + this.TextVersion; }
         }
 
         public IEnumerable<string> GetCompatibleDlls(FrameworkName frameworkName)
         {
-            var dlls = _package.GetLibFiles().Where(i => i.EffectivePath.EndsWith(Dll) || i.EffectivePath.EndsWith(Exe));
+            var dlls = this.package.GetLibFiles().Where(i => i.EffectivePath.EndsWith(Dll) || i.EffectivePath.EndsWith(Exe));
             IEnumerable<IPackageFile> compatibleFiles;
             VersionUtility.TryGetCompatibleItems(frameworkName, dlls, out compatibleFiles);
 
@@ -64,10 +66,7 @@ namespace CShell.Hosting.Package
 
         public IEnumerable<string> GetContentFiles()
         {
-            foreach (var file in _package.GetContentFiles())
-            {
-                yield return file.Path;
-            }
+            return this.package.GetContentFiles().Select(file => file.Path);
         }
     }
 }

@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ScriptCs.Contracts;
-
-namespace CShell.Hosting
+﻿namespace CShell.Hosting
 {
-    class ObjectSerializer : IObjectSerializer
+    using System;
+
+    using ScriptCs.Contracts;
+
+    public class ObjectSerializer : IObjectSerializer
     {
         public string Serialize(object value)
         {
@@ -15,7 +12,7 @@ namespace CShell.Hosting
         }
     }
 
-    class MockConsole : IConsole
+    public class MockConsole : IConsole
     {
         public void Clear()
         {
@@ -33,6 +30,7 @@ namespace CShell.Hosting
             {
                 throw new NotImplementedException();
             }
+
             set
             {
                 throw new NotImplementedException();

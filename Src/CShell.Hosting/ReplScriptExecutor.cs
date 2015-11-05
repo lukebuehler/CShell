@@ -100,6 +100,12 @@ namespace CShell.Hosting
                             {
                                 var argumentResult = ScriptEngine.Execute(argument, scriptArgs, References, Namespaces, ScriptPackSession);
 
+                                if (argumentResult == null)
+                                {
+                                    argsToPass.Add(argument);
+                                    continue;
+                                }
+
                                 if (argumentResult.CompileExceptionInfo != null)
                                 {
                                     throw new Exception(

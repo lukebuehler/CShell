@@ -1,8 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
-VisualStudioVersion = 12.0.30501.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CShell", "CShell\CShell.csproj", "{751E2557-C070-480D-A3B9-662CDFE03907}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -30,7 +29,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CShell.Sinks.Grid", "CShell.Sinks.Grid\CShell.Sinks.Grid.csproj", "{120BDD93-A1CF-4C72-A39C-15E9E701CDF1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sinks", "Sinks", "{C4B6DD4F-D0C6-4A3A-9D13-CE8A194A3DE2}"
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CShell.Tests", "CShell.Tests\CShell.Tests.csproj", "{380E341F-F818-4479-95D9-491318024966}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{15BBB651-DA2C-4AD5-AE24-DE1570B9FA77}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CShell.Hosting.Tests", "CShell.Hosting.Tests\CShell.Hosting.Tests.csproj", "{380E341F-F818-4479-95D9-491318024966}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,13 +68,10 @@ Global
 		{120BDD93-A1CF-4C72-A39C-15E9E701CDF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{120BDD93-A1CF-4C72-A39C-15E9E701CDF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{120BDD93-A1CF-4C72-A39C-15E9E701CDF1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6FEE7BD7-F709-459B-9F37-153D22AB917A}.Release|x86.ActiveCfg = Release|Any CPU
 		{380E341F-F818-4479-95D9-491318024966}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{380E341F-F818-4479-95D9-491318024966}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{380E341F-F818-4479-95D9-491318024966}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{380E341F-F818-4479-95D9-491318024966}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{380E341F-F818-4479-95D9-491318024966}.Release|Any CPU.Build.0 = Release|Any CPU
-		{380E341F-F818-4479-95D9-491318024966}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,5 +80,6 @@ Global
 		{52F0330B-BE92-473E-A0E5-96CBF7412972} = {C4B6DD4F-D0C6-4A3A-9D13-CE8A194A3DE2}
 		{D79EBC7D-28E8-45A2-81CF-20D167655A69} = {C4B6DD4F-D0C6-4A3A-9D13-CE8A194A3DE2}
 		{120BDD93-A1CF-4C72-A39C-15E9E701CDF1} = {C4B6DD4F-D0C6-4A3A-9D13-CE8A194A3DE2}
+		{380E341F-F818-4479-95D9-491318024966} = {15BBB651-DA2C-4AD5-AE24-DE1570B9FA77}
 	EndGlobalSection
 EndGlobal

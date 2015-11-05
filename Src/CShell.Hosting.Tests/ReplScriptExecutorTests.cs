@@ -1,7 +1,4 @@
-﻿using Common.Logging;
-using CShell.Framework.Services;
-using CShell.Hosting;
-using NSubstitute;
+﻿using NSubstitute;
 using NUnit.Framework;
 using ScriptCs;
 using ScriptCs.Contracts;
@@ -10,11 +7,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Text;
+using ScriptCs.Logging;
 
 namespace CShell.Hosting.Tests
 {
     [TestFixture]
-    public class ReplExecutorTests
+    public class ReplScriptExecutorTests
     {
         [Test]
         public void ExecuteScript_WhenAddingNamespace_ShouldBeAddedToTheNamespaceCollection()
@@ -38,7 +36,7 @@ namespace CShell.Hosting.Tests
             CollectionAssert.Contains(replExecutor.Namespaces, expectedNamespace);
         }
 
-        [TestCase(":help","Available commands are:")]
+        [TestCase(":help", "The following commands are available in the REPL:")]
         public void ExecuteScript_WhenHandlingHelpCommand_ShouldPrintAvailableCommands(string command,string expected)
         {
             //Setup Test Pack
@@ -51,7 +49,7 @@ namespace CShell.Hosting.Tests
             var result = replExecutor.Execute(command);
 
             //Assert
-            Assert.True(result.ReturnValue.ToString().Contains(expected));
+            factory.ReplOutput.Received(1).WriteLine(expected);
         }
 
         [Test]
@@ -69,7 +67,7 @@ namespace CShell.Hosting.Tests
 
             //Assert
             Assert.IsNull(result.ReturnValue);
-            factory.Repl.Received(1).Clear();
+            factory.ReplOutput.Received(1).Clear();
         }
 
         [Test]

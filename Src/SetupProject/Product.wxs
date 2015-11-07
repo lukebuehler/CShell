@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <Product Id="*" Name="CShell" Language="1033" Version="1.0.0.0" Manufacturer=" Arnova Asset Management Ltd., Lukas Buhler" UpgradeCode="B4800933-F0C3-4F4C-B94B-781E8AF91113">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate />
+
+    <Feature Id="ProductFeature" Title="CShell" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+    </Feature>
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="SetupProject" />
+      </Directory>
+    </Directory>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+
+      <Component Id="Caliburn.Micro.dll" Guid="1eef285f-b12c-4139-a62a-cbc711f4344f">
+        <File Id="Caliburn.Micro.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="Caliburn.Micro.Platform.dll" Guid="28f474e8-645f-4482-90a4-2503b3d741b7">
+        <File Id="Caliburn.Micro.Platform.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="CShell.Completion.dll" Guid="ba1635a7-699f-4159-8331-24d3121a23dc">
+        <File Id="CShell.Completion.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="CShell.Core.dll" Guid="7d695737-b845-4237-98c2-88b13a2e3f69">
+        <File Id="CShell.Core.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="CShell.Core.xml" Guid="6adf65a4-4676-4a27-bb9c-de04c8b0475b">
+        <File Id="CShell.Core.xml" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="CShell.exe" Guid="f5a6742c-3774-4a2b-823f-96ac81a5c8c1">
+        <File Id="CShell.exe" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="CShell.exe.config" Guid="6c94569b-6922-4943-9726-d5bde2df5d82">
+        <File Id="CShell.exe.config" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="CShell.Hosting.dll" Guid="a7bd7c3d-01aa-4bf2-991e-51ea4b788b78">
+        <File Id="CShell.Hosting.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="CShellCore.CodeCompletion.dll" Guid="06788af9-6ce4-4626-9aac-7ca865586b1b">
+        <File Id="CShellCore.CodeCompletion.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="CShellCore.dll" Guid="96b8f721-4e9f-44cd-a08e-cf423560529d">
+        <File Id="CShellCore.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="ICSharpCode.AvalonEdit.dll" Guid="d31788e7-3008-4207-bd90-c8df1e190fed">
+        <File Id="ICSharpCode.AvalonEdit.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="ICSharpCode.NRefactory.Cecil.dll" Guid="b3aa5eb3-712a-420c-ba5e-a58545f35854">
+        <File Id="ICSharpCode.NRefactory.Cecil.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="ICSharpCode.NRefactory.CSharp.dll" Guid="95b30461-ab25-4134-9030-76e8d6867a30">
+        <File Id="ICSharpCode.NRefactory.CSharp.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="ICSharpCode.NRefactory.dll" Guid="0bb73999-7673-4a49-b003-89708c721cbb">
+        <File Id="ICSharpCode.NRefactory.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="Microsoft.Web.XmlTransform.dll" Guid="812f636e-7972-45fc-8ecb-ce596b4297f6">
+        <File Id="Microsoft.Web.XmlTransform.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="Mono.Cecil.dll" Guid="71d73436-d249-4742-86ef-1d84ecd5f88f">
+        <File Id="Mono.Cecil.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="Mono.Cecil.Mdb.dll" Guid="b02d5fe5-6fd8-4bfe-b592-ec849b132c99">
+        <File Id="Mono.Cecil.Mdb.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="Mono.Cecil.Pdb.dll" Guid="9b37d6ff-a871-47b4-87cd-02e30a18b78c">
+        <File Id="Mono.Cecil.Pdb.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="Mono.Cecil.Rocks.dll" Guid="cad613fb-13f9-455f-a88f-8d8e3fe5a5e6">
+        <File Id="Mono.Cecil.Rocks.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="Mono.CSharp.dll" Guid="3700b85a-c689-4aa9-a8c6-8b807ff544fb">
+        <File Id="Mono.CSharp.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="NLog.dll" Guid="9d2a4457-37d1-492a-955a-e5d275d210ce">
+        <File Id="NLog.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="NuGet.Core.dll" Guid="4591648c-49f5-4360-882d-92cd871a5d67">
+        <File Id="NuGet.Core.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="Roslyn.Compilers.CSharp.dll" Guid="08f393ab-b5bd-4718-b14a-8c91fc7bb9ad">
+        <File Id="Roslyn.Compilers.CSharp.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="Roslyn.Compilers.dll" Guid="60b6b265-c6e1-4698-a7a7-e7ffbe1dc331">
+        <File Id="Roslyn.Compilers.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="ScriptCs.Contracts.dll" Guid="1546cb0d-1865-41f6-9985-fbcd4ade908d">
+        <File Id="ScriptCs.Contracts.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="ScriptCs.Core.dll" Guid="c2a2acd1-3b8a-434c-958d-4931a3180797">
+        <File Id="ScriptCs.Core.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="ScriptCs.Engine.Roslyn.dll" Guid="4c2ed88a-8de8-468f-b427-63c46041af71">
+        <File Id="ScriptCs.Engine.Roslyn.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="System.Windows.Interactivity.dll" Guid="1ce8703a-3303-490e-8fd5-d7a738adfe9a">
+        <File Id="System.Windows.Interactivity.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="Xceed.Wpf.AvalonDock.dll" Guid="88a107be-6678-47fe-bfbf-ff3b3b29a384">
+        <File Id="Xceed.Wpf.AvalonDock.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="Xceed.Wpf.AvalonDock.Themes.Aero.dll" Guid="f52eb745-9823-42f6-be56-4aef4db16f6b">
+        <File Id="Xceed.Wpf.AvalonDock.Themes.Aero.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="Xceed.Wpf.AvalonDock.Themes.Metro.dll" Guid="288c098a-e71f-454a-8d82-1a0e38dcc4ae">
+        <File Id="Xceed.Wpf.AvalonDock.Themes.Metro.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Guid="31ba798a-7769-4c1d-9226-d01bb992d0ec">
+        <File Id="Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="Xceed.Wpf.DataGrid.dll" Guid="51e57c8d-e3ac-4e17-b077-b71737a17bb0">
+        <File Id="Xceed.Wpf.DataGrid.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="Xceed.Wpf.Toolkit.dll" Guid="fa20d13b-0fdd-412f-a675-da5ce39811b8">
+        <File Id="Xceed.Wpf.Toolkit.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+      <Component Id="XhtmlDumper.dll" Guid="6089a14e-52f1-4852-b541-7bde7f2e4995">
+        <File Id="XhtmlDumper.dll" Source="$(var.CShell.TargetPath)">
+        </File>
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

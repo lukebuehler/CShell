@@ -2,6 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
   <Product Id="*" Name="CShell" Language="1033" Version="1.0.0.0" Manufacturer=" Arnova Asset Management Ltd., Lukas Buhler" UpgradeCode="B4800933-F0C3-4F4C-B94B-781E8AF91113">
+  
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
@@ -18,6 +19,8 @@
         <Directory Id="INSTALLFOLDER" Name="SetupProject" />
       </Directory>
     </Directory>
+  <UIRef Id="WixUI_InstallDir" />
+  <WixVariable Id="WixUILicenseRtf" Value="LicenseAgreement.rtf" />
   </Fragment>
 
   <Fragment>

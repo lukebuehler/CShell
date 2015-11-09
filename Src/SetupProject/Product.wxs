@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-  <Product Id="*" Name="CShell" Language="1033" Version="1.0.0.0" Manufacturer=" Arnova Asset Management Ltd., Lukas Buhler" UpgradeCode="B4800933-F0C3-4F4C-B94B-781E8AF91113">
+  <Product Id="*"
+           Name="CShell"
+           Language="1033"
+           Version="1.0.0.0"
+           Manufacturer=" Arnova Asset Management Ltd., Lukas Buhler"
+           UpgradeCode="B4800933-F0C3-4F4C-B94B-781E8AF91113">
   
-    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+    <Package InstallerVersion="200"
+             Compressed="yes"
+             InstallScope="perMachine" />
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    
     <MediaTemplate EmbedCab="no" />
+
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER"/>
+
+    <UIRef Id="WixUI_InstallDir" />
 
     <Feature Id="ProductFeature" Title="CShell" Level="1">
       <ComponentGroupRef Id="ProductComponents" />
@@ -19,22 +31,23 @@
         <Directory Id="INSTALLFOLDER" Name="SetupProject" />
       </Directory>
     </Directory>
-  <UIRef Id="WixUI_InstallDir" />
+
   <WixVariable Id="WixUILicenseRtf" Value="LicenseAgreement.rtf" />
+    
   </Fragment>
 
   <Fragment>
     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
 
       <Component Id="Caliburn.Micro.dll" Guid="1eef285f-b12c-4139-a62a-cbc711f4344f">
-        <File Id="Caliburn.Micro.dll" Source="$(var.CShell.TargetPath)">
+        <File Id="Caliburn.Micro.dll" Source="$(var.CShell.TargetDir)\Caliburn.Micro.dll">
         </File>
       </Component>
       <Component Id="Caliburn.Micro.Platform.dll" Guid="28f474e8-645f-4482-90a4-2503b3d741b7">
-        <File Id="Caliburn.Micro.Platform.dll" Source="$(var.CShell.TargetPath)">
+        <File Id="Caliburn.Micro.Platform.dll" Source="$(var.CShell.TargetDir)\Caliburn.Micro.Platform.dll">
         </File>
       </Component>
-      <Component Id="CShell.Completion.dll" Guid="ba1635a7-699f-4159-8331-24d3121a23dc">
+      <!--<Component Id="CShell.Completion.dll" Guid="ba1635a7-699f-4159-8331-24d3121a23dc">
         <File Id="CShell.Completion.dll" Source="$(var.CShell.TargetPath)">
         </File>
       </Component>
@@ -165,7 +178,7 @@
       <Component Id="XhtmlDumper.dll" Guid="6089a14e-52f1-4852-b541-7bde7f2e4995">
         <File Id="XhtmlDumper.dll" Source="$(var.CShell.TargetPath)">
         </File>
-      </Component>
+      </Component>-->
     </ComponentGroup>
   </Fragment>
 </Wix>

@@ -8,7 +8,6 @@ using CShell.Completion;
 using CShell.Framework.Services;
 using ScriptCs;
 using ScriptCs.Contracts;
-using ILog = ScriptCs.Logging.ILog;
 
 namespace CShell.Hosting
 {
@@ -24,10 +23,10 @@ namespace CShell.Hosting
             IFileSystem fileSystem,
             IFilePreProcessor filePreProcessor,
             IScriptEngine scriptEngine,
-            ILog logger,
+            ILogProvider logProvider,
             IEnumerable<IReplCommand> replCommands,
             IDefaultReferences defaultReferences)
-            : base(fileSystem, filePreProcessor, scriptEngine, logger)
+            : base(fileSystem, filePreProcessor, scriptEngine, logProvider)
         {
             this.replOutput = replOutput;
             this.serializer = serializer;

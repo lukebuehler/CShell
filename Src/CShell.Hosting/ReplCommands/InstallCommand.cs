@@ -2,7 +2,6 @@
 using System.Runtime.Versioning;
 using ScriptCs;
 using ScriptCs.Contracts;
-using ScriptCs.Logging;
 
 namespace CShell.Hosting.ReplCommands
 {

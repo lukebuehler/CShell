@@ -75,6 +75,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Lib\Caliburn.Micro.2.0.2\lib\net45\Caliburn.Micro.Platform.dll</HintPath>
     </Reference>
+    <Reference Include="Common.Logging, Version=2.1.2.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Lib\Common.Logging.2.1.2\lib\net40\Common.Logging.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.1.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Lib\AvalonEdit.5.0.2\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
@@ -87,13 +92,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Lib\NLog.3.2.1\lib\net45\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="ScriptCs.Contracts, Version=0.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ScriptCs.Contracts, Version=0.15.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Lib\ScriptCs\ScriptCs.Contracts.dll</HintPath>
+      <HintPath>..\..\Lib\ScriptCs.Contracts.0.15.0\lib\net45\ScriptCs.Contracts.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="ScriptCs.Core, Version=0.10.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ScriptCs.Core, Version=0.15.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Lib\ScriptCs\ScriptCs.Core.dll</HintPath>
+      <HintPath>..\..\Lib\ScriptCs.Core.0.15.0\lib\net45\ScriptCs.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />

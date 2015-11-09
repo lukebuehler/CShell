@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Windows.Media;
 using CShell.Framework.Services;
-using ScriptCs.Logging;
+using ScriptCs.Contracts;
+using Logger = ScriptCs.Contracts.Logger;
 
 namespace CShell.Hosting
 {
-    public class ReplLogger : ILog
+    public class ReplLogProvider : ILogProvider, ILog
     {
         private readonly LogLevel _consoleLogLevel;
         private readonly IReplOutput _replOutput;
@@ -21,11 +22,11 @@ namespace CShell.Hosting
                 { LogLevel.Trace, Colors.DarkMagenta },
             };
 
-        public ReplLogger(IReplOutput repl)
+        public ReplLogProvider(IReplOutput repl)
             :this(repl, LogLevel.Info)
         {}
 
-        public ReplLogger(IReplOutput repl, LogLevel consoleLogLevel)
+        public ReplLogProvider(IReplOutput repl, LogLevel consoleLogLevel)
         {
             if (repl == null) throw new ArgumentNullException("repl");
 
@@ -34,7 +35,7 @@ namespace CShell.Hosting
         }
 
 
-        public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception = null, params object[] formatParameters)
+        public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception, params object[] formatParameters)
         {
             if (logLevel < _consoleLogLevel)
                 return false;
@@ -71,5 +72,19 @@ namespace CShell.Hosting
             return true;
         }
 
+        public Logger GetLogger(string name)
+        {
+            return Log;
+        }
+
+        public IDisposable OpenNestedContext(string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDisposable OpenMappedContext(string key, string value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

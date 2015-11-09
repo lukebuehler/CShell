@@ -7,18 +7,16 @@
            Version="1.0.0.0"
            Manufacturer=" Arnova Asset Management Ltd., Lukas Buhler"
            UpgradeCode="B4800933-F0C3-4F4C-B94B-781E8AF91113">
-  
+
     <Package InstallerVersion="200"
              Compressed="yes"
              InstallScope="perMachine" />
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
-    
-    <MediaTemplate EmbedCab="no" />
+
+    <MediaTemplate EmbedCab="yes" />
 
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER"/>
-
-    <UIRef Id="WixUI_InstallDir" />
 
     <Feature Id="ProductFeature" Title="CShell" Level="1">
       <ComponentGroupRef Id="ProductComponents" />
@@ -28,157 +26,131 @@
   <Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
-        <Directory Id="INSTALLFOLDER" Name="SetupProject" />
+        <Directory Id="INSTALLFOLDER" Name="CShell" />
       </Directory>
     </Directory>
 
-  <WixVariable Id="WixUILicenseRtf" Value="LicenseAgreement.rtf" />
-    
+    <UIRef Id="WixUI_InstallDir" />
+
+    <WixVariable Id="WixUILicenseRtf" Value="LicenseAgreement.rtf" />
+
   </Fragment>
 
   <Fragment>
     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
 
-      <Component Id="Caliburn.Micro.dll" Guid="1eef285f-b12c-4139-a62a-cbc711f4344f">
+      <Component Id="Caliburn.Micro.dll" Guid="34ed5113-f383-49c5-a2c3-7f0c73a926dc">
         <File Id="Caliburn.Micro.dll" Source="$(var.CShell.TargetDir)\Caliburn.Micro.dll">
         </File>
       </Component>
-      <Component Id="Caliburn.Micro.Platform.dll" Guid="28f474e8-645f-4482-90a4-2503b3d741b7">
+      <Component Id="Caliburn.Micro.Platform.dll" Guid="321b9893-9cc5-4453-bf0c-cbf8966efe3a">
         <File Id="Caliburn.Micro.Platform.dll" Source="$(var.CShell.TargetDir)\Caliburn.Micro.Platform.dll">
         </File>
       </Component>
-      <!--<Component Id="CShell.Completion.dll" Guid="ba1635a7-699f-4159-8331-24d3121a23dc">
-        <File Id="CShell.Completion.dll" Source="$(var.CShell.TargetPath)">
+      <Component Id="CShell.Completion.dll" Guid="836e5704-c144-4c1b-a988-e23236281533">
+        <File Id="CShell.Completion.dll" Source="$(var.CShell.TargetDir)\CShell.Completion.dll">
         </File>
       </Component>
-      <Component Id="CShell.Core.dll" Guid="7d695737-b845-4237-98c2-88b13a2e3f69">
-        <File Id="CShell.Core.dll" Source="$(var.CShell.TargetPath)">
+      <Component Id="CShell.Core.dll" Guid="e144a6d1-3783-4759-98ea-1823e1b9f120">
+        <File Id="CShell.Core.dll" Source="$(var.CShell.TargetDir)\CShell.Core.dll">
         </File>
       </Component>
-      <Component Id="CShell.Core.xml" Guid="6adf65a4-4676-4a27-bb9c-de04c8b0475b">
-        <File Id="CShell.Core.xml" Source="$(var.CShell.TargetPath)">
+      <Component Id="CShell.Core.xml" Guid="4b2a9c71-b4b9-4516-b6be-06c8ced02771">
+        <File Id="CShell.Core.xml" Source="$(var.CShell.TargetDir)\CShell.Core.xml">
         </File>
       </Component>
-      <Component Id="CShell.exe" Guid="f5a6742c-3774-4a2b-823f-96ac81a5c8c1">
-        <File Id="CShell.exe" Source="$(var.CShell.TargetPath)">
+      <Component Id="CShell.exe" Guid="346e5140-52fe-431d-93bc-0023d98fbc00">
+        <File Id="CShell.exe" Source="$(var.CShell.TargetDir)\CShell.exe">
         </File>
       </Component>
-      <Component Id="CShell.exe.config" Guid="6c94569b-6922-4943-9726-d5bde2df5d82">
-        <File Id="CShell.exe.config" Source="$(var.CShell.TargetPath)">
+      <Component Id="CShell.exe.config" Guid="cf061a03-deb5-4bde-91cc-dba3af730da3">
+        <File Id="CShell.exe.config" Source="$(var.CShell.TargetDir)\CShell.exe.config">
         </File>
       </Component>
-      <Component Id="CShell.Hosting.dll" Guid="a7bd7c3d-01aa-4bf2-991e-51ea4b788b78">
-        <File Id="CShell.Hosting.dll" Source="$(var.CShell.TargetPath)">
+      <Component Id="CShell.Hosting.dll" Guid="e0de3c9c-b2a0-4122-8cdf-dc3bf68ee93e">
+        <File Id="CShell.Hosting.dll" Source="$(var.CShell.TargetDir)\CShell.Hosting.dll">
         </File>
       </Component>
-      <Component Id="CShellCore.CodeCompletion.dll" Guid="06788af9-6ce4-4626-9aac-7ca865586b1b">
-        <File Id="CShellCore.CodeCompletion.dll" Source="$(var.CShell.TargetPath)">
+      <Component Id="ICSharpCode.AvalonEdit.dll" Guid="36f6ff45-2ddb-4750-a687-00cefe82ee1d">
+        <File Id="ICSharpCode.AvalonEdit.dll" Source="$(var.CShell.TargetDir)\ICSharpCode.AvalonEdit.dll">
         </File>
       </Component>
-      <Component Id="CShellCore.dll" Guid="96b8f721-4e9f-44cd-a08e-cf423560529d">
-        <File Id="CShellCore.dll" Source="$(var.CShell.TargetPath)">
+      <Component Id="ICSharpCode.NRefactory.Cecil.dll" Guid="c7959b72-3c2d-4920-96e0-8a137593570e">
+        <File Id="ICSharpCode.NRefactory.Cecil.dll" Source="$(var.CShell.TargetDir)\ICSharpCode.NRefactory.Cecil.dll">
         </File>
       </Component>
-      <Component Id="ICSharpCode.AvalonEdit.dll" Guid="d31788e7-3008-4207-bd90-c8df1e190fed">
-        <File Id="ICSharpCode.AvalonEdit.dll" Source="$(var.CShell.TargetPath)">
+      <Component Id="ICSharpCode.NRefactory.CSharp.dll" Guid="83484c51-37a5-40b1-9905-2f9d9ebd6d9e">
+        <File Id="ICSharpCode.NRefactory.CSharp.dll" Source="$(var.CShell.TargetDir)\ICSharpCode.NRefactory.CSharp.dll">
         </File>
       </Component>
-      <Component Id="ICSharpCode.NRefactory.Cecil.dll" Guid="b3aa5eb3-712a-420c-ba5e-a58545f35854">
-        <File Id="ICSharpCode.NRefactory.Cecil.dll" Source="$(var.CShell.TargetPath)">
+      <Component Id="ICSharpCode.NRefactory.dll" Guid="7f1f45a7-a8bd-4f06-a049-2936d294e16b">
+        <File Id="ICSharpCode.NRefactory.dll" Source="$(var.CShell.TargetDir)\ICSharpCode.NRefactory.dll">
         </File>
       </Component>
-      <Component Id="ICSharpCode.NRefactory.CSharp.dll" Guid="95b30461-ab25-4134-9030-76e8d6867a30">
-        <File Id="ICSharpCode.NRefactory.CSharp.dll" Source="$(var.CShell.TargetPath)">
+      <Component Id="Microsoft.Web.XmlTransform.dll" Guid="81e63c7a-fcbc-4b46-88c3-90113249a7cd">
+        <File Id="Microsoft.Web.XmlTransform.dll" Source="$(var.CShell.TargetDir)\Microsoft.Web.XmlTransform.dll">
         </File>
       </Component>
-      <Component Id="ICSharpCode.NRefactory.dll" Guid="0bb73999-7673-4a49-b003-89708c721cbb">
-        <File Id="ICSharpCode.NRefactory.dll" Source="$(var.CShell.TargetPath)">
+      <Component Id="Mono.Cecil.dll" Guid="77781ce0-7562-47f4-8142-919f2dab0d68">
+        <File Id="Mono.Cecil.dll" Source="$(var.CShell.TargetDir)\Mono.Cecil.dll">
         </File>
       </Component>
-      <Component Id="Microsoft.Web.XmlTransform.dll" Guid="812f636e-7972-45fc-8ecb-ce596b4297f6">
-        <File Id="Microsoft.Web.XmlTransform.dll" Source="$(var.CShell.TargetPath)">
+      <Component Id="NLog.dll" Guid="f1bda37d-b58f-4f26-98b6-789f1cee339e">
+        <File Id="NLog.dll" Source="$(var.CShell.TargetDir)\NLog.dll">
         </File>
       </Component>
-      <Component Id="Mono.Cecil.dll" Guid="71d73436-d249-4742-86ef-1d84ecd5f88f">
-        <File Id="Mono.Cecil.dll" Source="$(var.CShell.TargetPath)">
+      <Component Id="NuGet.Core.dll" Guid="db44a615-14bd-43c5-9587-bd11c86f5b14">
+        <File Id="NuGet.Core.dll" Source="$(var.CShell.TargetDir)\NuGet.Core.dll">
         </File>
       </Component>
-      <Component Id="Mono.Cecil.Mdb.dll" Guid="b02d5fe5-6fd8-4bfe-b592-ec849b132c99">
-        <File Id="Mono.Cecil.Mdb.dll" Source="$(var.CShell.TargetPath)">
+      <Component Id="Roslyn.Compilers.CSharp.dll" Guid="c7a13946-039b-42a1-a396-d4bba7dd93ff">
+        <File Id="Roslyn.Compilers.CSharp.dll" Source="$(var.CShell.TargetDir)\Roslyn.Compilers.CSharp.dll">
         </File>
       </Component>
-      <Component Id="Mono.Cecil.Pdb.dll" Guid="9b37d6ff-a871-47b4-87cd-02e30a18b78c">
-        <File Id="Mono.Cecil.Pdb.dll" Source="$(var.CShell.TargetPath)">
+      <Component Id="Roslyn.Compilers.dll" Guid="9a8c8caf-3f36-4bb5-a94b-433b0a0c99ca">
+        <File Id="Roslyn.Compilers.dll" Source="$(var.CShell.TargetDir)\Roslyn.Compilers.dll">
         </File>
       </Component>
-      <Component Id="Mono.Cecil.Rocks.dll" Guid="cad613fb-13f9-455f-a88f-8d8e3fe5a5e6">
-        <File Id="Mono.Cecil.Rocks.dll" Source="$(var.CShell.TargetPath)">
+      <Component Id="ScriptCs.Contracts.dll" Guid="03b53bf4-42e7-4efa-98cd-a3a150a21416">
+        <File Id="ScriptCs.Contracts.dll" Source="$(var.CShell.TargetDir)\ScriptCs.Contracts.dll">
         </File>
       </Component>
-      <Component Id="Mono.CSharp.dll" Guid="3700b85a-c689-4aa9-a8c6-8b807ff544fb">
-        <File Id="Mono.CSharp.dll" Source="$(var.CShell.TargetPath)">
+      <Component Id="ScriptCs.Core.dll" Guid="053b67fc-e0ac-45f0-b6de-3a2b9b8e2143">
+        <File Id="ScriptCs.Core.dll" Source="$(var.CShell.TargetDir)\ScriptCs.Core.dll">
         </File>
       </Component>
-      <Component Id="NLog.dll" Guid="9d2a4457-37d1-492a-955a-e5d275d210ce">
-        <File Id="NLog.dll" Source="$(var.CShell.TargetPath)">
+      <Component Id="ScriptCs.Engine.Roslyn.dll" Guid="9e1907b5-bbf5-452f-af53-c2bdef867615">
+        <File Id="ScriptCs.Engine.Roslyn.dll" Source="$(var.CShell.TargetDir)\ScriptCs.Engine.Roslyn.dll">
         </File>
       </Component>
-      <Component Id="NuGet.Core.dll" Guid="4591648c-49f5-4360-882d-92cd871a5d67">
-        <File Id="NuGet.Core.dll" Source="$(var.CShell.TargetPath)">
+      <Component Id="System.Windows.Interactivity.dll" Guid="a22b9eb5-6b9c-4393-8aa6-beb53299cbda">
+        <File Id="System.Windows.Interactivity.dll" Source="$(var.CShell.TargetDir)\System.Windows.Interactivity.dll">
         </File>
       </Component>
-      <Component Id="Roslyn.Compilers.CSharp.dll" Guid="08f393ab-b5bd-4718-b14a-8c91fc7bb9ad">
-        <File Id="Roslyn.Compilers.CSharp.dll" Source="$(var.CShell.TargetPath)">
+      <Component Id="Xceed.Wpf.AvalonDock.dll" Guid="75d5eab9-1c5a-4766-be63-12ccc9d12dee">
+        <File Id="Xceed.Wpf.AvalonDock.dll" Source="$(var.CShell.TargetDir)\Xceed.Wpf.AvalonDock.dll">
         </File>
       </Component>
-      <Component Id="Roslyn.Compilers.dll" Guid="60b6b265-c6e1-4698-a7a7-e7ffbe1dc331">
-        <File Id="Roslyn.Compilers.dll" Source="$(var.CShell.TargetPath)">
+      <Component Id="Xceed.Wpf.AvalonDock.Themes.Aero.dll" Guid="3817d372-c8b7-450f-a2f7-e734efc03b4e">
+        <File Id="Xceed.Wpf.AvalonDock.Themes.Aero.dll" Source="$(var.CShell.TargetDir)\Xceed.Wpf.AvalonDock.Themes.Aero.dll">
         </File>
       </Component>
-      <Component Id="ScriptCs.Contracts.dll" Guid="1546cb0d-1865-41f6-9985-fbcd4ade908d">
-        <File Id="ScriptCs.Contracts.dll" Source="$(var.CShell.TargetPath)">
+      <Component Id="Xceed.Wpf.AvalonDock.Themes.Metro.dll" Guid="99a8fbb8-490d-4b45-a5cb-1aae83835253">
+        <File Id="Xceed.Wpf.AvalonDock.Themes.Metro.dll" Source="$(var.CShell.TargetDir)\Xceed.Wpf.AvalonDock.Themes.Metro.dll">
         </File>
       </Component>
-      <Component Id="ScriptCs.Core.dll" Guid="c2a2acd1-3b8a-434c-958d-4931a3180797">
-        <File Id="ScriptCs.Core.dll" Source="$(var.CShell.TargetPath)">
+      <Component Id="Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Guid="10303090-f4f9-4c1e-bf73-7d344f7f60a5">
+        <File Id="Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Source="$(var.CShell.TargetDir)\Xceed.Wpf.AvalonDock.Themes.VS2010.dll">
         </File>
       </Component>
-      <Component Id="ScriptCs.Engine.Roslyn.dll" Guid="4c2ed88a-8de8-468f-b427-63c46041af71">
-        <File Id="ScriptCs.Engine.Roslyn.dll" Source="$(var.CShell.TargetPath)">
+      <Component Id="Xceed.Wpf.DataGrid.dll" Guid="aa66e442-025a-4b11-9698-ec586f965084">
+        <File Id="Xceed.Wpf.DataGrid.dll" Source="$(var.CShell.TargetDir)\Xceed.Wpf.DataGrid.dll">
         </File>
       </Component>
-      <Component Id="System.Windows.Interactivity.dll" Guid="1ce8703a-3303-490e-8fd5-d7a738adfe9a">
-        <File Id="System.Windows.Interactivity.dll" Source="$(var.CShell.TargetPath)">
+      <Component Id="Xceed.Wpf.Toolkit.dll" Guid="b24306c0-8869-40cb-89a1-5022c81add8b">
+        <File Id="Xceed.Wpf.Toolkit.dll" Source="$(var.CShell.TargetDir)\Xceed.Wpf.Toolkit.dll">
         </File>
       </Component>
-      <Component Id="Xceed.Wpf.AvalonDock.dll" Guid="88a107be-6678-47fe-bfbf-ff3b3b29a384">
-        <File Id="Xceed.Wpf.AvalonDock.dll" Source="$(var.CShell.TargetPath)">
-        </File>
-      </Component>
-      <Component Id="Xceed.Wpf.AvalonDock.Themes.Aero.dll" Guid="f52eb745-9823-42f6-be56-4aef4db16f6b">
-        <File Id="Xceed.Wpf.AvalonDock.Themes.Aero.dll" Source="$(var.CShell.TargetPath)">
-        </File>
-      </Component>
-      <Component Id="Xceed.Wpf.AvalonDock.Themes.Metro.dll" Guid="288c098a-e71f-454a-8d82-1a0e38dcc4ae">
-        <File Id="Xceed.Wpf.AvalonDock.Themes.Metro.dll" Source="$(var.CShell.TargetPath)">
-        </File>
-      </Component>
-      <Component Id="Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Guid="31ba798a-7769-4c1d-9226-d01bb992d0ec">
-        <File Id="Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Source="$(var.CShell.TargetPath)">
-        </File>
-      </Component>
-      <Component Id="Xceed.Wpf.DataGrid.dll" Guid="51e57c8d-e3ac-4e17-b077-b71737a17bb0">
-        <File Id="Xceed.Wpf.DataGrid.dll" Source="$(var.CShell.TargetPath)">
-        </File>
-      </Component>
-      <Component Id="Xceed.Wpf.Toolkit.dll" Guid="fa20d13b-0fdd-412f-a675-da5ce39811b8">
-        <File Id="Xceed.Wpf.Toolkit.dll" Source="$(var.CShell.TargetPath)">
-        </File>
-      </Component>
-      <Component Id="XhtmlDumper.dll" Guid="6089a14e-52f1-4852-b541-7bde7f2e4995">
-        <File Id="XhtmlDumper.dll" Source="$(var.CShell.TargetPath)">
-        </File>
-      </Component>-->
     </ComponentGroup>
   </Fragment>
 </Wix>

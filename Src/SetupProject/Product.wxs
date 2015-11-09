@@ -26,7 +26,10 @@
   <Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
-        <Directory Id="INSTALLFOLDER" Name="CShell" />
+        <Directory Id="INSTALLFOLDER" Name="CShell">
+            <Directory Id="Default" Name="Default" />
+            <Directory Id="Templates" Name="Templates" />
+        </Directory>
       </Directory>
     </Directory>
 
@@ -39,6 +42,11 @@
   <Fragment>
     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
 
+      <!--<Component Id="Scratchpad.csx" Guid="ADAF4D5A-0848-4BAC-9ED2-B2EB7D83A020">
+        <File Id="Scratchpad.csx" Source="$(var.CShell.INSTALLFOLDER)\Default\Scratchpad.csx">
+        </File>
+      </Component>-->
+        
       <Component Id="Caliburn.Micro.dll" Guid="34ed5113-f383-49c5-a2c3-7f0c73a926dc">
         <File Id="Caliburn.Micro.dll" Source="$(var.CShell.TargetDir)\Caliburn.Micro.dll">
         </File>

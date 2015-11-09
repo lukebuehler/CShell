@@ -26,12 +26,11 @@ namespace CShell
         static AppBootstrapper()
         {
 
-            //#if DEBUG
-            //            Common.Logging.LogManager.Adapter = new Common.Logging.Simple.TraceLoggerFactoryAdapter(LogLevel.Debug, false, false, true, "HH:mm:ss", true);
-            //#else
-            //            Common.Logging.LogManager.Adapter = new Common.Logging.Simple.NoOpLoggerFactoryAdapter();
-            //#endif
+#if DEBUG
+            Caliburn.Micro.LogManager.GetLog = type => new CShell.Framework.Services.DebugLogger(type);
+#else
             Caliburn.Micro.LogManager.GetLog = type => new CShell.Framework.Services.Logger(type);
+#endif
         }
 
         public AppBootstrapper()

@@ -8,7 +8,7 @@ namespace CShell.Framework.Services
     /// A simple logger that writes to the Visual Studio debug log.
     /// From here: http://buksbaum.us/2010/08/08/how-to-do-logging-with-caliburn-micro/
     /// </summary>
-    public class DebugLogger : ILog
+    public class DebugLogger : Caliburn.Micro.ILog
     {
         private readonly Type type;
         public DebugLogger(Type type)

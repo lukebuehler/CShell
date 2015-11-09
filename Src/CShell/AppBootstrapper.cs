@@ -27,9 +27,9 @@ namespace CShell
         {
 
 #if DEBUG
-            Caliburn.Micro.LogManager.GetLog = type => new CShell.Framework.Services.DebugLogger(type);
+            Caliburn.Micro.LogManager.GetLog = type => new CShell.Framework.Services.LoggerDebug(type);
 #else
-            Caliburn.Micro.LogManager.GetLog = type => new CShell.Framework.Services.Logger(type);
+            Caliburn.Micro.LogManager.GetLog = type => new CShell.Framework.Services.LoggerNLog(type);
 #endif
         }
 

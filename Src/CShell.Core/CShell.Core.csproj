@@ -58,6 +58,11 @@
     <Reference Include="ICSharpCode.NRefactory">
       <HintPath>..\..\Lib\ICSharpCode.NRefactory.5.5.1\lib\Net40\ICSharpCode.NRefactory.dll</HintPath>
     </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Lib\NLog.4.2.0\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="ScriptCs.Contracts, Version=0.15.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -113,7 +118,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Framework\Controls\PanesTemplateSelector.cs" />
     <Compile Include="Framework\ITextDocument.cs" />
-    <Compile Include="Framework\Services\Logger.cs" />
+    <Compile Include="Framework\Services\LoggerNLog.cs" />
     <Compile Include="Framework\Services\Execute.cs" />
     <Compile Include="ICompletion.cs" />
     <Compile Include="IDefaultReferences.cs" />
@@ -159,7 +164,7 @@
     <Compile Include="Framework\Results\ShowCommonDialogResult.cs" />
     <Compile Include="Framework\Results\ShowDialogResult.cs" />
     <Compile Include="Framework\Results\ShowToolResult.cs" />
-    <Compile Include="Framework\Services\DebugLogger.cs" />
+    <Compile Include="Framework\Services\LoggerDebug.cs" />
     <Compile Include="Framework\Services\IOutput.cs" />
     <Compile Include="Framework\Services\IReplOutput.cs" />
     <Compile Include="Framework\Services\ISinkProvider.cs" />

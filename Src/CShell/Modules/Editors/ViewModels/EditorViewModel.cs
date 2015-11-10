@@ -29,7 +29,10 @@ namespace CShell.Modules.Editors.ViewModels
 	    private CodeCompletionTextEditor textEditor;
 	    private EditorView editorView;
 
-	    public EditorViewModel(CShell.Workspace workspace)
+	    private string toAppend;
+	    private string toPrepend;
+
+        public EditorViewModel(CShell.Workspace workspace)
 	    {
 	        this.workspace = workspace;
 	    }
@@ -122,7 +125,19 @@ namespace CShell.Modules.Editors.ViewModels
 		        textEditor.ReplExecutor = workspace.ReplExecutor;
 		    }
 
-		    //debug to see what commands are available in the editor
+            //if any outstanding text needs to be appended, do it now
+		    if (toAppend != null)
+		    {
+		        Append(toAppend);
+		        toAppend = null;
+		    }
+            if (toPrepend != null)
+            {
+                Prepend(toPrepend);
+                toPrepend = null;
+            }
+
+            //debug to see what commands are available in the editor
             //var c = textEditor.TextArea.CommandBindings;
             //foreach (System.Windows.Input.CommandBinding cmd in c)
             //{
@@ -132,7 +147,7 @@ namespace CShell.Modules.Editors.ViewModels
             //        Debug.Print(rcmd.Name + "  "+ rcmd.InputGestures.ToString());
             //    }
             //}
-		}
+        }
 
         public override void Save()
         {
@@ -272,16 +287,45 @@ namespace CShell.Modules.Editors.ViewModels
             Execute.OnUIThreadEx(() => editorView.Uncomment());
         }
 
-        public string Text
+	    public void Append(string text)
+	    {
+            //if the text editor is available append right now, otherwise wait until later
+	        if (textEditor != null)
+	        {
+	            Text = Text + text;
+	        }
+	        else
+	        {
+	            toAppend += text;
+	        }
+	    }
+
+	    public void Prepend(string text)
+	    {
+            if (textEditor != null)
+            {
+                Text = text + Text;
+            }
+            else
+            {
+                toPrepend += text;
+            }
+        }
+
+	    public string Text
         {
             get
             {
+                if (textEditor == null)
+                    throw new NullReferenceException("textEditor is not ready");
                 var txt = "";
                 Execute.OnUIThreadEx(() => txt = textEditor.Text);
                 return txt;
             }
             set
             {
+                if (textEditor == null)
+                    throw new NullReferenceException("textEditor is not ready");
                 Execute.OnUIThreadEx(() =>
                 {
                     if (value == null)

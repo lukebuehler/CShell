@@ -18,8 +18,7 @@ namespace CShell.Modules.Workspace.Results
         private readonly IEnumerable<string> assemblyPaths;
         private readonly IEnumerable<AssemblyName> assemblyNames;
 
-        public ITextDocument Document { get; set; }
-        public string FilePath { get; set; }
+        public ITextDocument Document { get; private set; }
 
         [Import]
         public IShell Shell { get; set; }
@@ -27,45 +26,34 @@ namespace CShell.Modules.Workspace.Results
         [Import]
         public CShell.Workspace Workspace { get; set; }
 
-        public AddReferencesResult(string file)
+        public AddReferencesResult(ITextDocument doc, string file)
         {
+            this.Document = doc;
             this.assemblyPaths = new[] { file };
         }
 
-        public AddReferencesResult(IEnumerable<string> files)
+        public AddReferencesResult(ITextDocument doc, IEnumerable<string> files)
         {
+            this.Document = doc;
             this.assemblyPaths = files;
         }
 
-        public AddReferencesResult(AssemblyName assemblyName)
+        public AddReferencesResult(ITextDocument doc, AssemblyName assemblyName)
         {
+            this.Document = doc;
             this.assemblyNames = new[] { assemblyName };
         }
 
-        public AddReferencesResult(IEnumerable<AssemblyName> assemblyNames)
+        public AddReferencesResult(ITextDocument doc, IEnumerable<AssemblyName> assemblyNames)
         {
+            this.Document = doc;
             this.assemblyNames = assemblyNames;
         }
 
         public override void Execute(Caliburn.Micro.CoroutineExecutionContext context)
         {
-            Task.Run(() =>
+            Framework.Services.Execute.OnUIThreadEx(() =>
             {
-                //if the document is null, open the references document
-                if (Document == null)
-                {
-                    if (FilePath == null)
-                        FilePath = Constants.ReferencesFile;
-                    Document = CShell.Shell.GetTextDoc(FilePath);
-                }
-            })
-            .ContinueWith(t =>
-            {
-                if (t.IsFaulted)
-                {
-                    OnCompleted(t.Exception);
-                    return;
-                }
                 try
                 {
                     var refsToInsert = "";
@@ -85,9 +73,7 @@ namespace CShell.Modules.Workspace.Results
                     }
                     if (!String.IsNullOrEmpty(refsToInsert))
                     {
-                        Document.Text = refsToInsert + Document.Text;
-                        Document.Save();
-
+                        Document.Prepend(refsToInsert);
                         Workspace.ReplExecutor.Execute(refsToInsert, Document.DisplayName);
                     }
 
@@ -98,7 +84,6 @@ namespace CShell.Modules.Workspace.Results
                     OnCompleted(ex);
                 }
             });
-            
         }
 
         private string GetReferencePath(string path)

@@ -24,6 +24,9 @@ namespace CShell.Framework
         void Comment();
         void Uncomment();
 
+        void Append(string text);
+        void Prepend(string text);
+
         string Text { get; set; }
     }
 }

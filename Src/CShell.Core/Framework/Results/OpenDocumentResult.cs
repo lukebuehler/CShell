@@ -8,7 +8,7 @@ namespace CShell.Framework.Results
 {
 	public class OpenDocumentResult : OpenResultBase<IDocument>
 	{
-		private readonly IDocument document;
+		private IDocument document;
         private readonly Type documentType;
 		private readonly Uri uri;
 
@@ -36,35 +36,42 @@ namespace CShell.Framework.Results
             this.documentType = documentType;
 		}
 
-        public override void Execute(CoroutineExecutionContext context)
-		{
-			var doc = document ??
-				(uri == null
-					? (IDocument)IoC.GetInstance(documentType, null)
-					: Shell.GetDoc(uri));
+	    public IDocument Document
+	    {
+	        get { return document; }
+	    }
 
-            if (doc == null)
+	    public override void Execute(CoroutineExecutionContext context)
+		{
+	        if (document == null)
+	        {
+	            document = (uri == null
+	                ? (IDocument) IoC.GetInstance(documentType, null)
+	                : Shell.GetDoc(uri));
+	        }
+
+	        if (document == null)
 			{
 				OnCompleted(null);
 				return;
 			}
 
 			if (_setData != null)
-                _setData(doc);
+                _setData(document);
 
 			if (_onConfigure != null)
-                _onConfigure(doc);
+                _onConfigure(document);
 
-            doc.Deactivated += (s, e) =>
+            document.Deactivated += (s, e) =>
 			{
 				if (_onShutDown != null)
-                    _onShutDown(doc);
-
-				OnCompleted(null);
+                    _onShutDown(document);
 			};
 
-            shell.OpenDocument(doc);
-		}
+            shell.OpenDocument(document);
+
+            OnCompleted(null);
+        }
 
        
 	}

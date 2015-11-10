@@ -76,7 +76,9 @@ namespace CShell.Modules.Workspace
             yield return Show.Dialog(dialog);
             if (dialog.FileNames != null && dialog.FileNames.Length > 0)
             {
-                yield return new AddReferencesResult(dialog.FileNames);
+                var docResult = new OpenDocumentResult(Constants.ReferencesFile);
+                yield return docResult;
+                yield return new AddReferencesResult(docResult.Document as ITextDocument, dialog.FileNames);
             }
         }
 
@@ -88,7 +90,9 @@ namespace CShell.Modules.Workspace
             var selectedAssemblies = dialog.SelectedAssemblies.Select(item => item.AssemblyName).ToArray();
             if (selectedAssemblies.Length > 0)
             {
-                yield return new AddReferencesResult(selectedAssemblies);
+                var docResult = new OpenDocumentResult(Constants.ReferencesFile);
+                yield return docResult;
+                yield return new AddReferencesResult(docResult.Document as ITextDocument, selectedAssemblies);
             }
         }
 

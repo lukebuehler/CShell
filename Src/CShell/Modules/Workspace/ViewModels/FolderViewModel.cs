@@ -111,8 +111,6 @@ namespace CShell.Modules.Workspace.ViewModels
         {
             var folderResult = Show.FolderDialog(directoryInfo.FullName);
             yield return folderResult;
-            var folder = folderResult.SelectedFolder;
-            yield return new AddFolderResult(folder);
         }
 
         public IEnumerable<IResult> Delete()

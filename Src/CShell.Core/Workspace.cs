@@ -41,7 +41,6 @@ namespace CShell
         {
             if (!String.IsNullOrEmpty(WorkspaceDirectory))
             {
-                //run teardown script
                 //try to save the layout
                 SaveLayout();
             }
@@ -56,13 +55,10 @@ namespace CShell
             {
                 WorkspaceDirectory = Path.GetFullPath(WorkspaceDirectory);
                 //create executor
+                //note: csx scripts for configuration and loading references is executed in the ReplScriptExecutor
                 replExecutor = replExecutorFactory.Create(WorkspaceDirectory);
                 //restore layout
                 LoadLayout();
-
-                //load libs
-
-                //run startup scripts
             }
 
             NotifyOfPropertyChange(() => WorkspaceDirectory);

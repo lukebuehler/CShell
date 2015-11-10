@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using ScriptCs.Contracts;
-using ScriptCs.Logging;
 
 namespace CShell.Hosting.Package
 {
@@ -11,10 +10,10 @@ namespace CShell.Hosting.Package
         private readonly IInstallationProvider _installer;
         private readonly ILog _logger;
 
-        public PackageInstaller(IInstallationProvider installer, ILog logger)
+        public PackageInstaller(IInstallationProvider installer, ILogProvider logProvider)
         {
             _installer = installer;
-            _logger = logger;
+            _logger = logProvider.For<PackageInstaller>();
         }
 
         public void InstallPackages(IEnumerable<IPackageReference> packageIds, bool allowPreRelease = false)

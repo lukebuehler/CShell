@@ -8,6 +8,7 @@ using CShell.Framework.Results;
 using CShell.Modules.Workspace.Results;
 using CShell.Util;
 using Caliburn.Micro;
+using CShell.Framework;
 using Microsoft.Win32;
 
 namespace CShell.Modules.Workspace.ViewModels
@@ -110,7 +111,9 @@ namespace CShell.Modules.Workspace.ViewModels
             yield return Show.Dialog(dialog);
             if (dialog.FileNames != null && dialog.FileNames.Length > 0)
             {
-                yield return new AddReferencesResult(dialog.FileNames){FilePath = fileInfo.FullName};
+                var docResult = new OpenDocumentResult(fileInfo.FullName);
+                yield return docResult;
+                yield return new AddReferencesResult(docResult.Document as ITextDocument, dialog.FileNames);
             }
         }
 
@@ -122,7 +125,9 @@ namespace CShell.Modules.Workspace.ViewModels
             var selectedAssemblies = dialog.SelectedAssemblies.Select(item => item.AssemblyName).ToArray();
             if (selectedAssemblies.Length > 0)
             {
-                yield return new AddReferencesResult(selectedAssemblies){FilePath = fileInfo.FullName};
+                var docResult = new OpenDocumentResult(fileInfo.FullName);
+                yield return docResult;
+                yield return new AddReferencesResult(docResult.Document as ITextDocument, selectedAssemblies);
             }
         }
 

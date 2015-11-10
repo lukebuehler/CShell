@@ -27,7 +27,7 @@ namespace CShell.Hosting
                 scriptServices.FileSystem, 
                 scriptServices.FilePreProcessor,
                 scriptServices.Engine,
-                scriptServices.Logger,
+                scriptServices.LogProvider,
                 scriptServices.ReplCommands,
                 defaultReferences
                 );

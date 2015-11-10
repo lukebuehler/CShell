@@ -22,7 +22,7 @@ namespace CShell.Modules.Repl
         {
 		    MainMenu.All.First(x => x.Name == "View")
 		        .Add(
-                    new MenuItem("Output", OpenOutput).WithIcon("Resources/Icons/Output.png"),
+                    //new MenuItem("Output", OpenOutput).WithIcon("Resources/Icons/Output.png"),
                     new MenuItem("C# Interactive", OpenRepl).WithIcon("Resources/Icons/Output.png"));
 
             var replViewModel = IoC.Get<ReplViewModel>();

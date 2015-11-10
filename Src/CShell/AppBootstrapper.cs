@@ -18,7 +18,6 @@ using CShell.Hosting;
 using ScriptCs;
 using ScriptCs.Contracts;
 using IModule = CShell.Framework.IModule;
-using LogManager = Caliburn.Micro.LogManager;
 
 namespace CShell
 {
@@ -27,12 +26,11 @@ namespace CShell
         static AppBootstrapper()
         {
 
-//#if DEBUG
-//            Common.Logging.LogManager.Adapter = new Common.Logging.Simple.TraceLoggerFactoryAdapter(LogLevel.Debug, false, false, true, "HH:mm:ss", true);
-//#else
-//            Common.Logging.LogManager.Adapter = new Common.Logging.Simple.NoOpLoggerFactoryAdapter();
-//#endif
-            LogManager.GetLog = type => new Logger(type);
+#if DEBUG
+            Caliburn.Micro.LogManager.GetLog = type => new CShell.Framework.Services.LoggerDebug(type);
+#else
+            Caliburn.Micro.LogManager.GetLog = type => new CShell.Framework.Services.LoggerNLog(type);
+#endif
         }
 
         public AppBootstrapper()
@@ -97,8 +95,12 @@ namespace CShell
             batch.AddExportedValue(container);
             container.Compose(batch);
 
+            //use this for testing the MEF dependency resolution
+            //HostingHelpers.TestIfAllExportsCanBeResolved(container);
+
             //configure the modules
             modules = container.GetExportedValues<IModule>().ToList();
+          
             //order them
             var orderedModules = modules.Where(m => m.Order > 0).ToList();
             var unorderedModules = modules.Where(m => m.Order < 1).ToList();

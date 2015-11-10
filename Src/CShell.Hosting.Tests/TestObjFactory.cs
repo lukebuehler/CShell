@@ -4,7 +4,6 @@ using System.Reflection;
 using CShell.Framework.Services;
 using NSubstitute;
 using ScriptCs.Contracts;
-using ScriptCs.Logging;
 using ScriptCs.ReplCommands;
 
 namespace CShell.Hosting.Tests
@@ -14,6 +13,7 @@ namespace CShell.Hosting.Tests
         public TestObjFactory()
         {
             this.Log = Substitute.For<ILog>();
+            this.LogProvider = Substitute.For<ILogProvider>();
 
             this.Repl = Substitute.For<IRepl>();
             this.ReplOutput = Substitute.For<IReplOutput>();
@@ -45,13 +45,14 @@ namespace CShell.Hosting.Tests
                 this.FileSystem,
                 this.FilePreProcessor,
                 this.ScriptEngine,
-                this.Log,
+                this.LogProvider,
                 this.Commands,
                 this.DefaultReferences
                 );
         }
 
         public ILog Log { get; private set; }
+        public ILogProvider LogProvider { get; private set; }
 
         public IReplOutput ReplOutput { get;private set; }
         public IRepl Repl { get;private set; }

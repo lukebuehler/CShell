@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.Versioning;
 using NuGet;
 using ScriptCs.Contracts;
-using ScriptCs.Logging;
 using IFileSystem = ScriptCs.Contracts.IFileSystem;
 using PackageReference = ScriptCs.PackageReference;
 
@@ -21,10 +20,10 @@ namespace CShell.Hosting.Package
 
         private readonly ILog _logger;
 
-        public PackageContainer(IFileSystem fileSystem, ILog logger)
+        public PackageContainer(IFileSystem fileSystem, ILogProvider logProvider)
         {
             _fileSystem = fileSystem;
-            _logger = logger;
+            _logger = logProvider.For<PackageContainer>();
         }
 
         public void CreatePackageFile()

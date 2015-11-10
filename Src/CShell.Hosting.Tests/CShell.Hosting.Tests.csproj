@@ -35,6 +35,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Common.Logging">
+      <HintPath>..\..\Lib\Common.Logging.2.1.2\lib\net40\Common.Logging.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="NSubstitute, Version=1.9.2.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Lib\NSubstitute.1.9.2.0\lib\net45\NSubstitute.dll</HintPath>
@@ -51,12 +55,15 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="ScriptCs.Contracts">
-      <HintPath>..\..\Lib\ScriptCs\ScriptCs.Contracts.dll</HintPath>
+      <HintPath>..\..\Lib\ScriptCs.Contracts.0.15.0\lib\net45\ScriptCs.Contracts.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="ScriptCs.Core">
-      <HintPath>..\..\Lib\ScriptCs\ScriptCs.Core.dll</HintPath>
+      <HintPath>..\..\Lib\ScriptCs.Core.0.15.0\lib\net45\ScriptCs.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />

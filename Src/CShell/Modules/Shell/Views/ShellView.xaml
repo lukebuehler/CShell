@@ -44,18 +44,43 @@
 			</StatusBarItem>
 		</StatusBar>
 
-		<xcad:DockingManager x:Name="Manager" DocumentsSource="{Binding Items}"
+        <xcad:DockingManager x:Name="Manager" DocumentsSource="{Binding Items}"
 						   AnchorablesSource="{Binding ToolsObservable}"
 						   ActiveContent="{Binding ActiveItem, Mode=TwoWay, Converter={StaticResource ActiveDocumentConverter}}">
-			<xcad:DockingManager.Theme>
+            <xcad:DockingManager.Theme>
 				<xcad:VS2010Theme />
 			</xcad:DockingManager.Theme>
-			<xcad:DockingManager.LayoutItemTemplate>
-				<DataTemplate>
-					<ContentControl cal:View.Model="{Binding}" IsTabStop="False" />
-				</DataTemplate>
-			</xcad:DockingManager.LayoutItemTemplate>
-			<xcad:DockingManager.LayoutItemContainerStyleSelector>
+
+            <xcad:DockingManager.LayoutItemTemplateSelector>
+                <controls:PanesTemplateSelector>
+                    <controls:PanesTemplateSelector.DocumentTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <ContentControl Grid.Row="1" cal:View.Model="{Binding}"
+                                                IsTabStop="False" />
+                            </Grid>
+                        </DataTemplate>
+                    </controls:PanesTemplateSelector.DocumentTemplate>
+                    <controls:PanesTemplateSelector.ToolTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <ContentControl Grid.Row="1" cal:View.Model="{Binding}"
+                                                IsTabStop="False" />
+                            </Grid>
+                        </DataTemplate>
+                    </controls:PanesTemplateSelector.ToolTemplate>
+                </controls:PanesTemplateSelector>
+            </xcad:DockingManager.LayoutItemTemplateSelector>
+            
+            <xcad:DockingManager.LayoutItemContainerStyleSelector>
 				<controls:PanesStyleSelector>
 					<controls:PanesStyleSelector.DocumentStyle>
 						<Style TargetType="{x:Type xcad:LayoutItem}">
@@ -75,14 +100,17 @@
 					</controls:PanesStyleSelector.ToolStyle>
 				</controls:PanesStyleSelector>
 			</xcad:DockingManager.LayoutItemContainerStyleSelector>
+            
 			<xcad:DockingManager.LayoutUpdateStrategy>
 				<controls:LayoutInitializer />
 			</xcad:DockingManager.LayoutUpdateStrategy>
+            
             <xcad:LayoutRoot>
                 <xcad:LayoutPanel x:Name="VerticalPanel" Orientation="Vertical">
                     <xcad:LayoutDocumentPane />
                 </xcad:LayoutPanel>
             </xcad:LayoutRoot>
+            
         </xcad:DockingManager>
 	</DockPanel>
 </Window>

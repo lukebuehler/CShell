@@ -22,11 +22,29 @@
       <ComponentGroupRef Id="ProductComponents" />
       <ComponentGroupRef Id="Files" />
       <ComponentGroupRef Id="Templates"/>
+      <ComponentRef Id="ApplicationShortcut" />   
     </Feature>
+
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="529A395A-0625-437A-8596-27228B78F1E5">
+        <Shortcut Id="ApplicationStartMenuShortcut"
+                  Name="CShell"
+                  Description="CShell interactive C# scripting environment"
+                  Target="[#CShell.exe]"
+                  WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+        <RemoveFolder Id="INSTALLFOLDER" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\Microsoft\CShell" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+
+
   </Product>
 
   <Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="CShell"/>
+      </Directory>
       <Directory Id="ProgramFilesFolder">
         <Directory Id="INSTALLFOLDER" Name="CShell">
           <Directory Id="Default" Name="Default" />
@@ -45,10 +63,6 @@
     <ComponentGroup Id="Files" Directory="Default">
       <Component Id="Default.cshell" Guid="b3dd52cc-27da-47cf-b9c5-adedecee3000">
         <File Id="Default.cshell" Source="$(var.CShell.TargetDir)\Default\Default.cshell">
-        </File>
-      </Component>
-      <Component Id="Default.xml" Guid="e22a40aa-edc1-4f5a-aff4-bd2a9d7cb9be">
-        <File Id="Default.xml" Source="$(var.CShell.TargetDir)\Default\Default.xml">
         </File>
       </Component>
       <Component Id="Scratchpad.csx" Guid="da8c11a0-801e-4492-944a-e023cf58d4c9">

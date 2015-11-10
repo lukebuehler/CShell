@@ -20,6 +20,8 @@
 
     <Feature Id="ProductFeature" Title="CShell" Level="1">
       <ComponentGroupRef Id="ProductComponents" />
+      <ComponentGroupRef Id="Files" />
+      <ComponentGroupRef Id="Templates"/>
     </Feature>
   </Product>
 
@@ -27,8 +29,8 @@
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
         <Directory Id="INSTALLFOLDER" Name="CShell">
-            <Directory Id="Default" Name="Default" />
-            <Directory Id="Templates" Name="Templates" />
+          <Directory Id="Default" Name="Default" />
+          <Directory Id="Templates" Name="Templates" />
         </Directory>
       </Directory>
     </Directory>
@@ -40,13 +42,41 @@
   </Fragment>
 
   <Fragment>
-    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-
-      <!--<Component Id="Scratchpad.csx" Guid="ADAF4D5A-0848-4BAC-9ED2-B2EB7D83A020">
-        <File Id="Scratchpad.csx" Source="$(var.CShell.INSTALLFOLDER)\Default\Scratchpad.csx">
+    <ComponentGroup Id="Files" Directory="Default">
+      <Component Id="Default.cshell" Guid="b3dd52cc-27da-47cf-b9c5-adedecee3000">
+        <File Id="Default.cshell" Source="$(var.CShell.TargetDir)\Default\Default.cshell">
         </File>
-      </Component>-->
-        
+      </Component>
+      <Component Id="Default.xml" Guid="e22a40aa-edc1-4f5a-aff4-bd2a9d7cb9be">
+        <File Id="Default.xml" Source="$(var.CShell.TargetDir)\Default\Default.xml">
+        </File>
+      </Component>
+      <Component Id="Scratchpad.csx" Guid="da8c11a0-801e-4492-944a-e023cf58d4c9">
+        <File Id="Scratchpad.csx" Source="$(var.CShell.TargetDir)\Default\Scratchpad.csx">
+        </File>
+      </Component>
+      <Component Id="Tutorial.csx" Guid="103db6ce-32e9-4026-91a9-c88196aceaa7">
+        <File Id="Tutorial.csx" Source="$(var.CShell.TargetDir)\Default\Tutorial.csx">
+        </File>
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="Templates" Directory="Templates">
+      <Component Id="Empty.cs" Guid="db288419-dca4-4e0b-842c-90157edafa7c">
+        <File Id="Empty.cs" Source="$(var.CShell.TargetDir)\Templates\Empty.cs">
+        </File>
+      </Component>
+      <Component Id="Empty.cshell" Guid="3cc3e1c7-9846-44c9-b3d6-c391ea22b37b">
+        <File Id="Empty.cshell" Source="$(var.CShell.TargetDir)\Templates\Empty.cshell">
+        </File>
+      </Component>
+      <Component Id="Empty.csx" Guid="58143bbf-c8b9-4a04-a446-58a1c9e08059">
+        <File Id="Empty.csx" Source="$(var.CShell.TargetDir)\Templates\Empty.csx">
+        </File>
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
       <Component Id="Caliburn.Micro.dll" Guid="34ed5113-f383-49c5-a2c3-7f0c73a926dc">
         <File Id="Caliburn.Micro.dll" Source="$(var.CShell.TargetDir)\Caliburn.Micro.dll">
         </File>

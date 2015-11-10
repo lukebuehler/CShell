@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CShell>
+  <Workspace xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <AssemblyFileReferences />
+    <AssemblyNameReferences />
+    <RootFolder>C:\Users\matt\Downloads\CShell\Default</RootFolder>
+    <Filter>*.xml *.dll *.cshell</Filter>
+  </Workspace>
+  <LayoutRoot xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <RootPanel Orientation="Vertical">
+      <LayoutDocumentPane>
+        <LayoutDocument Title="Scratchpad.csx" ContentId="file:///C:/Users/matt/Downloads/CShell/Default/Scratchpad.csx" LastActivationTimeStamp="11/09/2015 23:46:39" />
+        <LayoutDocument Title="Tutorial.csx" IsSelected="True" IsLastFocusedDocument="True" ContentId="file:///C:/Users/matt/Downloads/CShell/Default/Tutorial.csx" LastActivationTimeStamp="11/09/2015 23:46:40" />
+      </LayoutDocumentPane>
+      <LayoutAnchorablePane DockHeight="300">
+        <LayoutAnchorable AutoHideMinWidth="100" AutoHideMinHeight="100" Title="C# Interactive" IsSelected="True" ContentId="tool://cshell/repl" />
+      </LayoutAnchorablePane>
+    </RootPanel>
+    <TopSide />
+    <RightSide />
+    <LeftSide>
+      <LayoutAnchorGroup>
+        <LayoutAnchorable AutoHideWidth="200" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Workspace Explorer" ContentId="tool://cshell/workspace" />
+      </LayoutAnchorGroup>
+    </LeftSide>
+    <BottomSide />
+    <FloatingWindows />
+    <Hidden />
+  </LayoutRoot>
+</CShell>

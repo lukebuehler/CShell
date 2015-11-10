@@ -241,10 +241,10 @@
       <Link>Templates\Empty.csx</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\Scripts\Scratchpad.csx">
+    <Content Include="..\..\Scripts\Scratchpad.csx">
       <Link>Default\Scratchpad.csx</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Include="..\..\Scripts\Tutorial.csx">
       <Link>Default\Tutorial.csx</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -252,12 +252,18 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Default\Default.cshell">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <Content Include="Templates\Empty.cshell">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Modules\Editors\Views\EditorView.xaml">
@@ -394,7 +400,11 @@
       <Name>CShell.Hosting</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Default\Default.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

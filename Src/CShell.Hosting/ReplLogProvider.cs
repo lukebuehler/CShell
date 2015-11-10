@@ -7,20 +7,10 @@ using Logger = ScriptCs.Contracts.Logger;
 
 namespace CShell.Hosting
 {
-    public class ReplLogProvider : ILogProvider, ILog
+    public class ReplLogProvider : ILogProvider
     {
         private readonly LogLevel _consoleLogLevel;
         private readonly IReplOutput _replOutput;
-        private readonly Dictionary<LogLevel, Color> colors =
-            new Dictionary<LogLevel, Color>
-            {
-                { LogLevel.Fatal, Colors.Red },
-                { LogLevel.Error, Colors.DarkRed },
-                { LogLevel.Warn, Colors.DarkOrange },
-                { LogLevel.Info, Colors.Gray },
-                { LogLevel.Debug, Colors.DarkGray },
-                { LogLevel.Trace, Colors.DarkMagenta },
-            };
 
         public ReplLogProvider(IReplOutput repl)
             :this(repl, LogLevel.Info)
@@ -34,19 +24,71 @@ namespace CShell.Hosting
             _replOutput = repl;
         }
 
+        public Logger GetLogger(string name)
+        {
+            var log = new ReplLog(name, _replOutput, _consoleLogLevel);
+            return log.Log;
+        }
+
+        public IDisposable OpenNestedContext(string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDisposable OpenMappedContext(string key, string value)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
+    internal class ReplLog : ILog
+    {
+        private readonly string _name;
+        private readonly NLog.ILogger _nlogLogger;
+        private readonly LogLevel _consoleLogLevel;
+        private readonly IReplOutput _replOutput;
+
+        private readonly Dictionary<LogLevel, Color> colors =
+            new Dictionary<LogLevel, Color>
+            {
+                { LogLevel.Fatal, Colors.Red },
+                { LogLevel.Error, Colors.DarkRed },
+                { LogLevel.Warn, Colors.DarkOrange },
+                { LogLevel.Info, Colors.Gray },
+                { LogLevel.Debug, Colors.DarkGray },
+                { LogLevel.Trace, Colors.DarkMagenta },
+            };
+
+        internal ReplLog(string name, IReplOutput repl, LogLevel consoleLogLevel)
+        {
+            if (repl == null) throw new ArgumentNullException("repl");
+
+            _name = name;
+            _consoleLogLevel = consoleLogLevel;
+            _replOutput = repl;
+            _nlogLogger = NLog.LogManager.GetLogger(name);
+        }
 
         public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception, params object[] formatParameters)
         {
-            if (logLevel < _consoleLogLevel)
-                return false;
-            if (messageFunc == null)
+            string message = String.Empty;
+            if (messageFunc != null)
+            {
+                message = messageFunc();
+            }
+
+            if (String.IsNullOrEmpty(message) && exception == null)
                 return true;
 
-            var message = messageFunc();
-            if (message == null)
-                message = String.Empty;
+            //forward log messages to NLog
+            _nlogLogger.Log(ConvertLogLevel(logLevel), exception, message, formatParameters);
 
-            if(formatParameters != null && formatParameters.Length > 0)
+            //now log to the REPL output
+            if (logLevel < _consoleLogLevel)
+                return true;
+
+            if (formatParameters != null && formatParameters.Length > 0)
                 message = String.Format(message, formatParameters);
 
             var prefix = logLevel == LogLevel.Info
@@ -72,19 +114,25 @@ namespace CShell.Hosting
             return true;
         }
 
-        public Logger GetLogger(string name)
+        private static NLog.LogLevel ConvertLogLevel(LogLevel logLevel)
         {
-            return Log;
-        }
-
-        public IDisposable OpenNestedContext(string message)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IDisposable OpenMappedContext(string key, string value)
-        {
-            throw new NotImplementedException();
+            switch (logLevel)
+            {
+                case LogLevel.Trace:
+                    return NLog.LogLevel.Trace;
+                case LogLevel.Debug:
+                    return NLog.LogLevel.Debug;
+                case LogLevel.Info:
+                    return NLog.LogLevel.Info;
+                case LogLevel.Warn:
+                    return NLog.LogLevel.Warn;
+                case LogLevel.Error:
+                    return NLog.LogLevel.Error;
+                case LogLevel.Fatal:
+                    return NLog.LogLevel.Fatal;
+                default:
+                    return NLog.LogLevel.Info;
+            }
         }
     }
 }

@@ -61,10 +61,6 @@
 
   <Fragment>
     <ComponentGroup Id="Files" Directory="Default">
-      <Component Id="Default.cshell" Guid="b3dd52cc-27da-47cf-b9c5-adedecee3000">
-        <File Id="Default.cshell" Source="$(var.CShell.TargetDir)\Default\Default.cshell">
-        </File>
-      </Component>
       <Component Id="Scratchpad.csx" Guid="da8c11a0-801e-4492-944a-e023cf58d4c9">
         <File Id="Scratchpad.csx" Source="$(var.CShell.TargetDir)\Default\Scratchpad.csx">
         </File>
@@ -78,10 +74,6 @@
     <ComponentGroup Id="Templates" Directory="Templates">
       <Component Id="Empty.cs" Guid="db288419-dca4-4e0b-842c-90157edafa7c">
         <File Id="Empty.cs" Source="$(var.CShell.TargetDir)\Templates\Empty.cs">
-        </File>
-      </Component>
-      <Component Id="Empty.cshell" Guid="3cc3e1c7-9846-44c9-b3d6-c391ea22b37b">
-        <File Id="Empty.cshell" Source="$(var.CShell.TargetDir)\Templates\Empty.cshell">
         </File>
       </Component>
       <Component Id="Empty.csx" Guid="58143bbf-c8b9-4a04-a446-58a1c9e08059">

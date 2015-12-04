@@ -91,6 +91,10 @@
         <File Id="Caliburn.Micro.Platform.dll" Source="$(var.CShell.TargetDir)\Caliburn.Micro.Platform.dll">
         </File>
       </Component>
+      <Component Id="Common.Logging.dll" Guid="1B35863B-C88F-4498-A1B1-674BE766AB69">
+        <File Id="Common.Logging.dll" Source="$(var.CShell.TargetDir)\Common.Logging.dll">
+        </File>
+      </Component>
       <Component Id="CShell.Completion.dll" Guid="836e5704-c144-4c1b-a988-e23236281533">
         <File Id="CShell.Completion.dll" Source="$(var.CShell.TargetDir)\CShell.Completion.dll">
         </File>

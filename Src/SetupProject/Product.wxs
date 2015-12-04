@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
+  
   <Product Id="*"
            Name="CShell"
            Language="1033"
            Version="1.0.0.0"
-           Manufacturer=" Arnova Asset Management Ltd., Lukas Buhler"
+           Manufacturer="Lukas Buhler"
            UpgradeCode="B4800933-F0C3-4F4C-B94B-781E8AF91113">
 
     <Package InstallerVersion="200"

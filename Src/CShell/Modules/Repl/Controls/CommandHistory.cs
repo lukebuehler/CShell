@@ -9,7 +9,7 @@ namespace CShell.Modules.Repl.Controls
     {
         private int currentPosn;
         private string lastCommand;
-        private ArrayList commandHistory = new ArrayList();
+        private ArrayList commandHistory = new ArrayList(); //this needs to be a buffer circa 3000 lines
 
         internal void Add(string command)
         {

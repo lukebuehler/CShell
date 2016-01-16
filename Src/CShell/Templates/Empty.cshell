@@ -1,0 +1,13 @@
+﻿public class CShellFile : ICShellFile
+{
+    public void OnOpened(Workspace workspace)
+    {
+        workspace.Load(workspace.CShellFileName + CShell.Constants.WorkspaceFileExtension, true);
+    }
+
+    public void OnClosing(Workspace workspace)
+    {
+        workspace.Save(workspace.CShellFileName + CShell.Constants.WorkspaceFileExtension, true);
+    }
+}
+

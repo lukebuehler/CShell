@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using CShell.Modules.Repl.Controls;
 using NUnit.Framework;
 
 namespace CShell.Tests
 {
-    public class FixedQueueTest
+    public class CommandQueueTest
     {
         [Test]
         public void AddItemToQueue_Limit1_ExpectAdded()
         {
-           var queue = new FixedQueue<string>(1);
+           var queue = new CommandQueue<string>(1);
            const string expected = "Test string"; 
 
            queue.Add(expected);
@@ -26,7 +25,7 @@ namespace CShell.Tests
         {
             const int expectedQueueLength = 1;
            
-            var queue = new FixedQueue<string>(expectedQueueLength);
+            var queue = new CommandQueue<string>(expectedQueueLength);
 
             queue.Add("Test String 1");
             queue.Add("Test String 2");
@@ -41,7 +40,7 @@ namespace CShell.Tests
         {
             const string expectedElementKept = "Test String 2";
             
-            var queue = new FixedQueue<string>(1);
+            var queue = new CommandQueue<string>(1);
 
             queue.Add("Test String 1");
             queue.Add("Test String 2");
@@ -50,33 +49,24 @@ namespace CShell.Tests
 
             Assert.AreEqual(expectedElementKept, actualElementKept);
         }
-    } 
 
-    public class FixedQueue<T>
-    {
-        private readonly int _limit;
-        readonly ConcurrentQueue<T> _queue = new ConcurrentQueue<T>(); 
-
-        public FixedQueue(int limit)
+        //todo: refactor to data driven test
+        [Test]
+        public void AddMultipleItemsToQueue_Limit3_ExpectLastElementKept()
         {
-            _limit = limit;
-        }
+            var queue = new CommandQueue<string>(3);
 
-        public void Add(T item)
-        {
-            _queue.Enqueue(item);
+            queue.Add("Test String 1");
+            queue.Add("Test String 2");
+            queue.Add("Test String 3");
+            queue.Add("Test String 4");
 
-            lock (this) //ensure threads don't step on each other
-            {
-                T overflow;
-                while (_queue.Count > _limit && _queue.TryDequeue(out overflow)) ;
-            }
+            string[] actualElementKept = queue.Contents().ToArray();
+
+            Assert.AreEqual(actualElementKept[0], "Test String 2");
+            Assert.AreEqual(actualElementKept[1], "Test String 3");
+            Assert.AreEqual(actualElementKept[2], "Test String 4");
             
-        }
-
-        public IEnumerable<T> Contents()
-        {
-            return _queue;
         }
     }
 }

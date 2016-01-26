@@ -1,7 +1,4 @@
-﻿
-
-using System.Collections;
-using System.Collections.Generic;
+﻿using CShell.Properties;
 
 namespace CShell.Modules.Repl.Controls
 {
@@ -9,7 +6,7 @@ namespace CShell.Modules.Repl.Controls
     {
         private int currentPosn;
         private string lastCommand;
-        private ArrayList commandHistory = new ArrayList(); //this needs to be a buffer circa 3000 lines
+        private readonly CommandQueue<string> commandHistory = new CommandQueue<string>(Settings.Default.REPLBuffer);
 
         internal void Add(string command)
         {
@@ -40,7 +37,7 @@ namespace CShell.Modules.Repl.Controls
 
         internal string GetPreviousCommand()
         {
-            lastCommand = (string)commandHistory[--currentPosn];
+            lastCommand = commandHistory[--currentPosn];
             return lastCommand;
         }
 
@@ -65,7 +62,7 @@ namespace CShell.Modules.Repl.Controls
 
         internal string[] GetCommandHistory()
         {
-            return (string[])commandHistory.ToArray(typeof(string));
+            return commandHistory.ToArray();
         }
     }
 }

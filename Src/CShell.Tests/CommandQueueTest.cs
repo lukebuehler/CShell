@@ -50,9 +50,12 @@ namespace CShell.Tests
             Assert.AreEqual(expectedElementKept, actualElementKept);
         }
 
-        //todo: refactor to data driven test
         [Test]
-        public void AddMultipleItemsToQueue_Limit3_ExpectLastElementKept()
+        //[TestCase("Test String 1", -1] We don't test String 1 as it should've been removed from queue
+        [TestCase("Test String 2", 0)]
+        [TestCase("Test String 3", 1)]
+        [TestCase("Test String 4", 2)]
+        public void AddMultipleItemsToQueue_Limit3_ExpectLastElementKept(string actual, int expectedQueuePosition)
         {
             var queue = new CommandQueue<string>(3);
 
@@ -63,9 +66,7 @@ namespace CShell.Tests
 
             string[] actualElementKept = queue.Contents().ToArray();
 
-            Assert.AreEqual(actualElementKept[0], "Test String 2");
-            Assert.AreEqual(actualElementKept[1], "Test String 3");
-            Assert.AreEqual(actualElementKept[2], "Test String 4");
+            Assert.AreEqual(actual, actualElementKept[expectedQueuePosition]);
             
         }
     }

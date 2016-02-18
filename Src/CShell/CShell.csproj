@@ -151,6 +151,7 @@
       <DependentUpon>AboutView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules\Repl\Controls\CommandHistory.cs" />
+    <Compile Include="Modules\Repl\Controls\CommandQueue.cs" />
     <Compile Include="Modules\Repl\Controls\ConsoleStream.cs" />
     <Compile Include="Modules\Repl\Controls\CSRepl.xaml.cs">
       <DependentUpon>CSRepl.xaml</DependentUpon>
@@ -388,6 +389,7 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

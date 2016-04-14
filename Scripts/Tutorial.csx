@@ -12,7 +12,7 @@
 // Getting Started
 // ===================
 
-// To evaluate an expression in the REPL shell enter following code in the window bellow an press enter: "7*7"
+// To evaluate an expression in the REPL shell enter following code in the window below and press enter: "7*7"
 // As you can see the expression is evaluated and the result is printed.
 
 // The console output is forwarded to the REPL as well. Try entering: "Console.WriteLine("Hello CShell");"
@@ -20,17 +20,17 @@
 // When you press the up arrow you can iterate through the command history.
 
 // Not all code has to be typed in the REPL window. Code in any file can be sent to the REPL and be evaluated.
-// To do this just put the curor to the line you want to evaluate and press Alt+Enter. Try it here:
+// To do this just put the cursor on the line you want to evaluate and press Alt+Enter. Try it here:
 Math.Pow(2, 4);
 
-// Also, more than one line can be executed at once. Select the the two line below and hit Alt+Enter.
+// Also, more than one line can be executed at once. Select the two lines below and hit Alt+Enter:
 var x = 7;
 x + x;
 
-// The state is preserved now just enter "x" in the REPL and hit enter: The variable "x" containing the value 7 is still there.
+// The state is preserved now. Just enter "x" in the REPL and hit enter: The variable "x" containing the value 7 is still there.
 
 // Methods can be declared too, but only in classes. Select the class and send it to the REPL.
-// Select lines 35-45 and press Alt+Enter, to evaluate the class an make it available for later.
+// Select lines 35-45 and press Alt+Enter to evaluate the class and make it available for later.
 /*
 static class MyMath
 {
@@ -66,20 +66,20 @@ throw new Exception("hahaha");
 // CShell Specific
 // ===================
 // At the root of the CShell environment is the .cshell file. If you double click it, you'll see that it contains C# code and not XML or 
-// some other data definitions. It's structured according to a simple convention, it needs to implement a class called "CShellFile" and 
+// some other data definitions. It's structured according to a simple convention. It needs to implement a class called "CShellFile" and 
 // the interface ICShellFile which containt two methods: "OnOpened" and "OnClosing". The whole workspace environment can be configured
-// and saved in those two methods. That the file itself contains normal C# code is an important point to understand about CShell, all
-// APIs like saving things, restoring the layouts and workspace files, modifying the UI are available to you at anytime, when opening a
+// and saved in those two methods. That the file itself contains normal C# code is an important point to understand about CShell. All
+// APIs like saving things, restoring the layouts and workspace files, and modifying the UI are available to you at anytime when opening a
 // workspace or later via the REPL.
 
-// Your workspace will probably not change very much as compared to, for example, VisualStudio solutions. It's recommened to configure your
+// Your workspace will probably not change very much as compared to, for example, Visual Studio solutions. It's recommened to configure your
 // environment once via the .cshell file and use it for whatever work you wanna do. Of course if a different project requires you to load
 // many different assemblies you might want to create a different workspace for that.
 // When CShell is opened the last .cshell file will be loaded automatically unless you provide a different .cshell file in the arguments.
 
 // All the APIs live in the "CShell" namespace. To try this just type "CShell" in the REPL and see what's available. One of the most 
-// important static classes is called "Shell", through it many UI APIs can be accessed.
-// for example to update the status when a long running operation is executed we can do the following:
+// important static classes is called "Shell." Through it many UI APIs can be accessed.
+// For example, to update the status when a long running operation is executed we can do the following:
 for(int i=0;i<100;i++)
 {
 	System.Threading.Thread.Sleep(20);
@@ -87,9 +87,9 @@ for(int i=0;i<100;i++)
 	CShell.Shell.UpdateProgress(i);
 }
 
-// Note: The code is NOT executed in a seperate AppDomain that cannot contaminate the UI shell. The CShell UI, the loaded assemblies and all 
-// evaluated code live in the same AppDomain and can call each other. Of course this could lead to quite some trouble but it creates tremendous
-// flexibility, because remember, this is a scripting envrionment.
+// Note: The code is NOT executed in a seperate AppDomain that cannot contaminate the UI shell. The CShell UI, the loaded assemblies, and all 
+// evaluated code live in the same AppDomain and can call each other. Of course, this could lead to quite some trouble, but it creates tremendous
+// flexibility (because remember, this is a scripting envrionment).
 
 
 // Dumping to Sinks
@@ -104,15 +104,15 @@ Shell.Dump(new []{1,2,3,4});
 //   "sink://cshell/<SinkName>/<SinkTitle>"
 
 // There are a few sinks suppored out of the box:
-//  * xhtml: Uses a LinqPad like XHtml dumper.
+//  * xhtml: Uses a LinqPad-like XHtml dumper.
     new []{1,2,3,4}.Dump(new Uri("sink://cshell/xhtml/MyXhtmlSink"));
 //  * grid: Displays the data in a data grid.
     new []{1,2,3,4}.Dump(new Uri("sink://cshell/grid/MyGridSink"));
 //  * plot: Plots the data points of an IEnumerable.
 	new []{1,2,3,4}.Dump(new Uri("sink://cshell/plot/MyPlotSink"));
 
-// Since it's quite annoying having to type the whole URI everytime you wanna dump some data, there are usually shortcut methods for a sink.
-// For example to plot there are many helper methods:
+// Since it's quite annoying having to type the whole URI everytime you want to dump some data, there are usually shortcut methods for a sink.
+// For example to plot, there are many helper methods:
    new []{5,4,3,2,4,5}.Plot(); // -> same as .Dump(new Uri("sink://cshell/grid"))
    Plotting.PlotFunction(Math.Sin, "SinFunction"); // -> not possible by just dumping
    Plotting.GetPlotSink(null).Clear(); // gets the default sink, called "Plot" and clears it
@@ -124,14 +124,14 @@ Shell.Dump(new []{1,2,3,4});
 
 // Scripting the UI and Workspace
 // ------------------------------
-// There are many built in helper methods in CShell, here we'll explore some of them. Call them in a script, class or directly in the .cshell file
+// There are many built-in helper methods in CShell. Here, we'll explore some of them. Call them in a script, class or directly in the .cshell file
 // to configure the UI and workspace to your liking.
 
 // Evaluate a string as code
 Shell.Evaluate("1+1");
 // Evaluate the contents of a file. It finds the first occurence of the file in the whole workspace and executes it.
 Shell.TryEvaluateFile("SomeFileInYourWorkspace.cs");
-// Note: I like to create a file called "Usings.cs" where I add all my "using" declarations used in the .csx scripts. Then I evaluate it the .chell 
+// Note: I like to create a file called "Usings.cs" where I add all my "using" declarations used in the .csx scripts. Then I evaluate it in the .chell 
 // file's "OnOpened" event after loading the workspace like so: Shell.TryEvaluateFile("Usings.cs");
 
 // Modify the REPL, you can access the IRepl interface via "Shell.Repl"
